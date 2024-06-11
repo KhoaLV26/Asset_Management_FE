@@ -1,10 +1,10 @@
-import LayoutPage from "./pages/LayoutPage";
 import { BrowserRouter } from "react-router-dom";
+import AppRoutes from "./route/AppRoute";
 function App() {
   return (
     <div className="App">
       <BrowserRouter>
-        <LayoutPage />
+        <AppRoutes/>
       </BrowserRouter>
     </div>
   );

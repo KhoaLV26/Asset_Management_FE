@@ -1,20 +1,20 @@
-import React, {useState} from "react";
-import { Button, Input, Space, Table, Select } from "antd";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Button, Input, Space, Table } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
+import LayoutPage from "../layout/LayoutPage";
 
 const { Search } = Input;
 
 const options = [
-    {
-      value: 'zhejiang',
-      label: 'Zhejiang',
-    },
-    {
-      value: 'jiangsu',
-      label: 'Jiangsu',
-    },
-  ];
+  {
+    value: 'zhejiang',
+    label: 'Zhejiang',
+  },
+  {
+    value: 'jiangsu',
+    label: 'Jiangsu',
+  },
+];
 
 const data = [
   {
@@ -44,7 +44,7 @@ const data = [
 ];
 
 const ManageUser = () => {
-    const [type, setType] = useState("Type");
+  const [type, setType] = useState("Type");
   const sorterLog = () => {
     console.log("Sorted");
   };
@@ -101,28 +101,30 @@ const ManageUser = () => {
   ];
 
   return (
-    <div className="w-full">
-      <h1 className="font-bold text-d6001c text-2xl">User List</h1>
-      <div className="flex items-center justify-between mt-5">
-        <Space.Compact>
-            <Input disabled={true} value={type} className="w-[300px]"/>
-            <FilterOutlined onClick= {() => {setType("Nothing")}} className="h-[32px] w-[32px] items-center justify-center border-2"/>
-        </Space.Compact>
-        <div className="flex gap-10">
-        <Space.Compact>
-          <Search className="w-[300px]"/>
-        </Space.Compact>
-        <Button
-          className="flex items-center w-[300px] h-[32px] bg-d6001c"
-          type="primary"
-          size="large"
-        >
-          Create new user
-        </Button>
+    <LayoutPage>
+      <div className="w-full">
+        <h1 className="font-bold text-d6001c text-2xl">User List</h1>
+        <div className="flex items-center justify-between mt-5">
+          <Space.Compact>
+            <Input disabled={true} value={type} className="w-[300px]" />
+            <FilterOutlined onClick={() => { setType("Nothing") }} className="h-[32px] w-[32px] items-center justify-center border-2" />
+          </Space.Compact>
+          <div className="flex gap-10">
+            <Space.Compact>
+              <Search className="w-[300px]" />
+            </Space.Compact>
+            <Button
+              className="flex items-center w-[300px] h-[32px] bg-d6001c"
+              type="primary"
+              size="large"
+            >
+              Create new user
+            </Button>
+          </div>
         </div>
+        <Table className="mt-10" columns={columns} dataSource={data} />
       </div>
-      <Table className="mt-10" columns={columns} dataSource={data} />
-    </div>
+    </LayoutPage>
   );
 };
 
