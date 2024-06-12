@@ -4,7 +4,7 @@ import {
   getRefreshToken,
   setTokens,
   removeTokens,
-} from "../contexts/AuthContext";
+} from "../context/AuthContext";
 import { message } from "antd";
 
 const axiosInstance = axios.create({
