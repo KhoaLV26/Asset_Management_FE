@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Layout, Menu } from "antd";
 
 const navBar = [
@@ -42,9 +42,10 @@ const Navbar = () => {
                     {navBar.map((menuItem) => (
                         <Menu.Item
                             key={menuItem.key}
-                            onClick={() => history(menuItem.link)}
+                            //onClick={() => history(menuItem.link)}
                         >
-                            {menuItem.label}
+                            {/* {menuItem.label} */}
+                            <Link to={menuItem.link}>{menuItem.label}</Link>
                         </Menu.Item>
                     ))}
                 </Menu>

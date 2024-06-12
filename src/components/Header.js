@@ -9,8 +9,8 @@ const Header = ()  => {
     return (
         <Layout.Header className="bg-d6001c px-10 flex items-center justify-between w-full">
             <div className="flex items-center text-white font-extrabold ml-8">
-                {direction.map((item) => (
-                    <span className="pl-2">{item}</span>
+                {direction.map((item, index) => (
+                    <span key={index} className="pl-2">{item}</span>
                 ))}
             </div>
             <Button

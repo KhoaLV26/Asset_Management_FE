@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { Button, Input, Space, Table } from "antd";
+import { Button, Input, Space, Table, Modal } from "antd";
 import { FilterOutlined } from "@ant-design/icons";
 import LayoutPage from "../layout/LayoutPage";
+import '../styles/ManageUser.css';
 
 const { Search } = Input;
 
@@ -24,6 +25,7 @@ const data = [
     userName: "asd123",
     joinedDate: "11/06/2024",
     type: "Staff",
+    location: "HN",
   },
   {
     key: "2",
@@ -45,8 +47,20 @@ const data = [
 
 const ManageUser = () => {
   const [type, setType] = useState("Type");
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [modalData, setModalData] = useState({});
+
   const sorterLog = () => {
     console.log("Sorted");
+  };
+
+  const handleClicked = (row) => {
+    setModalData(row);
+    setIsModalVisible(true);  }
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setModalData({});
   };
 
   const columns = [
@@ -122,7 +136,38 @@ const ManageUser = () => {
             </Button>
           </div>
         </div>
-        <Table className="mt-10" columns={columns} dataSource={data} />
+        <Table className="mt-10" columns={columns} dataSource={data} onRow={(record) => {
+            return {
+              onClick: () => {
+                handleClicked(record);
+              },
+            };
+          }}/>
+        <Modal
+          title={<h3 className="modal-title w-full border-b-2">Detailed Assignment Information</h3>}
+          visible={isModalVisible}
+          onCancel={handleModalClose}
+          footer={null}
+          className="custom-modal"
+        >
+          <div className="modal-content">
+            <div className="modal-row">
+              <span className="modal-label">Staff Code:</span> {modalData.staffCode}
+            </div>
+            <div className="modal-row">
+              <span className="modal-label">Full Name:</span> {modalData.fullName}
+            </div>
+            <div className="modal-row">
+              <span className="modal-label">Username:</span> {modalData.userName}
+            </div>
+            <div className="modal-row">
+              <span className="modal-label">Joined Date:</span> {modalData.joinedDate}
+            </div>
+            <div className="modal-row">
+              <span className="modal-label">Type:</span> {modalData.type}
+            </div>
+          </div>
+        </Modal>
       </div>
     </LayoutPage>
   );
