@@ -166,6 +166,11 @@ const ManageAsset = () => {
   const [pageSize, setPageSize] = useState(15)
   const [pageNumber, setPageNumber] = useState(1)
   const [search, setSearch] = useState()
+  const handleClicked = (data) => {
+    setIsModalOpen(true)
+    setSelectedAsset(data);
+  }
+  const [selectedAsset, setSelectedAsset] = useState(null);
   const dropdownCategoryItems = [
     {
       key: '1',
@@ -257,15 +262,19 @@ const ManageAsset = () => {
             </Button>
           </div>
         </div>
-        <Table pagination={{ showSizeChanger: true, total: 30, showTotal: (total) => `Total ${total} items`, defaultPageSize: 15, onChange: page => setPageNumber(page), onShowSizeChange: (current, size) => { setPageSize(size) } }} className="mt-10" columns={columns} dataSource={data} />
+        <Table pagination={{ showSizeChanger: true, total: 30, showTotal: (total) => `Total ${total} items`, defaultPageSize: 15, onChange: page => setPageNumber(page), onShowSizeChange: (current, size) => { setPageSize(size) } }} className="mt-10" columns={columns} dataSource={data} onRow={(record) => {
+            return {
+              onClick: () => {
+                handleClicked(record);
+              },
+            };
+          }} />
         <Button type="primary" onClick={showModal}>
           Open Modal
         </Button>
-        <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Modal>
+        {selectedAsset && <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+          <p>{selectedAsset.id}</p>
+        </Modal>}
       </div>
     </LayoutPage>
   )
