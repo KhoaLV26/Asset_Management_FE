@@ -6,7 +6,7 @@ const navBar = [
     { key: "1", label: "Home", link: "/home" },
     { key: "2", label: "Manage User", link: "/manager-user" },
     { key: "3", label: "Manage Asset", link: "/manage-asset" },
-    { key: "4", label: "Manage Assigment", link: "/manage-assignment" },
+    { key: "4", label: "Manage Assignment", link: "/manage-assignment" },
     { key: "5", label: "Request for Returning", link: "/request-for-returning" },
     { key: "6", label: "Report", link: "/report" },
   ];

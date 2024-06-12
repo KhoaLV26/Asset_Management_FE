@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axios/axiosInstance";
+import { BsChevronExpand } from "react-icons/bs";
 import { Button, Input, Space, Table, Modal, Select, Pagination, message } from "antd";
 import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
 import {
@@ -23,158 +24,44 @@ const itemRender = (_, type, originalElement) => {
   return originalElement;
 };
 
-// const data = [
-//   {
-//     key: "1",
-//     staffCode: "A",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "2",
-//     staffCode: "B",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "3",
-//     staffCode: "C",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "4",
-//     staffCode: "A",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "5",
-//     staffCode: "B",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "6",
-//     staffCode: "C",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "7",
-//     staffCode: "A",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "8",
-//     staffCode: "B",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "9",
-//     staffCode: "C",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "10",
-//     staffCode: "A",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "11",
-//     staffCode: "B",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "12",
-//     staffCode: "C",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "13",
-//     staffCode: "A",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "14",
-//     staffCode: "B",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-//   {
-//     key: "15",
-//     staffCode: "C",
-//     fullName: "John Brown",
-//     userName: "asd123",
-//     joinedDate: "11/06/2024",
-//     type: "Staff",
-//     location: "HN",
-//   },
-// ];
-
 const ManageUser = () => {
-  const [type, setType] = useState("Type");
   const [data, setData] = useState([]);
-  const [pageNumber, setPageNumber] = useState(1);
+  const [total, setTotal] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [open, setOpen] = useState(false);
+  const [direction, setDirection] = useState(true)
   const [modalData, setModalData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [params, setParams] = useState({
+      location: "a401fd2b-c5a7-44f5-b614-1e861a2ac7b9",
+      searchTerm: searchQuery,
+      role: "",
+      sortBy: "StaffCode",
+      sortDirection: "asc",
+      pageNumber: 1,
+      pageSize: 15,
+    }
+  )
 
-  const sorterLog = () => {
-    console.log("Sorted");
-  };
-
+  const sorterLog = (name) => {
+    if (params.sortBy === name) {
+      if (direction === true) {
+        setParams(prev => ({...prev, sortDirection: "desc"}))
+      }
+      else {
+        setParams(prev => ({...prev, sortDirection: "asc"})) 
+      }
+      setDirection(!direction)
+    }
+    else {
+      setParams(prev => ({...prev, sortBy: name})); 
+      setDirection(true);
+      setParams(prev => ({...prev, sortDirection: "asc"}))   
+    }
+    
+  }
+    
   const handleClicked = (row) => {
     setModalData(row);
     setIsModalVisible(true);
@@ -186,16 +73,19 @@ const ManageUser = () => {
   };
 
   const handleSearch = (value) => {
-    console.log("Search query:", value);
+    setParams(prev => ({...prev, searchTerm: value}))
   };
 
   useEffect(() => {
     axiosInstance
-      .post("/Users/search")
+      .get(`/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`)
       .then((res) => {
         if (res.data.success) {
-          setData(res.data.data);
-          console.log(res.data)
+          setData(res.data.data.map(user => ({
+            ...user,
+            fullName: `${user.firstName} ${user.lastName}`
+          })));
+          setTotal(res.data.totalCount)
         } else {
           message.error(res.data.message);
         }
@@ -203,45 +93,76 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, []);
+  }, [params]);
 
   const columns = [
     {
-      title: "Staff Code",
+      title: (
+        <span className="flex items-center justify-between">
+          Staff Code <BsChevronExpand className="w-[15px] h-[15px]"/>
+        </span>
+      ),
       dataIndex: "staffCode",
-      key: "name",
+      key: "staffcode",
       width: "18%",
-      sorter: () => sorterLog(),
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("StaffCode")
+        }}),
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Full Name",
+      title: (
+        <span className="flex items-center justify-between">
+          Full Name <BsChevronExpand className="w-[15px] h-[15px]"/>
+        </span>
+      ),
       dataIndex: "fullName",
       key: "name",
       width: "18%",
-      sorter: () => sorterLog(),
-
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("")
+        }}),
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Username",
-      dataIndex: "userName",
+      title: (
+        <span className="flex items-center justify-between">
+          Username
+        </span>
+      ),
+      dataIndex: "username",
       key: "username",
       width: "18%",
     },
     {
-      title: "Joined Date",
-      dataIndex: "joinedDate",
-      key: "joinedDate",
+      title: (
+        <span className="flex items-center justify-between">
+          Joined Date <BsChevronExpand className="w-[15px] h-[15px]"/>
+        </span>
+      ),
+      dataIndex: "dateJoined",
+      key: "dateJoined",
       width: "18%",
-      sorter: () => sorterLog(),
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("JoinedDate")
+        }}),
     },
     {
-      title: "Type",
-      key: "type",
-      dataIndex: "type",
+      title: (
+        <span className="flex items-center justify-between">
+          Type <BsChevronExpand className="w-[15px] h-[15px]"/>
+        </span>
+      ),
+      key: "roleName",
+      dataIndex: "roleName",
       width: "18%",
-      sorter: () => sorterLog(),
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("Role")
+        }}),
     },
     {
       title: "Action",
@@ -280,23 +201,23 @@ const ManageUser = () => {
           <Space.Compact>
             <Select
               open={open}
-              defaultValue={type}
+              defaultValue={"All"}
               onClick={() => setOpen(!open)}
               suffixIcon={<FilterOutlined onClick={() => setOpen(!open)} />}
               className="w-[100px]"
-              onChange={(value) => setType(value)}
+              onChange={(value) => setParams(prev => ({...prev, role: value}))}
               onSelect={() => setOpen(!open)}
               options={[
                 {
-                  value: "Type",
+                  value: "",
                   label: "All",
                 },
                 {
-                  value: "1",
+                  value: "Admin",
                   label: "Admin",
                 },
                 {
-                  value: "0",
+                  value: "Staff",
                   label: "Staff",
                 },
               ]}
@@ -314,7 +235,7 @@ const ManageUser = () => {
                   setSearchQuery(removeExtraWhitespace(e.target.value))
                 }
                 onSearch={() => {
-                  if (searchQuery.length > 0) {
+                  if (searchQuery.length > -1) {
                     handleSearch(searchQuery);
                   }
                 }}
@@ -338,6 +259,7 @@ const ManageUser = () => {
             className="mt-10"
             columns={columns}
             dataSource={data}
+            defaultPageSize={15}
             onRow={(record) => {
               return {
                 onClick: () => {
@@ -348,10 +270,11 @@ const ManageUser = () => {
           />
           <Pagination
             className="text-center text-d6001c border-b-2"
-            defaultCurrent={pageNumber}
+            defaultCurrent={params.pageNumber}
             defaultPageSize={15}
-            total={30}
-            onChange={(page) => setPageNumber(page)}
+            total={total}
+            onChange={(page) =>  setParams(prev => ({...prev, pageNumber: page}))
+          }
             itemRender={itemRender}
           />
         </div>
@@ -377,19 +300,19 @@ const ManageUser = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Username:</span>
-              <span>{modalData?.userName}</span>
+              <span>{modalData?.username}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Joined Date:</span>
-              <span>{modalData?.joinedDate}</span>
+              <span>{modalData?.dateJoined}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Type:</span>
-              <span>{modalData?.type}</span>
+              <span>{modalData?.roleName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Location:</span>
-              <span>{modalData?.location}</span>
+              <span>{modalData?.locationName}</span>
             </div>
           </div>
         </Modal>
