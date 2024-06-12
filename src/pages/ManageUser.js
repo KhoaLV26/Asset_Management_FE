@@ -1,5 +1,6 @@
-import React, { useState } from "react";
-import { Button, Input, Space, Table, Modal, Select, Pagination } from "antd";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../axios/axiosInstance";
+import { Button, Input, Space, Table, Modal, Select, Pagination, message } from "antd";
 import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
 import {
   FilterOutlined,
@@ -12,146 +13,157 @@ import { useNavigate } from "react-router-dom";
 
 const { Search } = Input;
 
-const data = [
-  {
-    key: "1",
-    staffCode: "A",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "2",
-    staffCode: "B",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "3",
-    staffCode: "C",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "4",
-    staffCode: "A",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "5",
-    staffCode: "B",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "6",
-    staffCode: "C",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "7",
-    staffCode: "A",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "8",
-    staffCode: "B",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "9",
-    staffCode: "C",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "10",
-    staffCode: "A",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "11",
-    staffCode: "B",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "12",
-    staffCode: "C",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "13",
-    staffCode: "A",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "14",
-    staffCode: "B",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-  {
-    key: "15",
-    staffCode: "C",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-    location: "HN",
-  },
-];
+const itemRender = (_, type, originalElement) => {
+  if (type === 'prev') {
+    return <span>Previous</span>;
+  }
+  if (type === 'next') {
+    return <span>Next</span>;
+  }
+  return originalElement;
+};
+
+// const data = [
+//   {
+//     key: "1",
+//     staffCode: "A",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "2",
+//     staffCode: "B",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "3",
+//     staffCode: "C",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "4",
+//     staffCode: "A",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "5",
+//     staffCode: "B",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "6",
+//     staffCode: "C",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "7",
+//     staffCode: "A",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "8",
+//     staffCode: "B",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "9",
+//     staffCode: "C",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "10",
+//     staffCode: "A",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "11",
+//     staffCode: "B",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "12",
+//     staffCode: "C",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "13",
+//     staffCode: "A",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "14",
+//     staffCode: "B",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+//   {
+//     key: "15",
+//     staffCode: "C",
+//     fullName: "John Brown",
+//     userName: "asd123",
+//     joinedDate: "11/06/2024",
+//     type: "Staff",
+//     location: "HN",
+//   },
+// ];
 
 const ManageUser = () => {
   const [type, setType] = useState("Type");
+  const [data, setData] = useState([]);
   const [pageNumber, setPageNumber] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [open, setOpen] = useState(false);
@@ -177,6 +189,22 @@ const ManageUser = () => {
     console.log("Search query:", value);
   };
 
+  useEffect(() => {
+    axiosInstance
+      .post("/Users/search")
+      .then((res) => {
+        if (res.data.success) {
+          setData(res.data.data);
+          console.log(res.data)
+        } else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  }, []);
+
   const columns = [
     {
       title: "Staff Code",
@@ -184,7 +212,7 @@ const ManageUser = () => {
       key: "name",
       width: "18%",
       sorter: () => sorterLog(),
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Full Name",
@@ -193,7 +221,7 @@ const ManageUser = () => {
       width: "18%",
       sorter: () => sorterLog(),
 
-      render: (text) => <a>{text}</a>,
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Username",
@@ -280,6 +308,7 @@ const ManageUser = () => {
                 className="w-[300px]"
                 value={searchQuery}
                 allowClear
+                maxLength={100}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onBlur={(e) =>
                   setSearchQuery(removeExtraWhitespace(e.target.value))
@@ -318,11 +347,12 @@ const ManageUser = () => {
             }}
           />
           <Pagination
-            className="text-center"
+            className="text-center text-d6001c border-b-2"
             defaultCurrent={pageNumber}
             defaultPageSize={15}
             total={30}
             onChange={(page) => setPageNumber(page)}
+            itemRender={itemRender}
           />
         </div>
         <Modal
