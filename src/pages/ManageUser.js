@@ -1,7 +1,16 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axios/axiosInstance";
 import { BsChevronExpand } from "react-icons/bs";
-import { Button, Input, Space, Table, Modal, Select, Pagination, message } from "antd";
+import {
+  Button,
+  Input,
+  Space,
+  Table,
+  Modal,
+  Select,
+  Pagination,
+  message,
+} from "antd";
 import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
 import {
   FilterOutlined,
@@ -10,15 +19,15 @@ import {
 } from "@ant-design/icons";
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/ManageUser.css";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const { Search } = Input;
 
 const itemRender = (_, type, originalElement) => {
-  if (type === 'prev') {
+  if (type === "prev") {
     return <span>Previous</span>;
   }
-  if (type === 'next') {
+  if (type === "next") {
     return <span>Next</span>;
   }
   return originalElement;
@@ -26,42 +35,55 @@ const itemRender = (_, type, originalElement) => {
 
 const ManageUser = () => {
   const [data, setData] = useState([]);
+  const [roles, setRoles] = useState({ value: "", label: "All" });
   const [total, setTotal] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [open, setOpen] = useState(false);
-  const [direction, setDirection] = useState(true)
+  const [direction, setDirection] = useState(true);
   const [modalData, setModalData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const newUser = location?.state?.data;
   const [params, setParams] = useState({
-      location: "a401fd2b-c5a7-44f5-b614-1e861a2ac7b9",
-      searchTerm: searchQuery,
-      role: "",
-      sortBy: "StaffCode",
-      sortDirection: "asc",
-      pageNumber: 1,
-      pageSize: 15,
+    location: "a401fd2b-c5a7-44f5-b614-1e861a2ac7b9",
+    searchTerm: searchQuery,
+    role: "",
+    sortBy: "StaffCode",
+    sortDirection: "asc",
+    pageNumber: 1,
+    pageSize: 15,
+  });
+
+  const updateList = (newObject) => {
+    const index = data.findIndex((obj) => obj.staffCode === newObject.staffCode);
+  
+    if (index !== -1) {
+      const newData = [...data];
+      const foundObject = newData.splice(index, 1)[0];
+      newData.unshift(foundObject);
+      setData(newData);
+    } else {
+      const newData = [newObject, ...data.slice(0, data.length - 1)];
+      setData(newData);
     }
-  )
+  };
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
-        setParams(prev => ({...prev, sortDirection: "desc"}))
+        setParams((prev) => ({ ...prev, sortDirection: "desc" }));
+      } else {
+        setParams((prev) => ({ ...prev, sortDirection: "asc" }));
       }
-      else {
-        setParams(prev => ({...prev, sortDirection: "asc"})) 
-      }
-      setDirection(!direction)
-    }
-    else {
-      setParams(prev => ({...prev, sortBy: name})); 
+      setDirection(!direction);
+    } else {
+      setParams((prev) => ({ ...prev, sortBy: name }));
       setDirection(true);
-      setParams(prev => ({...prev, sortDirection: "asc"}))   
+      setParams((prev) => ({ ...prev, sortDirection: "asc" }));
     }
-    
-  }
-    
+  };
+
   const handleClicked = (row) => {
     setModalData(row);
     setIsModalVisible(true);
@@ -73,19 +95,24 @@ const ManageUser = () => {
   };
 
   const handleSearch = (value) => {
-    setParams(prev => ({...prev, searchTerm: value}))
+    setParams((prev) => ({ ...prev, searchTerm: value }));
   };
 
   useEffect(() => {
     axiosInstance
-      .get(`/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`)
+      .get(
+        `/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`
+      )
       .then((res) => {
         if (res.data.success) {
-          setData(res.data.data.map(user => ({
-            ...user,
-            fullName: `${user.firstName} ${user.lastName}`
-          })));
-          setTotal(res.data.totalCount)
+          setData(
+            res.data.data.map((user) => ({
+              ...user,
+              fullName: `${user.firstName} ${user.lastName}`,
+            }))
+          );
+          newUser && updateList(newUser)
+          setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
         }
@@ -95,11 +122,34 @@ const ManageUser = () => {
       });
   }, [params]);
 
+  useEffect(() => {
+    axiosInstance
+      .get(`/roles`)
+      .then((res) => {
+        if (res.data.success) {
+          const newOptions = [
+            { value: "", label: "All" },
+            ...res.data.data.map((role) => ({
+              value: role.name,
+              label: role.name,
+            })),
+          ];
+          setRoles(newOptions);
+          setTotal(res.data.totalCount);
+        } else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  }, []);
+
   const columns = [
     {
       title: (
         <span className="flex items-center justify-between">
-          Staff Code <BsChevronExpand className="w-[15px] h-[15px]"/>
+          Staff Code <BsChevronExpand className="w-[15px] h-[15px]" />
         </span>
       ),
       dataIndex: "staffCode",
@@ -107,14 +157,15 @@ const ManageUser = () => {
       width: "18%",
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("StaffCode")
-        }}),
+          sorterLog("StaffCode");
+        },
+      }),
       render: (text) => <span>{text}</span>,
     },
     {
       title: (
         <span className="flex items-center justify-between">
-          Full Name <BsChevronExpand className="w-[15px] h-[15px]"/>
+          Full Name <BsChevronExpand className="w-[15px] h-[15px]" />
         </span>
       ),
       dataIndex: "fullName",
@@ -122,15 +173,14 @@ const ManageUser = () => {
       width: "18%",
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("")
-        }}),
+          sorterLog("");
+        },
+      }),
       render: (text) => <span>{text}</span>,
     },
     {
       title: (
-        <span className="flex items-center justify-between">
-          Username
-        </span>
+        <span className="flex items-center justify-between">Username</span>
       ),
       dataIndex: "username",
       key: "username",
@@ -139,7 +189,7 @@ const ManageUser = () => {
     {
       title: (
         <span className="flex items-center justify-between">
-          Joined Date <BsChevronExpand className="w-[15px] h-[15px]"/>
+          Joined Date <BsChevronExpand className="w-[15px] h-[15px]" />
         </span>
       ),
       dataIndex: "dateJoined",
@@ -147,13 +197,14 @@ const ManageUser = () => {
       width: "18%",
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("JoinedDate")
-        }}),
+          sorterLog("JoinedDate");
+        },
+      }),
     },
     {
       title: (
         <span className="flex items-center justify-between">
-          Type <BsChevronExpand className="w-[15px] h-[15px]"/>
+          Type <BsChevronExpand className="w-[15px] h-[15px]" />
         </span>
       ),
       key: "roleName",
@@ -161,8 +212,9 @@ const ManageUser = () => {
       width: "18%",
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("Role")
-        }}),
+          sorterLog("Role");
+        },
+      }),
     },
     {
       title: "Action",
@@ -205,22 +257,11 @@ const ManageUser = () => {
               onClick={() => setOpen(!open)}
               suffixIcon={<FilterOutlined onClick={() => setOpen(!open)} />}
               className="w-[100px]"
-              onChange={(value) => setParams(prev => ({...prev, role: value}))}
+              onChange={(value) =>
+                setParams((prev) => ({ ...prev, role: value }))
+              }
               onSelect={() => setOpen(!open)}
-              options={[
-                {
-                  value: "",
-                  label: "All",
-                },
-                {
-                  value: "Admin",
-                  label: "Admin",
-                },
-                {
-                  value: "Staff",
-                  label: "Staff",
-                },
-              ]}
+              options={roles}
             />
           </Space.Compact>
           <div className="flex gap-10">
@@ -273,8 +314,9 @@ const ManageUser = () => {
             defaultCurrent={params.pageNumber}
             defaultPageSize={15}
             total={total}
-            onChange={(page) =>  setParams(prev => ({...prev, pageNumber: page}))
-          }
+            onChange={(page) =>
+              setParams((prev) => ({ ...prev, pageNumber: page }))
+            }
             itemRender={itemRender}
           />
         </div>
