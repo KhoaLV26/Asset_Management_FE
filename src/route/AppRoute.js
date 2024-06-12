@@ -5,7 +5,7 @@ const AppRoutes = () => {
     const elements = useRoutes(
         [
             {
-                path: '', element: <ManageUser />
+                path: 'manager-user', element: <ManageUser />
             },
         ]
     )

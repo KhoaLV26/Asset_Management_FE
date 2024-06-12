@@ -1,21 +1,16 @@
 import React, { useState } from "react";
-import { Button, Input, Space, Table, Modal } from "antd";
-import { FilterOutlined } from "@ant-design/icons";
+import { Button, Input, Space, Table, Modal, Select, Pagination } from "antd";
+import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
+import {
+  FilterOutlined,
+  EditFilled,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import LayoutPage from "../layout/LayoutPage";
-import '../styles/ManageUser.css';
+import "../styles/ManageUser.css";
+import { useNavigate } from "react-router-dom";
 
 const { Search } = Input;
-
-const options = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-  },
-];
 
 const data = [
   {
@@ -34,6 +29,7 @@ const data = [
     userName: "asd123",
     joinedDate: "11/06/2024",
     type: "Staff",
+    location: "HN",
   },
   {
     key: "3",
@@ -42,13 +38,126 @@ const data = [
     userName: "asd123",
     joinedDate: "11/06/2024",
     type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "4",
+    staffCode: "A",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "5",
+    staffCode: "B",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "6",
+    staffCode: "C",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "7",
+    staffCode: "A",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "8",
+    staffCode: "B",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "9",
+    staffCode: "C",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "10",
+    staffCode: "A",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "11",
+    staffCode: "B",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "12",
+    staffCode: "C",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "13",
+    staffCode: "A",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "14",
+    staffCode: "B",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
+  },
+  {
+    key: "15",
+    staffCode: "C",
+    fullName: "John Brown",
+    userName: "asd123",
+    joinedDate: "11/06/2024",
+    type: "Staff",
+    location: "HN",
   },
 ];
 
 const ManageUser = () => {
   const [type, setType] = useState("Type");
+  const [pageNumber, setPageNumber] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [open, setOpen] = useState(false);
   const [modalData, setModalData] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
 
   const sorterLog = () => {
     console.log("Sorted");
@@ -56,11 +165,16 @@ const ManageUser = () => {
 
   const handleClicked = (row) => {
     setModalData(row);
-    setIsModalVisible(true);  }
+    setIsModalVisible(true);
+  };
 
   const handleModalClose = () => {
     setIsModalVisible(false);
     setModalData({});
+  };
+
+  const handleSearch = (value) => {
+    console.log("Search query:", value);
   };
 
   const columns = [
@@ -70,7 +184,7 @@ const ManageUser = () => {
       key: "name",
       width: "18%",
       sorter: () => sorterLog(),
-      render: (text) => <a href="#">{text}</a>,
+      render: (text) => <a>{text}</a>,
     },
     {
       title: "Full Name",
@@ -107,8 +221,24 @@ const ManageUser = () => {
       width: "10%",
       render: (_, record) => (
         <Space size="middle">
-          <a>Edit {record.name}</a>
-          <a>Disable</a>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalVisible(false);
+              navigate("edit-user");
+            }}
+          >
+            <EditFilled className="text-lg mb-1" />
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalVisible(false);
+              navigate("edit-user");
+            }}
+          >
+            <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
+          </Button>
         </Space>
       ),
     },
@@ -120,51 +250,116 @@ const ManageUser = () => {
         <h1 className="font-bold text-d6001c text-2xl">User List</h1>
         <div className="flex items-center justify-between mt-5">
           <Space.Compact>
-            <Input disabled={true} value={type} className="w-[300px]" />
-            <FilterOutlined onClick={() => { setType("Nothing") }} className="h-[32px] w-[32px] items-center justify-center border-2" />
+            <Select
+              open={open}
+              defaultValue={type}
+              onClick={() => setOpen(!open)}
+              suffixIcon={<FilterOutlined onClick={() => setOpen(!open)} />}
+              className="w-[100px]"
+              onChange={(value) => setType(value)}
+              onSelect={() => setOpen(!open)}
+              options={[
+                {
+                  value: "Type",
+                  label: "All",
+                },
+                {
+                  value: "1",
+                  label: "Admin",
+                },
+                {
+                  value: "0",
+                  label: "Staff",
+                },
+              ]}
+            />
           </Space.Compact>
           <div className="flex gap-10">
             <Space.Compact>
-              <Search className="w-[300px]" />
+              <Search
+                className="w-[300px]"
+                value={searchQuery}
+                allowClear
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onBlur={(e) =>
+                  setSearchQuery(removeExtraWhitespace(e.target.value))
+                }
+                onSearch={() => {
+                  if (searchQuery.length > 0) {
+                    handleSearch(searchQuery);
+                  }
+                }}
+              />
             </Space.Compact>
             <Button
               className="flex items-center w-[300px] h-[32px] bg-d6001c"
               type="primary"
               size="large"
+              onClick={() => {
+                navigate("create-user");
+              }}
             >
               Create new user
             </Button>
           </div>
         </div>
-        <Table className="mt-10" columns={columns} dataSource={data} onRow={(record) => {
-            return {
-              onClick: () => {
-                handleClicked(record);
-              },
-            };
-          }}/>
+        <div className="justify-center items-center gap-2">
+          <Table
+            pagination={false}
+            className="mt-10"
+            columns={columns}
+            dataSource={data}
+            onRow={(record) => {
+              return {
+                onClick: () => {
+                  handleClicked(record);
+                },
+              };
+            }}
+          />
+          <Pagination
+            className="text-center"
+            defaultCurrent={pageNumber}
+            defaultPageSize={15}
+            total={30}
+            onChange={(page) => setPageNumber(page)}
+          />
+        </div>
         <Modal
-          title={<h3 className="modal-title w-full border-b-2">Detailed Assignment Information</h3>}
-          visible={isModalVisible}
+          title={
+            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+              Detailed Assignment Information
+            </h3>
+          }
+          open={isModalVisible}
           onCancel={handleModalClose}
           footer={null}
           className="custom-modal"
         >
-          <div className="modal-content">
-            <div className="modal-row">
-              <span className="modal-label">Staff Code:</span> {modalData.staffCode}
+          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Staff Code:</span>
+              <span>{modalData?.staffCode}</span>
             </div>
-            <div className="modal-row">
-              <span className="modal-label">Full Name:</span> {modalData.fullName}
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Full Name:</span>
+              <span>{modalData?.fullName}</span>
             </div>
-            <div className="modal-row">
-              <span className="modal-label">Username:</span> {modalData.userName}
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Username:</span>
+              <span>{modalData?.userName}</span>
             </div>
-            <div className="modal-row">
-              <span className="modal-label">Joined Date:</span> {modalData.joinedDate}
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Joined Date:</span>
+              <span>{modalData?.joinedDate}</span>
             </div>
-            <div className="modal-row">
-              <span className="modal-label">Type:</span> {modalData.type}
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Type:</span>
+              <span>{modalData?.type}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Location:</span>
+              <span>{modalData?.location}</span>
             </div>
           </div>
         </Modal>
