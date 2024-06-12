@@ -1,0 +1,16 @@
+
+.role-form-item .ant-form-item-explain,
+.role-form-item .ant-form-item-extra {
+    margin-left: 48px;
+}
+
+.joinedDate-form-item .ant-form-item-explain,
+.joinedDate-form-item .ant-form-item-extra {
+    margin-left: 4px;
+}
+
+.name-form-item .ant-form-item-explain,
+.name-form-item .ant-form-item-extra {
+    margin-left:12px;
+}
+
