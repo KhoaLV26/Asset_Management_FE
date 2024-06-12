@@ -1,6 +1,5 @@
-<<<<<<< HEAD
 node_modules
-=======
+
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
@@ -25,4 +24,3 @@ node_modules
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
->>>>>>> 032e43f15548769fdff95948a9a3b601c4ad520e
