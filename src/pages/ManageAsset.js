@@ -1,7 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Space, Table, Modal, Dropdown, Menu } from "antd";
-import { FilterOutlined } from "@ant-design/icons";
+import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select } from "antd";
 import LayoutPage from "../layout/LayoutPage";
+import { removeExtraWhitespace } from "../HandleString";
+import {
+  FilterOutlined,
+  EditFilled,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const { Search } = Input;
 const data = [
@@ -112,55 +118,74 @@ const data = [
   }
 ];
 
-const columns = [
-  {
-    title: "Asset Code",
-    dataIndex: "assetCode",
-    key: "name",
-    width: "18%",
-    sorter: () => sorterLog(),
-    render: (text) => <a href="#">{text}</a>,
-  },
-  {
-    title: "Asset Name",
-    dataIndex: "assetName",
-    key: "name",
-    width: "18%",
-    sorter: () => sorterLog(),
-
-    render: (text) => <a>{text}</a>,
-  },
-  {
-    title: "Category",
-    dataIndex: "category",
-    key: "category",
-    width: "18%",
-    sorter: () => sorterLog(),
-  },
-  {
-    title: "State",
-    key: "state",
-    dataIndex: "state",
-    width: "18%",
-    sorter: () => sorterLog(),
-  },
-  {
-    title: "Action",
-    key: "action",
-    width: "10%",
-    render: (_, record) => (
-      <Space size="middle">
-        <a>Edit {record.name}</a>
-        <a>Disable</a>
-      </Space>
-    ),
-  },
-];
 
 const sorterLog = () => {
   console.log("Sorted");
 };
 const ManageAsset = () => {
+  const navigate = useNavigate();
+  const columns = [
+    {
+      title: "Asset Code",
+      dataIndex: "assetCode",
+      key: "name",
+      width: "18%",
+      sorter: () => sorterLog(),
+      render: (text) => <a href="#">{text}</a>,
+    },
+    {
+      title: "Asset Name",
+      dataIndex: "assetName",
+      key: "name",
+      width: "18%",
+      sorter: () => sorterLog(),
+
+      render: (text) => <a>{text}</a>,
+    },
+    {
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
+      width: "18%",
+      sorter: () => sorterLog(),
+    },
+    {
+      title: "State",
+      key: "state",
+      dataIndex: "state",
+      width: "18%",
+      sorter: () => sorterLog(),
+    },
+    {
+      title: "Action",
+      key: "action",
+      width: "10%",
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(false);
+              navigate("edit-user");
+            }}
+          >
+            <EditFilled className="text-lg mb-1" />
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalOpen(false);
+              navigate("edit-user");
+            }}
+          >
+            <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+  const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
+  const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const [type, setType] = useState("State");
   const [category, setCategory] = useState("Category")
   const [pageSize, setPageSize] = useState(15)
@@ -171,50 +196,6 @@ const ManageAsset = () => {
     setSelectedAsset(data);
   }
   const [selectedAsset, setSelectedAsset] = useState(null);
-  const dropdownCategoryItems = [
-    {
-      key: '1',
-      label: 'Cat 1',
-      onClick: () => setCategory('Cat 1'),
-    },
-    {
-      key: '2',
-      label: 'Cat 2',
-      onClick: () => setCategory('Cat 2'),
-    },
-  ];
-  const dropdownStateItems = [
-    {
-      key: '1',
-      label: 'Available',
-      onClick: () => setType('Available'),
-    },
-    {
-      key: '2',
-      label: 'Not available',
-      onClick: () => setType('Not available'),
-    },
-    {
-      key: '3',
-      label: 'Assigned',
-      onClick: () => setType('Assigned'),
-    },
-    {
-      key: '4',
-      label: 'Waiting for recycling',
-      onClick: () => setType('Waiting for recycling'),
-    },
-    {
-      key: '5',
-      label: 'Recycled',
-      onClick: () => setType('Recycled'),
-    },
-    {
-      key: '6',
-      label: 'All',
-      onClick: () => setType('All'),
-    }
-  ];
 
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -238,20 +219,88 @@ const ManageAsset = () => {
         <h1 className="font-bold text-d6001c text-2xl">Asset List</h1>
         <div className="flex items-center justify-between mt-5">
           <Space.Compact>
-            <Input disabled={true} value={type} className="w-[200px]" />
-            <Dropdown placement="bottomRight" menu={{ items: dropdownStateItems, selectable: true }} trigger={['click']}>
-              <FilterOutlined className="h-[32px] w-[32px] flex items-center justify-center border-2 cursor-pointer" />
-            </Dropdown>
+            <Select
+              open={openStateDropdown}
+              defaultValue={type}
+              onClick={() => setOpenStateDropdown(!openStateDropdown)}
+              suffixIcon={<FilterOutlined onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
+              className="w-[100px]"
+              onChange={(value) => setType(value)}
+              onSelect={() => setOpenStateDropdown(!openStateDropdown)}
+              options={[
+                {
+                  value: "Type",
+                  label: "All",
+                },
+                {
+                  value: "1",
+                  label: "Available",
+                },
+                {
+                  value: "2",
+                  label: "Not available",
+                },
+                {
+                  value: "3",
+                  label: "Assigned",
+                },
+                {
+                  value: "4",
+                  label: "Waiting for recycling",
+                },
+                {
+                  value: "5",
+                  label: "Recycled",
+                },
+                {
+                  value: "6",
+                  label: "Not available",
+                }
+              ]}
+            />
           </Space.Compact>
           <Space.Compact>
-            <Input disabled={true} value={category} className="w-[200px]" />
-            <Dropdown placement="bottomRight" menu={{ items: dropdownCategoryItems, selectable: true }} trigger={['click']}>
-              <FilterOutlined className="h-[32px] w-[32px] items-center justify-center border-2" />
-            </Dropdown>
+            <Select
+              open={openCategoryDropdown}
+              defaultValue={type}
+              onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)}
+              suffixIcon={<FilterOutlined onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
+              className="w-[100px]"
+              onChange={(value) => setCategory(value)}
+              onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
+              options={[
+                {
+                  value: "Type",
+                  label: "All",
+                },
+                {
+                  value: "1",
+                  label: "Cat A",
+                },
+                {
+                  value: "2",
+                  label: "Cat B",
+                }
+              ]}
+            />
           </Space.Compact>
           <div className="flex gap-10">
             <Space.Compact>
-              <Search className="w-[300px]" maxLength={100} value={search} onSearch={(value) => setSearch(value)} />
+              <Search
+                className="w-[300px]"
+                maxLength={100}
+                value={search}
+                allowClear
+                onChange={(e) => setSearch(e.target.value)}
+                onBlur={(e) =>
+                  setSearch(removeExtraWhitespace(e.target.value))
+                }
+                onSearch={() => {
+                  if (search.length > 0) {
+                    setSearch(search);
+                  }
+                }}
+              />
             </Space.Compact>
             <Button
               className="flex items-center w-[200px] h-[32px] bg-d6001c"
@@ -263,12 +312,12 @@ const ManageAsset = () => {
           </div>
         </div>
         <Table pagination={{ showSizeChanger: true, total: 30, showTotal: (total) => `Total ${total} items`, defaultPageSize: 15, onChange: page => setPageNumber(page), onShowSizeChange: (current, size) => { setPageSize(size) } }} className="mt-10" columns={columns} dataSource={data} onRow={(record) => {
-            return {
-              onClick: () => {
-                handleClicked(record);
-              },
-            };
-          }} />
+          return {
+            onClick: () => {
+              handleClicked(record);
+            },
+          };
+        }} />
         <Button type="primary" onClick={showModal}>
           Open Modal
         </Button>
