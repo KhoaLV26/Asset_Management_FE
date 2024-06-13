@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import axiosInstance from "../axios/axiosInstance";
-import { BsChevronExpand } from "react-icons/bs";
 import {
   Button,
   Input,
@@ -10,12 +9,15 @@ import {
   Select,
   Pagination,
   message,
+  Empty,
 } from "antd";
 import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
 import {
   FilterOutlined,
   EditFilled,
   CloseCircleOutlined,
+  CaretDownOutlined,
+  CaretUpOutlined,
 } from "@ant-design/icons";
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/ManageUser.css";
@@ -35,18 +37,19 @@ const itemRender = (_, type, originalElement) => {
 
 const ManageUser = () => {
   const [data, setData] = useState([]);
-  const [roles, setRoles] = useState({ value: "", label: "All" });
+  const [roles, setRoles] = useState([]);
   const [total, setTotal] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [open, setOpen] = useState(false);
   const [direction, setDirection] = useState(true);
   const [modalData, setModalData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
+  const [nameType, setNameType] = useState("FullName");
   const navigate = useNavigate();
   const location = useLocation();
   const newUser = location?.state?.data;
   const [params, setParams] = useState({
-    location: "a401fd2b-c5a7-44f5-b614-1e861a2ac7b9",
+    location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     searchTerm: searchQuery,
     role: "",
     sortBy: "StaffCode",
@@ -56,8 +59,10 @@ const ManageUser = () => {
   });
 
   const updateList = (newObject) => {
-    const index = data.findIndex((obj) => obj.staffCode === newObject.staffCode);
-  
+    const index = data.findIndex(
+      (obj) => obj.staffCode === newObject.staffCode
+    );
+
     if (index !== -1) {
       const newData = [...data];
       const foundObject = newData.splice(index, 1)[0];
@@ -84,18 +89,16 @@ const ManageUser = () => {
     }
   };
 
-  const handleClicked = (row) => {
-    setModalData(row);
-    setIsModalVisible(true);
-  };
-
   const handleModalClose = () => {
     setIsModalVisible(false);
     setModalData({});
   };
 
   const handleSearch = (value) => {
-    setParams((prev) => ({ ...prev, searchTerm: value }));
+    setParams((prev) => ({
+      ...prev,
+      searchTerm: removeExtraWhitespace(value),
+    }));
   };
 
   useEffect(() => {
@@ -111,7 +114,7 @@ const ManageUser = () => {
               fullName: `${user.firstName} ${user.lastName}`,
             }))
           );
-          newUser && updateList(newUser)
+          (newUser && (params.pageNumber===1)) && updateList(newUser);
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
@@ -120,7 +123,7 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, [params]);
+  }, [params, newUser]);
 
   useEffect(() => {
     axiosInstance
@@ -149,7 +152,16 @@ const ManageUser = () => {
     {
       title: (
         <span className="flex items-center justify-between">
-          Staff Code <BsChevronExpand className="w-[15px] h-[15px]" />
+          Staff Code{" "}
+          {params.sortBy === "StaffCode" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
         </span>
       ),
       dataIndex: "staffCode",
@@ -165,7 +177,16 @@ const ManageUser = () => {
     {
       title: (
         <span className="flex items-center justify-between">
-          Full Name <BsChevronExpand className="w-[15px] h-[15px]" />
+          Full Name{" "}
+          {params.sortBy === "" && nameType === "FullName" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
         </span>
       ),
       dataIndex: "fullName",
@@ -174,22 +195,49 @@ const ManageUser = () => {
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("");
+          setNameType("FullName");
         },
       }),
       render: (text) => <span>{text}</span>,
     },
     {
       title: (
-        <span className="flex items-center justify-between">Username</span>
+        <span className="flex items-center justify-between">
+          Username{" "}
+          {params.sortBy === "" && nameType === "UserName" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
       ),
       dataIndex: "username",
       key: "username",
       width: "18%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("");
+          setNameType("UserName");
+        },
+      }),
     },
     {
       title: (
         <span className="flex items-center justify-between">
-          Joined Date <BsChevronExpand className="w-[15px] h-[15px]" />
+          Joined Date{" "}
+          {params.sortBy === "JoinedDate" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
         </span>
       ),
       dataIndex: "dateJoined",
@@ -204,7 +252,16 @@ const ManageUser = () => {
     {
       title: (
         <span className="flex items-center justify-between">
-          Type <BsChevronExpand className="w-[15px] h-[15px]" />
+          Type{" "}
+          {params.sortBy === "Role" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
         </span>
       ),
       key: "roleName",
@@ -220,7 +277,7 @@ const ManageUser = () => {
       title: "Action",
       key: "action",
       width: "10%",
-      render: (_, record) => (
+      render: () => (
         <Space size="middle">
           <Button
             onClick={(e) => {
@@ -253,8 +310,7 @@ const ManageUser = () => {
           <Space.Compact>
             <Select
               open={open}
-              defaultValue={"All"}
-              onClick={() => setOpen(!open)}
+              defaultValue={"Type"}
               suffixIcon={<FilterOutlined onClick={() => setOpen(!open)} />}
               className="w-[100px]"
               onChange={(value) =>
@@ -267,23 +323,19 @@ const ManageUser = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-                className="w-[300px]"
+                className="w-[100%]"
                 value={searchQuery}
                 allowClear
                 maxLength={100}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onBlur={(e) =>
-                  setSearchQuery(removeExtraWhitespace(e.target.value))
-                }
                 onSearch={() => {
-                  if (searchQuery.length > -1) {
-                    handleSearch(searchQuery);
-                  }
+                  setSearchQuery(searchQuery.trim());
+                  handleSearch(searchQuery);
                 }}
               />
             </Space.Compact>
             <Button
-              className="flex items-center w-[300px] h-[32px] bg-d6001c"
+              className="flex items-center h-[32px] bg-d6001c"
               type="primary"
               size="large"
               onClick={() => {
@@ -296,6 +348,14 @@ const ManageUser = () => {
         </div>
         <div className="justify-center items-center gap-2">
           <Table
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="No Search Result"
+                />
+              ),
+            }}
             pagination={false}
             className="mt-10"
             columns={columns}
@@ -303,22 +363,25 @@ const ManageUser = () => {
             defaultPageSize={15}
             onRow={(record) => {
               return {
-                onClick: () => {
-                  handleClicked(record);
+                onDoubleClick: () => {
+                  setModalData(record);
+                  setIsModalVisible(true);
                 },
               };
             }}
           />
-          <Pagination
-            className="text-center text-d6001c border-b-2"
-            defaultCurrent={params.pageNumber}
-            defaultPageSize={15}
-            total={total}
-            onChange={(page) =>
-              setParams((prev) => ({ ...prev, pageNumber: page }))
-            }
-            itemRender={itemRender}
-          />
+          <div className="w-full flex justify-end">
+            <Pagination
+              className="text-center text-d6001c"
+              defaultCurrent={params.pageNumber}
+              defaultPageSize={15}
+              total={total}
+              onChange={(page) =>
+                setParams((prev) => ({ ...prev, pageNumber: page }))
+              }
+              itemRender={itemRender}
+            />
+          </div>
         </div>
         <Modal
           title={
@@ -345,8 +408,16 @@ const ManageUser = () => {
               <span>{modalData?.username}</span>
             </div>
             <div className="flex mb-[10px]">
-              <span className="font-bold w-[150px]">Joined Date:</span>
-              <span>{modalData?.dateJoined}</span>
+              <span className="font-bold w-[150px]">Date of Birth:</span>
+              <span>{modalData?.dateOfBirth}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Gender:</span>
+              {modalData?.Gender === 1 ? (
+                <span>Female</span>
+              ) : (
+                <span>Male</span>
+              )}
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Type:</span>
