@@ -60,9 +60,9 @@ const ManageUser = () => {
   });
 
   const updateList = (newObject) => {
-      const newData = [newObject, ...data.slice(0, data.length - 1)];
-      console.log(newData)
-      setData(newData);
+    const newData = [newObject, ...data.slice(0, data.length - 1)];
+    console.log(newData);
+    setData(newData);
   };
 
   const sorterLog = (name) => {
@@ -86,6 +86,8 @@ const ManageUser = () => {
   };
 
   const handleSearch = (value) => {
+    setParams((prev) => ({ ...prev, pageNumber: 1 }));
+
     setParams((prev) => ({
       ...prev,
       searchTerm: removeExtraWhitespace(value),
@@ -100,10 +102,19 @@ const ManageUser = () => {
       .then((res) => {
         if (res.data.success) {
           setData(
-            Array.from(new Set([newUser, ...res.data.data].map((user) => ({
-              ...user,
-              fullName: `${user.firstName} ${user.lastName}`,
-            }))?.filter(user => user.firstName !== undefined).map(user => JSON.stringify(user)))).map(user => JSON.parse(user))?.slice(0,15)
+            Array.from(
+              new Set(
+                [newUser, ...res.data.data]
+                  .map((user) => ({
+                    ...user,
+                    fullName: `${user.firstName} ${user.lastName}`,
+                  }))
+                  ?.filter((user) => user.firstName !== undefined)
+                  .map((user) => JSON.stringify(user))
+              )
+            )
+              .map((user) => JSON.parse(user))
+              ?.slice(0, 15)
           );
           setTotal(res.data.totalCount);
         } else {
@@ -292,8 +303,8 @@ const ManageUser = () => {
     },
   ];
 
-  console.log(data)
-  console.log(newUser)
+  console.log(data);
+  console.log(newUser);
   return (
     <LayoutPage>
       <div className="w-full">
