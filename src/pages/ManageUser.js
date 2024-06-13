@@ -47,6 +47,7 @@ const ManageUser = () => {
   const [nameType, setNameType] = useState("FullName");
   const navigate = useNavigate();
   const location = useLocation();
+  const [roleHolder, setRoleHolder] = useState("Type");
   const newUser = location?.state?.data;
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
@@ -59,19 +60,9 @@ const ManageUser = () => {
   });
 
   const updateList = (newObject) => {
-    const index = data.findIndex(
-      (obj) => obj.staffCode === newObject.staffCode
-    );
-
-    if (index !== -1) {
-      const newData = [...data];
-      const foundObject = newData.splice(index, 1)[0];
-      newData.unshift(foundObject);
-      setData(newData);
-    } else {
       const newData = [newObject, ...data.slice(0, data.length - 1)];
+      console.log(newData)
       setData(newData);
-    }
   };
 
   const sorterLog = (name) => {
@@ -109,12 +100,12 @@ const ManageUser = () => {
       .then((res) => {
         if (res.data.success) {
           setData(
-            res.data.data.map((user) => ({
+            Array.from(new Set([newUser, ...res.data.data].map((user) => ({
               ...user,
               fullName: `${user.firstName} ${user.lastName}`,
-            }))
+            }))?.filter(user => user.firstName !== undefined).map(user => JSON.stringify(user)))).map(user => JSON.parse(user))?.slice(0,15)
           );
-          (newUser && (params.pageNumber===1)) && updateList(newUser);
+          console.log([{newUser}, ...res.data.data])
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
@@ -123,7 +114,7 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, [params, newUser]);
+  }, [params]);
 
   useEffect(() => {
     axiosInstance
@@ -302,6 +293,8 @@ const ManageUser = () => {
     },
   ];
 
+  console.log(data)
+  console.log(newUser)
   return (
     <LayoutPage>
       <div className="w-full">
@@ -310,12 +303,13 @@ const ManageUser = () => {
           <Space.Compact>
             <Select
               open={open}
-              defaultValue={"Type"}
+              value={roleHolder}
               suffixIcon={<FilterOutlined onClick={() => setOpen(!open)} />}
               className="w-[100px]"
-              onChange={(value) =>
-                setParams((prev) => ({ ...prev, role: value }))
-              }
+              onChange={(value) => {
+                setRoleHolder(value);
+                setParams((prev) => ({ ...prev, role: value }));
+              }}
               onSelect={() => setOpen(!open)}
               options={roles}
             />
@@ -331,6 +325,8 @@ const ManageUser = () => {
                 onSearch={() => {
                   setSearchQuery(searchQuery.trim());
                   handleSearch(searchQuery);
+                  setRoleHolder("Type");
+                  setParams((prev) => ({ ...prev, role: "" }));
                 }}
               />
             </Space.Compact>
