@@ -118,7 +118,7 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, [params]);
+  }, [params, newUser]);
 
   useEffect(() => {
     axiosInstance
