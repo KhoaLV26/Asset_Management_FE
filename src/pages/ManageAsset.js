@@ -1,160 +1,192 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select } from "antd";
+import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
 import {
   FilterOutlined,
   EditFilled,
   CloseCircleOutlined,
+  CaretUpOutlined,
+  CaretDownOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import axiosInstance from "../axios/axiosInstance";
+import "../styles/ManageAsset.css";
 
 const { Search } = Input;
-const data = [
-  {
-    id: "1",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "2",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "3",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "1",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "2",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "3",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "1",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "2",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "3",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "1",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "3",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "1",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "2",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "3",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
-  },
-  {
-    id: "1",
-    assetCode: "A",
-    assetName: "John Brown",
-    category: "asd123",
-    state: "Available",
+
+const itemRender = (_, type, originalElement) => {
+  if (type === "prev") {
+    return <span>Previous</span>;
   }
-];
-
-
-const sorterLog = () => {
-  console.log("Sorted");
+  if (type === "next") {
+    return <span>Next</span>;
+  }
+  return originalElement;
 };
+
+const stateConvert = (id) => {
+  let stateName = "";
+  switch (id) {
+    case 1:
+      stateName = "Not available";
+      break;
+    case 2:
+      stateName = "Available";
+      break;
+    case 3:
+      stateName = "Assigned";
+      break;
+    case 4:
+      stateName = "Waiting for recycling";
+      break;
+    default:
+      stateName = "Recycled";
+      break;
+  }
+  return <span>{stateName}</span>
+}
+
 const ManageAsset = () => {
+  const [direction, setDirection] = useState(true);
+  const [total, setTotal] = useState(1);
+  const [data, setData] = useState([]);
+  const handleSearch = (value) => {
+    setParams((prev) => ({ ...prev, currentPage: 1, search: value }));
+  };
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
+  const [openStateDropdown, setOpenStateDropdown] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const handleClicked = (data) => {
+    setIsModalOpen(true)
+    setSelectedAsset(data);
+  }
+  const [selectedAsset, setSelectedAsset] = useState(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [params, setParams] = useState({});
+  const sorterLog = (name) => {
+    if (params.sortBy === name) {
+      if (direction === true) {
+        setParams((prev) => ({ ...prev, sortOrder: "desc" }));
+      } else {
+        setParams((prev) => ({ ...prev, sortOrder: "asc" }));
+      }
+      setDirection(!direction);
+    } else {
+      setParams((prev) => ({ ...prev, sortBy: name }));
+      setDirection(true);
+      setParams((prev) => ({ ...prev, sortOrder: "asc" }));
+    }
+  };
   const columns = [
     {
-      title: "Asset Code",
+      title: "Id",
+      dataIndex: "id",
+      key: "id",
+      hidden: true
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Asset Code{" "}
+          {params.sortBy === "AssetCode" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
       dataIndex: "assetCode",
       key: "name",
       width: "18%",
-      sorter: () => sorterLog(),
-      render: (text) => <a href="#">{text}</a>,
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssetCode");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
     },
     {
-      title: "Asset Name",
+      title: (
+        <span className="flex items-center justify-between">
+          Asset Name{" "}
+          {params.sortBy === "AssetName" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
       dataIndex: "assetName",
       key: "name",
       width: "18%",
-      sorter: () => sorterLog(),
-
-      render: (text) => <a>{text}</a>,
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssetName");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
     },
     {
-      title: "Category",
-      dataIndex: "category",
+      title: (
+        <span className="flex items-center justify-between">
+          Category{" "}
+          {params.sortBy === "Category" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "categoryName",
       key: "category",
       width: "18%",
-      sorter: () => sorterLog(),
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("Category");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
     },
     {
-      title: "State",
+      title: (
+        <span className="flex items-center justify-between">
+          State{" "}
+          {params.sortBy === "State" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
       key: "state",
       dataIndex: "state",
       width: "18%",
-      sorter: () => sorterLog(),
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("State");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
     },
     {
       title: "Action",
@@ -165,8 +197,7 @@ const ManageAsset = () => {
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              setIsModalOpen(false);
-              navigate("edit-user");
+              navigate("edit-asset");
             }}
           >
             <EditFilled className="text-lg mb-1" />
@@ -174,8 +205,7 @@ const ManageAsset = () => {
           <Button
             onClick={(e) => {
               e.stopPropagation();
-              setIsModalOpen(false);
-              navigate("edit-user");
+              navigate("delete-asset");
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -184,35 +214,61 @@ const ManageAsset = () => {
       ),
     },
   ];
-  const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
-  const [openStateDropdown, setOpenStateDropdown] = useState(false);
-  const [type, setType] = useState("State");
-  const [category, setCategory] = useState("Category")
-  const [pageSize, setPageSize] = useState(15)
-  const [pageNumber, setPageNumber] = useState(1)
-  const [search, setSearch] = useState()
-  const handleClicked = (data) => {
-    setIsModalOpen(true)
-    setSelectedAsset(data);
-  }
-  const [selectedAsset, setSelectedAsset] = useState(null);
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
   const showModal = () => {
     setIsModalOpen(true);
-  };
-
-  const handleOk = () => {
-    setIsModalOpen(false);
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    console.log(pageNumber, pageSize, type, category, search);
-  }, [pageSize, pageNumber, type, category, search])
+    console.log(params);
+    axiosInstance
+      .get(
+        "/Assets", { params }
+      )
+      .then((res) => {
+        if (res.data.success) {
+          setData(res.data.data.map(asset => ({
+            ...asset,
+            state: stateConvert(asset.status)
+          })));
+          setTotal(res.data.totalCount);
+        } else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  }, [params]);
+  useEffect(() => {
+    axiosInstance.get("/Categories").then((res) => {
+      if (res.data.success) {
+        setCategories(res.data.data);
+      } else {
+        message.error(res.data.message);
+      }
+    })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  },[])
+  useEffect(() => {
+    if (isModalOpen) {
+      console.log(selectedAsset);
+      axiosInstance.get(`/Assets/${selectedAsset.id}`).then((res) => {
+        if (res.data.success) {
+          setSelectedAsset(res.data.data);
+        } else {
+          message.error(res.data.message);
+        }
+      })
+        .catch((err) => {
+          message.error(err.message);
+        });
+    }
+  }, [isModalOpen])
   return (
     <LayoutPage>
       <div className="w-full">
@@ -221,40 +277,29 @@ const ManageAsset = () => {
           <Space.Compact>
             <Select
               open={openStateDropdown}
-              defaultValue={type}
-              onClick={() => setOpenStateDropdown(!openStateDropdown)}
+              defaultValue={"State"}
               suffixIcon={<FilterOutlined onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
-              className="w-[100px]"
-              onChange={(value) => setType(value)}
+              className="w-[250px]"
+              onChange={(value) =>
+                setParams((prev) => ({ ...prev, state: value }))
+              }
               onSelect={() => setOpenStateDropdown(!openStateDropdown)}
               options={[
                 {
-                  value: "Type",
-                  label: "All",
-                },
-                {
-                  value: "1",
-                  label: "Available",
+                  value: "",
+                  label: "Defaults",
                 },
                 {
                   value: "2",
+                  label: "Available",
+                },
+                {
+                  value: "1",
                   label: "Not available",
                 },
                 {
                   value: "3",
                   label: "Assigned",
-                },
-                {
-                  value: "4",
-                  label: "Waiting for recycling",
-                },
-                {
-                  value: "5",
-                  label: "Recycled",
-                },
-                {
-                  value: "6",
-                  label: "Not available",
                 }
               ]}
             />
@@ -262,26 +307,14 @@ const ManageAsset = () => {
           <Space.Compact>
             <Select
               open={openCategoryDropdown}
-              defaultValue={type}
-              onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)}
+              defaultValue={"Category"}
               suffixIcon={<FilterOutlined onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
-              className="w-[100px]"
-              onChange={(value) => setCategory(value)}
+              className="w-[250px]"
+              onChange={(value) =>
+                setParams((prev) => ({ ...prev, category: value }))
+              }
               onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
-              options={[
-                {
-                  value: "Type",
-                  label: "All",
-                },
-                {
-                  value: "1",
-                  label: "Cat A",
-                },
-                {
-                  value: "2",
-                  label: "Cat B",
-                }
-              ]}
+              options={categories.map(c => {return {value:c.id,label:c.name}})}
             />
           </Space.Compact>
           <div className="flex gap-10">
@@ -289,16 +322,13 @@ const ManageAsset = () => {
               <Search
                 className="w-[300px]"
                 maxLength={100}
-                value={search}
+                placeholder="Enter text"
+                value={searchQuery}
                 allowClear
-                onChange={(e) => setSearch(e.target.value)}
-                onBlur={(e) =>
-                  setSearch(removeExtraWhitespace(e.target.value))
-                }
+                onChange={(e) => setSearchQuery(e.target.value)}
                 onSearch={() => {
-                  if (search.length > 0) {
-                    setSearch(search);
-                  }
+                  setSearchQuery(searchQuery.trim());
+                  handleSearch(removeExtraWhitespace(searchQuery));
                 }}
               />
             </Space.Compact>
@@ -311,19 +341,70 @@ const ManageAsset = () => {
             </Button>
           </div>
         </div>
-        <Table pagination={{ showSizeChanger: true, total: 30, showTotal: (total) => `Total ${total} items`, defaultPageSize: 15, onChange: page => setPageNumber(page), onShowSizeChange: (current, size) => { setPageSize(size) } }} className="mt-10" columns={columns} dataSource={data} onRow={(record) => {
-          return {
-            onClick: () => {
-              handleClicked(record);
-            },
-          };
-        }} />
-        <Button type="primary" onClick={showModal}>
-          Open Modal
-        </Button>
-        {selectedAsset && <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-          <p>{selectedAsset.id}</p>
-        </Modal>}
+        <Table pagination={false} className="mt-10" columns={columns} dataSource={data} defaultPageSize={15}
+          onRow={(record) => {
+            return {
+              onDoubleClick: () => {
+                handleClicked(record);
+              },
+            };
+          }} />
+        <div className="w-full flex justify-end">
+          <Pagination
+            className="text-center text-d6001c"
+            defaultCurrent={params.pageNumber}
+            defaultPageSize={15}
+            total={total}
+            onChange={(page) =>
+              setParams((prev) => ({ ...prev, currentPage: page }))
+            }
+            itemRender={itemRender}
+          />
+        </div>
+
+        <Modal
+          title={
+            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+              Detailed Asset Information
+            </h3>
+          }
+          open={isModalOpen}
+          onCancel={handleCancel}
+          footer={null}
+          className="custom-modal"
+        >
+          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Asset Code:</span>
+              <span>{selectedAsset?.assetCode}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Asset Name:</span>
+              <span>{selectedAsset?.assetName}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">State:</span>
+              <span>{stateConvert(selectedAsset?.state)}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">History Assignment:</span>
+            </div>
+            <div className="mb-[10px]">
+              {selectedAsset?.assignmentResponses?.map(item =>
+              (
+                <div>
+                  <span> Time: {item.assignedDate.slice(0,10)} </span>
+                  <span> | </span>
+                  <span> Assigned By: {item.by}</span>
+                  <span> Assigned To: {item.to}</span>
+                </div>
+              )
+              )}
+              {/* {selectedAsset?.assignmentResponses?.map(i => <h1>{i.id}</h1>)} */}
+              
+            </div>
+          </div>
+        </Modal>
       </div>
     </LayoutPage>
   )
