@@ -1,91 +1,220 @@
-import React, { useState } from "react";
-import { Button, Input, Space, Table } from "antd";
-import { FilterOutlined } from "@ant-design/icons";
+import React, { useState, useEffect } from "react";
+import axiosInstance from "../axios/axiosInstance";
+import { BsChevronExpand } from "react-icons/bs";
+import {
+  Button,
+  Input,
+  Space,
+  Table,
+  Modal,
+  Select,
+  Pagination,
+  message,
+} from "antd";
+import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
+import {
+  FilterOutlined,
+  EditFilled,
+  CloseCircleOutlined,
+} from "@ant-design/icons";
 import LayoutPage from "../layout/LayoutPage";
+import "../styles/ManageUser.css";
+import { useNavigate, useLocation } from "react-router-dom";
 
 const { Search } = Input;
 
-const options = [
-  {
-    value: 'zhejiang',
-    label: 'Zhejiang',
-  },
-  {
-    value: 'jiangsu',
-    label: 'Jiangsu',
-  },
-];
-
-const data = [
-  {
-    key: "1",
-    staffCode: "A",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-  },
-  {
-    key: "2",
-    staffCode: "B",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-  },
-  {
-    key: "3",
-    staffCode: "C",
-    fullName: "John Brown",
-    userName: "asd123",
-    joinedDate: "11/06/2024",
-    type: "Staff",
-  },
-];
+const itemRender = (_, type, originalElement) => {
+  if (type === "prev") {
+    return <span>Previous</span>;
+  }
+  if (type === "next") {
+    return <span>Next</span>;
+  }
+  return originalElement;
+};
 
 const ManageUser = () => {
-  const [type, setType] = useState("Type");
-  const sorterLog = () => {
-    console.log("Sorted");
+  const [data, setData] = useState([]);
+  const [roles, setRoles] = useState({ value: "", label: "All" });
+  const [total, setTotal] = useState(1);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [direction, setDirection] = useState(true);
+  const [modalData, setModalData] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const newUser = location?.state?.data;
+  const [params, setParams] = useState({
+    location: "a401fd2b-c5a7-44f5-b614-1e861a2ac7b9",
+    searchTerm: searchQuery,
+    role: "",
+    sortBy: "StaffCode",
+    sortDirection: "asc",
+    pageNumber: 1,
+    pageSize: 15,
+  });
+
+  const updateList = (newObject) => {
+    const index = data.findIndex((obj) => obj.staffCode === newObject.staffCode);
+  
+    if (index !== -1) {
+      const newData = [...data];
+      const foundObject = newData.splice(index, 1)[0];
+      newData.unshift(foundObject);
+      setData(newData);
+    } else {
+      const newData = [newObject, ...data.slice(0, data.length - 1)];
+      setData(newData);
+    }
   };
+
+  const sorterLog = (name) => {
+    if (params.sortBy === name) {
+      if (direction === true) {
+        setParams((prev) => ({ ...prev, sortDirection: "desc" }));
+      } else {
+        setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+      }
+      setDirection(!direction);
+    } else {
+      setParams((prev) => ({ ...prev, sortBy: name }));
+      setDirection(true);
+      setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+    }
+  };
+
+  const handleClicked = (row) => {
+    setModalData(row);
+    setIsModalVisible(true);
+  };
+
+  const handleModalClose = () => {
+    setIsModalVisible(false);
+    setModalData({});
+  };
+
+  const handleSearch = (value) => {
+    setParams((prev) => ({ ...prev, searchTerm: value }));
+  };
+
+  useEffect(() => {
+    axiosInstance
+      .get(
+        `/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`
+      )
+      .then((res) => {
+        if (res.data.success) {
+          setData(
+            res.data.data.map((user) => ({
+              ...user,
+              fullName: `${user.firstName} ${user.lastName}`,
+            }))
+          );
+          newUser && updateList(newUser)
+          setTotal(res.data.totalCount);
+        } else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  }, [params]);
+
+  useEffect(() => {
+    axiosInstance
+      .get(`/roles`)
+      .then((res) => {
+        if (res.data.success) {
+          const newOptions = [
+            { value: "", label: "All" },
+            ...res.data.data.map((role) => ({
+              value: role.name,
+              label: role.name,
+            })),
+          ];
+          setRoles(newOptions);
+          setTotal(res.data.totalCount);
+        } else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  }, []);
 
   const columns = [
     {
-      title: "Staff Code",
+      title: (
+        <span className="flex items-center justify-between">
+          Staff Code <BsChevronExpand className="w-[15px] h-[15px]" />
+        </span>
+      ),
       dataIndex: "staffCode",
-      key: "name",
+      key: "staffcode",
       width: "18%",
-      sorter: () => sorterLog(),
-      render: (text) => <a href="#">{text}</a>,
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("StaffCode");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
     },
     {
-      title: "Full Name",
+      title: (
+        <span className="flex items-center justify-between">
+          Full Name <BsChevronExpand className="w-[15px] h-[15px]" />
+        </span>
+      ),
       dataIndex: "fullName",
       key: "name",
       width: "18%",
-      sorter: () => sorterLog(),
-
-      render: (text) => <a>{text}</a>,
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
     },
     {
-      title: "Username",
-      dataIndex: "userName",
+      title: (
+        <span className="flex items-center justify-between">Username</span>
+      ),
+      dataIndex: "username",
       key: "username",
       width: "18%",
     },
     {
-      title: "Joined Date",
-      dataIndex: "joinedDate",
-      key: "joinedDate",
+      title: (
+        <span className="flex items-center justify-between">
+          Joined Date <BsChevronExpand className="w-[15px] h-[15px]" />
+        </span>
+      ),
+      dataIndex: "dateJoined",
+      key: "dateJoined",
       width: "18%",
-      sorter: () => sorterLog(),
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("JoinedDate");
+        },
+      }),
     },
     {
-      title: "Type",
-      key: "type",
-      dataIndex: "type",
+      title: (
+        <span className="flex items-center justify-between">
+          Type <BsChevronExpand className="w-[15px] h-[15px]" />
+        </span>
+      ),
+      key: "roleName",
+      dataIndex: "roleName",
       width: "18%",
-      sorter: () => sorterLog(),
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("Role");
+        },
+      }),
     },
     {
       title: "Action",
@@ -93,8 +222,24 @@ const ManageUser = () => {
       width: "10%",
       render: (_, record) => (
         <Space size="middle">
-          <a>Edit {record.name}</a>
-          <a>Disable</a>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalVisible(false);
+              navigate("edit-user");
+            }}
+          >
+            <EditFilled className="text-lg mb-1" />
+          </Button>
+          <Button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsModalVisible(false);
+              navigate("edit-user");
+            }}
+          >
+            <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
+          </Button>
         </Space>
       ),
     },
@@ -106,23 +251,114 @@ const ManageUser = () => {
         <h1 className="font-bold text-d6001c text-2xl">User List</h1>
         <div className="flex items-center justify-between mt-5">
           <Space.Compact>
-            <Input disabled={true} value={type} className="w-[300px]" />
-            <FilterOutlined onClick={() => { setType("Nothing") }} className="h-[32px] w-[32px] items-center justify-center border-2" />
+            <Select
+              open={open}
+              defaultValue={"All"}
+              onClick={() => setOpen(!open)}
+              suffixIcon={<FilterOutlined onClick={() => setOpen(!open)} />}
+              className="w-[100px]"
+              onChange={(value) =>
+                setParams((prev) => ({ ...prev, role: value }))
+              }
+              onSelect={() => setOpen(!open)}
+              options={roles}
+            />
           </Space.Compact>
           <div className="flex gap-10">
             <Space.Compact>
-              <Search className="w-[300px]" />
+              <Search
+                className="w-[300px]"
+                value={searchQuery}
+                allowClear
+                maxLength={100}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onBlur={(e) =>
+                  setSearchQuery(removeExtraWhitespace(e.target.value))
+                }
+                onSearch={() => {
+                  if (searchQuery.length > -1) {
+                    handleSearch(searchQuery);
+                  }
+                }}
+              />
             </Space.Compact>
             <Button
               className="flex items-center w-[300px] h-[32px] bg-d6001c"
               type="primary"
               size="large"
+              onClick={() => {
+                navigate("create-user");
+              }}
             >
               Create new user
             </Button>
           </div>
         </div>
-        <Table className="mt-10" columns={columns} dataSource={data} />
+
+        <div className="justify-center items-center gap-2">
+          <Table
+            pagination={false}
+            className="mt-10"
+            columns={columns}
+            dataSource={data}
+            defaultPageSize={15}
+            onRow={(record) => {
+              return {
+                onClick: () => {
+                  handleClicked(record);
+                },
+              };
+            }}
+          />
+          <Pagination
+            className="text-center text-d6001c border-b-2"
+            defaultCurrent={params.pageNumber}
+            defaultPageSize={15}
+            total={total}
+            onChange={(page) =>
+              setParams((prev) => ({ ...prev, pageNumber: page }))
+            }
+            itemRender={itemRender}
+          />
+        </div>
+        <Modal
+          title={
+            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+              Detailed Assignment Information
+            </h3>
+          }
+          open={isModalVisible}
+          onCancel={handleModalClose}
+          footer={null}
+          className="custom-modal"
+        >
+          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Staff Code:</span>
+              <span>{modalData?.staffCode}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Full Name:</span>
+              <span>{modalData?.fullName}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Username:</span>
+              <span>{modalData?.username}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Joined Date:</span>
+              <span>{modalData?.dateJoined}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Type:</span>
+              <span>{modalData?.roleName}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Location:</span>
+              <span>{modalData?.locationName}</span>
+            </div>
+          </div>
+        </Modal>
       </div>
     </LayoutPage>
   );
