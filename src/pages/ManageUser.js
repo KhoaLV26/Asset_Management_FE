@@ -59,12 +59,6 @@ const ManageUser = () => {
     pageSize: 15,
   });
 
-  const updateList = (newObject) => {
-    const newData = [newObject, ...data.slice(0, data.length - 1)];
-    console.log(newData);
-    setData(newData);
-  };
-
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
