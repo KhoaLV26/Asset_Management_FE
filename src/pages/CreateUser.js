@@ -65,7 +65,7 @@ const CreateUser = () => {
         if (response.data.success === true) {
           message.success("User created successfully!");
           setIsLoading(false);
-          navigate("/manage-users", { state: { data: response.data.data } });
+          navigate("/manage-user", { state: { data: response.data.data } });
         } else {
           message.error(response.data.message);
         }
@@ -101,7 +101,7 @@ const CreateUser = () => {
   const handleCancel = () => {};
 
   const handleConfirm = () => {
-    navigate("/manage-users");
+    navigate("/manage-user");
   };
 
   return (
