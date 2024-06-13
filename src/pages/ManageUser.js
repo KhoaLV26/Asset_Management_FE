@@ -346,6 +346,7 @@ const ManageUser = () => {
             </Button>
           </div>
         </div>
+
         <div className="justify-center items-center gap-2">
           <Table
             locale={{
