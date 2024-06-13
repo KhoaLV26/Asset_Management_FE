@@ -65,7 +65,7 @@ const CreateUser = () => {
         if (response.data.success === true) {
           message.success("User created successfully!");
           setIsLoading(false);
-          navigate("/manage-users", { state: { data: response.data.data } });
+          navigate("/manage-user", { state: { data: response.data.data } });
         } else {
           message.error(response.data.message);
         }
@@ -101,13 +101,13 @@ const CreateUser = () => {
   const handleCancel = () => {};
 
   const handleConfirm = () => {
-    navigate("/manage-users");
+    navigate("/manage-user");
   };
 
   return (
     <LayoutPage>
-      <Spin spinning={isLoading}>
-        <div className="w-full px-40">
+      <Spin spinning={isLoading} className="w-full">
+        <div className=" ">
           <h1 className="font-bold text-d6001c text-2xl">Create New User</h1>
           <Form
             className="mt-10"
