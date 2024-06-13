@@ -105,7 +105,6 @@ const ManageUser = () => {
               fullName: `${user.firstName} ${user.lastName}`,
             }))?.filter(user => user.firstName !== undefined).map(user => JSON.stringify(user)))).map(user => JSON.parse(user))?.slice(0,15)
           );
-          console.log([{newUser}, ...res.data.data])
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
