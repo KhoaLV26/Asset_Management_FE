@@ -318,6 +318,8 @@ const ManageUser = () => {
     },
   ];
 
+  console.log(data);
+  console.log(newUser);
   return (
     <LayoutPage>
       <div className="w-full mt-10">

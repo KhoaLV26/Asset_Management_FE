@@ -32,3 +32,8 @@
 .ant-pagination-item-link active {
   border: none;
 }
+
+.ant-spin-container {
+  width: 100%;
+}
+
