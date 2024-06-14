@@ -17,15 +17,6 @@
   text-align: center;
 }
 
-.ant-pagination-item {
-  background: #d6001c !important;
-  color: #FFFFFF !important;
-}
-
-.ant-pagination .ant-pagination-item a {
-  color: #FFFFFF !important;
-}
-
 .ant-spin-container {
   width: 100%;
 }
