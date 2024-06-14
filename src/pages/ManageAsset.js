@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message } from "antd";
+import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message, Empty } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
 import {
@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
-
+import CustomPagination from "../components/CustomPagination";
 const { Search } = Input;
 
 const itemRender = (_, type, originalElement) => {
@@ -52,7 +52,7 @@ const ManageAsset = () => {
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
   const handleSearch = (value) => {
-    setParams((prev) => ({ ...prev, currentPage: 1, search: value }));
+    setParams((prev) => ({ ...prev, pageNumber: 1, search: value }));
   };
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ const ManageAsset = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState({pageNumber:1});
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -195,6 +195,7 @@ const ManageAsset = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
+          disabled = {record.state.props.children == "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("edit-asset");
@@ -203,7 +204,8 @@ const ManageAsset = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
-            onClick={(e) => {
+          disabled = {record.state.props.children == "Assigned"}
+          onClick={(e) => {
               e.stopPropagation();
               navigate("delete-asset");
             }}
@@ -273,9 +275,9 @@ const ManageAsset = () => {
   }, [isModalOpen])
   return (
     <LayoutPage>
-      <div className="w-full">
+      <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">Asset List</h1>
-        <div className="flex items-center justify-between mt-5">
+        <div className="flex items-center justify-between mt-7 mb-2">
           <Space.Compact>
             <Select
               open={openStateDropdown}
@@ -288,7 +290,7 @@ const ManageAsset = () => {
               onSelect={() => setOpenStateDropdown(!openStateDropdown)}
               options={[
                 {
-                  value: "",
+                  value: "All",
                   label: "All",
                 },
                 {
@@ -351,25 +353,36 @@ const ManageAsset = () => {
             </Button>
           </div>
         </div>
-        <Table pagination={false} className="mt-10" columns={columns} dataSource={data} defaultPageSize={15}
-          onRow={(record) => {
-            return {
-              onDoubleClick: () => {
-                handleClicked(record);
-              },
-            };
-          }} />
-        <div className="w-full flex justify-end">
-          <Pagination
-            className="text-center text-d6001c"
-            defaultCurrent={params.pageNumber}
+        <div className="justify-center items-center mt-0">
+          <Table
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="No Search Result"
+                />
+              ),
+            }}
+            pagination={false}
+            className="mt-10"
+            columns={columns}
+            dataSource={data}
             defaultPageSize={15}
-            total={total}
-            onChange={(page) =>
-              setParams((prev) => ({ ...prev, currentPage: page }))
-            }
-            itemRender={itemRender}
+            onRow={(record) => {
+              return {
+                onDoubleClick: () => {
+                  handleClicked(record);
+                },
+              };
+            }}
           />
+          <div className="w-full flex justify-end">
+            <CustomPagination
+              params={params}
+              setParams={setParams}
+              total={total}
+            />
+          </div>
         </div>
 
         <Modal
