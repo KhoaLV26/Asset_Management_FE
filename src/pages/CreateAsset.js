@@ -95,9 +95,17 @@ const CreateAsset = () => {
 
   const validateName = (_, value) => {
     const trimmedValue = value.trim(); // Trim whitespace from the input
-    if (/[^a-zA-Z\s]/.test(trimmedValue)) {
+    const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
+    if (htmlTagPattern.test(trimmedValue)) {
+      return Promise.reject(new Error("Name must not contain HTML tags."));
+    }
+
+    // Check for common SQL injection patterns
+    const sqlInjectionPattern =
+      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|AND|OR|--|\||\*|;|--|\/\*|\*\/|@@|@|\bTABLE\b|\bDATABASE\b)\b)/i;
+    if (sqlInjectionPattern.test(trimmedValue)) {
       return Promise.reject(
-        new Error("Name must not contain symbols or numbers.")
+        new Error("Name must not contain SQL keywords or symbols.")
       );
     }
     return Promise.resolve();
@@ -136,7 +144,11 @@ const CreateAsset = () => {
       return Promise.reject(new Error("Please enter Prefix!"));
     }
     const trimmedValue = value.trim();
-    if (trimmedValue.length !== 2 || !/^[A-Z]+$/.test(trimmedValue)) {
+    if (/[^a-zA-Z\s]/.test(trimmedValue)) {
+      return Promise.reject(
+        new Error("Prefix must not contain symbols or numbers.")
+      );
+    } else if (trimmedValue.length !== 2 || !/^[A-Z]+$/.test(trimmedValue)) {
       return Promise.reject(
         new Error("The prefix should contain 2 uppercase characters!")
       );
@@ -262,7 +274,7 @@ const CreateAsset = () => {
                   message:
                     "The length of Asset Name should be 2-100 characters!",
                 },
-                { validator: validateName },
+                // { validator: validateName },
               ]}
               validateTrigger="onBlur"
             >
@@ -318,7 +330,7 @@ const CreateAsset = () => {
                   message:
                     "The length of Specification should be 2-255 characters!",
                 },
-                { validator: validateName },
+                // { validator: validateName },
               ]}
               validateTrigger="onBlur"
             >
