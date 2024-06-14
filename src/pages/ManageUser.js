@@ -7,10 +7,10 @@ import {
   Table,
   Modal,
   Select,
-  Pagination,
   message,
   Empty,
 } from "antd";
+import CustomPagination from "../components/CustomPagination";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   FilterOutlined,
@@ -25,16 +25,6 @@ import { useNavigate, useLocation } from "react-router-dom";
 
 const { Search } = Input;
 
-const itemRender = (_, type, originalElement) => {
-  if (type === "prev") {
-    return <span>Previous</span>;
-  }
-  if (type === "next") {
-    return <span>Next</span>;
-  }
-  return originalElement;
-};
-
 const ManageUser = () => {
   const [data, setData] = useState([]);
   const [roles, setRoles] = useState([]);
@@ -48,7 +38,7 @@ const ManageUser = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
-  const [newUser, setNewUser] = useState(location?.state?.newUser);
+  const [newUser, setNewUser] = useState("new");
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     searchTerm: searchQuery,
@@ -95,25 +85,29 @@ const ManageUser = () => {
       )
       .then((res) => {
         if (res.data.success) {
-          if (params.pageNumber === 1){
+          if (params.pageNumber === 1) {
             setData(
-            Array.from(
-              new Set(
-                [newUser, ...res.data.data]
-                  .map((user) => ({
-                    ...user,
-                    fullName: `${user?.firstName} ${user?.lastName}`,
-                  }))
-                  ?.filter((user) => user.firstName !== undefined)
-                  .map((user) => JSON.stringify(user))
+              Array.from(
+                new Set(
+                  [newUser, ...res.data.data]
+                    .map((user) => ({
+                      ...user,
+                      fullName: `${user?.firstName} ${user?.lastName}`,
+                    }))
+                    ?.filter((user) => user.firstName !== undefined)
+                    .map((user) => JSON.stringify(user))
+                )
               )
-            )
-              .map((user) => JSON.parse(user))
-              ?.slice(0, 15)
-          );
-          }
-          else {
-            setData(res.data.data.map((user) => ({ ...user, fullName: `${user.firstName} ${user.lastName}`})))
+                .map((user) => JSON.parse(user))
+                ?.slice(0, 15)
+            );
+          } else {
+            setData(
+              res.data.data.map((user) => ({
+                ...user,
+                fullName: `${user.firstName} ${user.lastName}`,
+              }))
+            );
           }
           setTotal(res.data.totalCount);
         } else {
@@ -149,16 +143,21 @@ const ManageUser = () => {
   }, []);
 
   useEffect(() => {
-    const isRefreshed = sessionStorage.getItem('isRefreshed');
-    if (isRefreshed === 'true') {
-      setNewUser(null);
-      sessionStorage.setItem('isRefreshed', 'false');
+    const isFirstTime = sessionStorage.getItem("isFirstTime") === null;
+    if (isFirstTime) {
+      if (location?.state?.data) {
+        setNewUser(location.state.data);
+      }
+      sessionStorage.setItem("isFirstTime", "false");
     } else {
-      setNewUser(location.state?.data || null);
-      sessionStorage.setItem('isRefreshed', 'true');
+      setNewUser(null);
     }
-  }, [location.state, setNewUser]);
 
+    return () => {
+      sessionStorage.removeItem("isFirstTime");
+    };
+  }, [location]);
+  console.log(newUser);
 
   const columns = [
     {
@@ -190,7 +189,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Full Name{" "}
-          {params.sortBy === "" && nameType === "FullName" ? (
+          {params.sortBy === "default" && nameType === "FullName" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -206,7 +205,7 @@ const ManageUser = () => {
       width: "18%",
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("");
+          sorterLog("default");
           setNameType("FullName");
         },
       }),
@@ -216,7 +215,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Username{" "}
-          {params.sortBy === "" && nameType === "UserName" ? (
+          {params.sortBy === "default" && nameType === "UserName" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -232,10 +231,11 @@ const ManageUser = () => {
       width: "18%",
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("");
+          sorterLog("default");
           setNameType("UserName");
         },
       }),
+      render: (text) => <span>{text}</span>,
     },
     {
       title: (
@@ -260,6 +260,7 @@ const ManageUser = () => {
           sorterLog("JoinedDate");
         },
       }),
+      render: (text) => <span>{text}</span>,
     },
     {
       title: (
@@ -284,14 +285,16 @@ const ManageUser = () => {
           sorterLog("Role");
         },
       }),
+      render: (text) => <span>{text}</span>,
     },
     {
-      title: "Action",
+      title: "",
       key: "action",
       width: "10%",
       render: () => (
         <Space size="middle">
           <Button
+            className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
@@ -301,6 +304,7 @@ const ManageUser = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
@@ -318,9 +322,9 @@ const ManageUser = () => {
   console.log(newUser);
   return (
     <LayoutPage>
-      <div className="w-full">
+      <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">User List</h1>
-        <div className="flex items-center justify-between mt-5">
+        <div className="flex items-center justify-between mt-8">
           <Space.Compact>
             <Select
               open={open}
@@ -330,6 +334,8 @@ const ManageUser = () => {
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
+                setParams((prev) => ({ ...prev, pageNumber: 1 }));
+
               }}
               onSelect={() => setOpen(!open)}
               options={roles}
@@ -338,6 +344,7 @@ const ManageUser = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
+              placeholder="Enter text"
                 className="w-[100%]"
                 value={searchQuery}
                 allowClear
@@ -364,7 +371,7 @@ const ManageUser = () => {
           </div>
         </div>
 
-        <div className="justify-center items-center gap-2">
+        <div className="justify-center items-center mt-0">
           <Table
             locale={{
               emptyText: (
@@ -389,23 +396,17 @@ const ManageUser = () => {
             }}
           />
           <div className="w-full flex justify-end">
-            <Pagination
-              className="text-center text-d6001c"
-              defaultCurrent={params.pageNumber}
-              showSizeChanger={false}
-              defaultPageSize={15}
+            <CustomPagination
+              params={params}
+              setParams={setParams}
               total={total}
-              onChange={(page) =>
-                setParams((prev) => ({ ...prev, pageNumber: page }))
-              }
-              itemRender={itemRender}
             />
           </div>
         </div>
         <Modal
           title={
-            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
-              Detailed Assignment Information
+            <h3 className="w-full border-b-2 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+              Detailed User Information
             </h3>
           }
           open={isModalVisible}
