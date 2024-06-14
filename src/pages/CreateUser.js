@@ -64,7 +64,6 @@ const CreateUser = () => {
       .then((response) => {
         if (response.data.success === true) {
           message.success("User created successfully!");
-          setIsLoading(false);
           navigate("/manage-user", { state: { data: response.data.data } });
         } else {
           message.error(response.data.message);
@@ -75,6 +74,7 @@ const CreateUser = () => {
           message.error(error.response.data.message);
         } else message.error("Create user error occurred. Please try again.");
       });
+    setIsLoading(false);
   };
 
   const onFieldsChange = () => {

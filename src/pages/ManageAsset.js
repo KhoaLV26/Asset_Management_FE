@@ -51,9 +51,9 @@ const ManageAsset = () => {
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
   const handleClicked = (data) => {
-    setIsModalOpen(true)
+    setIsModalOpen(true);
     setSelectedAsset(data);
-  }
+  };
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -77,7 +77,7 @@ const ManageAsset = () => {
       title: "Id",
       dataIndex: "id",
       key: "id",
-      hidden: true
+      hidden: true,
     },
     {
       title: (
@@ -227,9 +227,7 @@ const ManageAsset = () => {
   }, [location]);
   useEffect(() => {
     axiosInstance
-      .get(
-        "/Assets", { params }
-      )
+      .get("/Assets", { params })
       .then((res) => {
         if (res.data.success) {
           if (params.pageNumber === 1) {
@@ -267,32 +265,36 @@ const ManageAsset = () => {
       });
   }, [params, newAsset]);
   useEffect(() => {
-    axiosInstance.get("/Categories").then((res) => {
-      if (res.data.success) {
-        setCategories(res.data.data);
-      } else {
-        message.error(res.data.message);
-      }
-    })
-      .catch((err) => {
-        message.error(err.message);
-      });
-  }, [])
-  useEffect(() => {
-    if (isModalOpen) {
-      console.log(selectedAsset);
-      axiosInstance.get(`/Assets/${selectedAsset.id}`).then((res) => {
+    axiosInstance
+      .get("/Categories")
+      .then((res) => {
         if (res.data.success) {
-          setSelectedAsset(res.data.data);
+          setCategories(res.data.data);
         } else {
           message.error(res.data.message);
         }
       })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  }, []);
+  useEffect(() => {
+    if (isModalOpen) {
+      console.log(selectedAsset);
+      axiosInstance
+        .get(`/Assets/${selectedAsset.id}`)
+        .then((res) => {
+          if (res.data.success) {
+            setSelectedAsset(res.data.data);
+          } else {
+            message.error(res.data.message);
+          }
+        })
         .catch((err) => {
           message.error(err.message);
         });
     }
-  }, [isModalOpen])
+  }, [isModalOpen]);
   return (
     <LayoutPage>
       <div className="w-full mt-10">
@@ -368,6 +370,9 @@ const ManageAsset = () => {
               className="flex items-center w-[200px] h-[32px] bg-d6001c"
               type="primary"
               size="large"
+              onClick={() => {
+                navigate("create-asset");
+              }}
             >
               Create new asset
             </Button>
@@ -434,8 +439,7 @@ const ManageAsset = () => {
               <span className="font-bold w-[150px]">History Assignment:</span>
             </div>
             <div className="mb-[10px]">
-              {selectedAsset?.assignmentResponses?.map(item =>
-              (
+              {selectedAsset?.assignmentResponses?.map((item) => (
                 <div>
                   <span> Time: {item.assignedDate.slice(0, 10)} </span>
                   <span> | </span>
@@ -449,7 +453,7 @@ const ManageAsset = () => {
         </Modal>
       </div>
     </LayoutPage>
-  )
-}
+  );
+};
 
-export default ManageAsset
+export default ManageAsset;
