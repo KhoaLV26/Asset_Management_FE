@@ -14,7 +14,6 @@ const navBar = [
 
 const { Sider } = Layout;
 
-
 const Navbar = () => {
     const location = useLocation();
 
@@ -59,4 +58,4 @@ const Navbar = () => {
     )
 }
 
-export default Navbar
+export default Navbar;

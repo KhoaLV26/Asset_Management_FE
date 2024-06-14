@@ -115,7 +115,6 @@ const ManageUser = () => {
           else {
             setData(res.data.data.map((user) => ({ ...user, fullName: `${user.firstName} ${user.lastName}`})))
           }
-          
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
