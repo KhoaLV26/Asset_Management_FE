@@ -11,7 +11,7 @@ import {
   message,
   Empty,
 } from "antd";
-import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
+import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   FilterOutlined,
   EditFilled,
@@ -48,7 +48,7 @@ const ManageUser = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
-  const newUser = location?.state?.data;
+  const [newUser, setNewUser] = useState(location?.state?.newUser || null);
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     searchTerm: searchQuery,
@@ -58,12 +58,6 @@ const ManageUser = () => {
     pageNumber: 1,
     pageSize: 15,
   });
-
-  const updateList = (newObject) => {
-      const newData = [newObject, ...data.slice(0, data.length - 1)];
-      console.log(newData)
-      setData(newData);
-  };
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -86,6 +80,8 @@ const ManageUser = () => {
   };
 
   const handleSearch = (value) => {
+    setParams((prev) => ({ ...prev, pageNumber: 1 }));
+
     setParams((prev) => ({
       ...prev,
       searchTerm: removeExtraWhitespace(value),
@@ -99,13 +95,27 @@ const ManageUser = () => {
       )
       .then((res) => {
         if (res.data.success) {
-          setData(
-            Array.from(new Set([newUser, ...res.data.data].map((user) => ({
-              ...user,
-              fullName: `${user.firstName} ${user.lastName}`,
-            }))?.filter(user => user.firstName !== undefined).map(user => JSON.stringify(user)))).map(user => JSON.parse(user))?.slice(0,15)
+          if (params.pageNumber === 1){
+            setData(
+            Array.from(
+              new Set(
+                [newUser, ...res.data.data]
+                  .map((user) => ({
+                    ...user,
+                    fullName: `${user?.firstName} ${user?.lastName}`,
+                  }))
+                  ?.filter((user) => user.firstName !== undefined)
+                  .map((user) => JSON.stringify(user))
+              )
+            )
+              .map((user) => JSON.parse(user))
+              ?.slice(0, 15)
           );
-          console.log([{newUser}, ...res.data.data])
+          }
+          else {
+            setData(res.data.data.map((user) => ({ ...user, fullName: `${user.firstName} ${user.lastName}`})))
+          }
+          
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
@@ -114,7 +124,7 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, [params]);
+  }, [params, newUser]);
 
   useEffect(() => {
     axiosInstance
@@ -137,6 +147,20 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
+  }, []);
+
+  useEffect(() => {
+    const isRefreshed = sessionStorage.getItem('isRefreshed');
+
+    if (isRefreshed) {
+      setNewUser(null);
+    } else {
+      sessionStorage.setItem('isRefreshed', 'true');
+    }
+
+    return () => {
+      sessionStorage.removeItem('isRefreshed');
+    };
   }, []);
 
   const columns = [
@@ -293,8 +317,8 @@ const ManageUser = () => {
     },
   ];
 
-  console.log(data)
-  console.log(newUser)
+  console.log(data);
+  console.log(newUser);
   return (
     <LayoutPage>
       <div className="w-full">
