@@ -15,8 +15,10 @@
 
 .ant-spin-nested-loading {
     width: 100% !important;
-    margin: auto !important;
+    margin-top: 70px;
+}
+
+.ant-spin-container {
     display: flex;
     justify-content: center;
 }
-
