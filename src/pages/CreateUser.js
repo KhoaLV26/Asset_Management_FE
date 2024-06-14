@@ -174,7 +174,20 @@ const CreateUser = () => {
                         new Error("Please input the date of birth!")
                       );
                     }
-                    const age = new Date().getFullYear() - value.year();
+                    const currentDate = new Date();
+                    const birthDate = new Date(value);
+
+                    let age =
+                      currentDate.getFullYear() - birthDate.getFullYear();
+
+                    const monthDiff =
+                      currentDate.getMonth() - birthDate.getMonth();
+                    const dayDiff = currentDate.getDate() - birthDate.getDate();
+
+                    if (monthDiff < 0 || (monthDiff === 0 && dayDiff < 0)) {
+                      age--;
+                    }
+
                     if (age < 18) {
                       return Promise.reject(
                         new Error(
@@ -182,6 +195,7 @@ const CreateUser = () => {
                         )
                       );
                     }
+
                     return Promise.resolve();
                   },
                 }),
