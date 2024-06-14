@@ -29,3 +29,11 @@
 .ant-spin-container {
   width: 100%;
 }
+
+.ant-table {
+  width: 100% !important;
+}
+
+.ant-table-wrapper {
+  margin-top: 1.5rem !important;
+}
