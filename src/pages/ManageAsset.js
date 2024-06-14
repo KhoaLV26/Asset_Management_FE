@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message } from "antd";
+import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message, Empty } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
 import {
@@ -12,7 +12,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
-
+import CustomPagination from "../components/CustomPagination";
 const { Search } = Input;
 
 const itemRender = (_, type, originalElement) => {
@@ -52,7 +52,7 @@ const ManageAsset = () => {
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
   const handleSearch = (value) => {
-    setParams((prev) => ({ ...prev, currentPage: 1, search: value }));
+    setParams((prev) => ({ ...prev, pageNumber: 1, search: value }));
   };
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
@@ -66,7 +66,7 @@ const ManageAsset = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState({pageNumber:1});
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -93,7 +93,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Code{" "}
           {params.sortBy === "AssetCode" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -118,7 +118,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Name{" "}
           {params.sortBy === "AssetName" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -143,7 +143,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Category{" "}
           {params.sortBy === "Category" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -168,7 +168,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           State{" "}
           {params.sortBy === "State" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -189,12 +189,13 @@ const ManageAsset = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Action",
+      title: "",
       key: "action",
       width: "10%",
       render: (_, record) => (
         <Space size="middle">
           <Button
+          disabled = {record.state.props.children == "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("edit-asset");
@@ -203,7 +204,8 @@ const ManageAsset = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
-            onClick={(e) => {
+          disabled = {record.state.props.children == "Assigned"}
+          onClick={(e) => {
               e.stopPropagation();
               navigate("delete-asset");
             }}
@@ -222,7 +224,6 @@ const ManageAsset = () => {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    console.log(params);
     axiosInstance
       .get(
         "/Assets", { params }
@@ -239,7 +240,10 @@ const ManageAsset = () => {
         }
       })
       .catch((err) => {
-        message.error(err.message);
+        if (err.response.status === 409) {
+          setData([])
+          setTotal(0)
+        } else message.error(err.message);
       });
   }, [params]);
   useEffect(() => {
@@ -253,7 +257,7 @@ const ManageAsset = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  },[])
+  }, [])
   useEffect(() => {
     if (isModalOpen) {
       console.log(selectedAsset);
@@ -271,14 +275,14 @@ const ManageAsset = () => {
   }, [isModalOpen])
   return (
     <LayoutPage>
-      <div className="w-full">
+      <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">Asset List</h1>
-        <div className="flex items-center justify-between mt-5">
+        <div className="flex items-center justify-between mt-7 mb-2">
           <Space.Compact>
             <Select
               open={openStateDropdown}
               defaultValue={"State"}
-              suffixIcon={<FilterOutlined onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
+              suffixIcon={<FilterOutlined style={{fontSize:"16px"}} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, state: value }))
@@ -286,20 +290,28 @@ const ManageAsset = () => {
               onSelect={() => setOpenStateDropdown(!openStateDropdown)}
               options={[
                 {
-                  value: "",
-                  label: "Defaults",
-                },
-                {
-                  value: "2",
-                  label: "Available",
+                  value: "All",
+                  label: "All",
                 },
                 {
                   value: "1",
                   label: "Not available",
                 },
                 {
+                  value: "2",
+                  label: "Available",
+                },
+                {
                   value: "3",
                   label: "Assigned",
+                },
+                {
+                  value: "4",
+                  label: "Waiting for recycling",
+                },
+                {
+                  value: "5",
+                  label: "Recycled",
                 }
               ]}
             />
@@ -308,13 +320,13 @@ const ManageAsset = () => {
             <Select
               open={openCategoryDropdown}
               defaultValue={"Category"}
-              suffixIcon={<FilterOutlined onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
+              suffixIcon={<FilterOutlined style={{fontSize:"16px"}} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, category: value }))
               }
               onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
-              options={categories.map(c => {return {value:c.id,label:c.name}})}
+              options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
             />
           </Space.Compact>
           <div className="flex gap-10">
@@ -341,25 +353,36 @@ const ManageAsset = () => {
             </Button>
           </div>
         </div>
-        <Table pagination={false} className="mt-10" columns={columns} dataSource={data} defaultPageSize={15}
-          onRow={(record) => {
-            return {
-              onDoubleClick: () => {
-                handleClicked(record);
-              },
-            };
-          }} />
-        <div className="w-full flex justify-end">
-          <Pagination
-            className="text-center text-d6001c"
-            defaultCurrent={params.pageNumber}
+        <div className="justify-center items-center mt-0">
+          <Table
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="No Search Result"
+                />
+              ),
+            }}
+            pagination={false}
+            className="mt-10"
+            columns={columns}
+            dataSource={data}
             defaultPageSize={15}
-            total={total}
-            onChange={(page) =>
-              setParams((prev) => ({ ...prev, currentPage: page }))
-            }
-            itemRender={itemRender}
+            onRow={(record) => {
+              return {
+                onDoubleClick: () => {
+                  handleClicked(record);
+                },
+              };
+            }}
           />
+          <div className="w-full flex justify-end">
+            <CustomPagination
+              params={params}
+              setParams={setParams}
+              total={total}
+            />
+          </div>
         </div>
 
         <Modal
@@ -393,15 +416,13 @@ const ManageAsset = () => {
               {selectedAsset?.assignmentResponses?.map(item =>
               (
                 <div>
-                  <span> Time: {item.assignedDate.slice(0,10)} </span>
+                  <span> Time: {item.assignedDate.slice(0, 10)} </span>
                   <span> | </span>
                   <span> Assigned By: {item.by}</span>
                   <span> Assigned To: {item.to}</span>
                 </div>
               )
               )}
-              {/* {selectedAsset?.assignmentResponses?.map(i => <h1>{i.id}</h1>)} */}
-              
             </div>
           </div>
         </Modal>
