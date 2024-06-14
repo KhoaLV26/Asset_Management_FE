@@ -344,6 +344,7 @@ const ManageUser = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
+              placeholder="Enter text"
                 className="w-[100%]"
                 value={searchQuery}
                 allowClear
