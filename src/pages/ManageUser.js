@@ -162,7 +162,7 @@ const ManageUser = () => {
   const columns = [
     {
       title: (
-        <span className="flex items-center justify-between border-b-4 border-black">
+        <span className="flex items-center justify-between">
           Staff Code{" "}
           {params.sortBy === "StaffCode" ? (
             params.sortDirection === "asc" ? (
@@ -187,7 +187,7 @@ const ManageUser = () => {
     },
     {
       title: (
-        <span className="flex items-center justify-between border-b-4 border-black">
+        <span className="flex items-center justify-between">
           Full Name{" "}
           {params.sortBy === "" && nameType === "FullName" ? (
             params.sortDirection === "asc" ? (
@@ -213,7 +213,7 @@ const ManageUser = () => {
     },
     {
       title: (
-        <span className="flex items-center justify-between border-b-4 border-black">
+        <span className="flex items-center justify-between">
           Username{" "}
           {params.sortBy === "" && nameType === "UserName" ? (
             params.sortDirection === "asc" ? (
@@ -239,7 +239,7 @@ const ManageUser = () => {
     },
     {
       title: (
-        <span className="flex items-center justify-between border-b-4 border-black">
+        <span className="flex items-center justify-between">
           Joined Date{" "}
           {params.sortBy === "JoinedDate" ? (
             params.sortDirection === "asc" ? (
@@ -264,7 +264,7 @@ const ManageUser = () => {
     },
     {
       title: (
-        <span className="flex items-center justify-between border-b-4 border-black">
+        <span className="flex items-center justify-between">
           Type{" "}
           {params.sortBy === "Role" ? (
             params.sortDirection === "asc" ? (
