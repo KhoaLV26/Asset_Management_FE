@@ -13,10 +13,12 @@ import {
   Form,
   Modal,
 } from "antd";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import "../styles/CreateAsset.css";
 import axiosInstance from "../axios/axiosInstance";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
-const { TextArea } = Input; 
+
+const { TextArea } = Input;
 const { Option } = Select;
 
 const CreateAsset = () => {
@@ -37,7 +39,13 @@ const CreateAsset = () => {
   const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
   const navigate = useNavigate();
 
-  const handleCancel = () => {};
+  const handleCancel = () => {
+    setIsCategoryModalVisible(false);
+    setNewCategoryName("");
+    setNewCategoryPrefix("");
+    setIsAddCategoryButtonDisabled(true); // Disable button on cancel
+    categoryForm.resetFields(); // Reset form fields when the modal is closed
+  };
 
   const handleConfirm = () => {
     navigate("/manage-asset");
@@ -51,7 +59,7 @@ const CreateAsset = () => {
       .post("/assets", values)
       .then((response) => {
         if (response.data.success === true) {
-          message.success("Asset created successfully!");
+          message.success("An asset is created!");
           navigate("/manage-asset", { state: { data: response.data.data } });
         } else {
           message.error(response.data.message);
@@ -71,7 +79,10 @@ const CreateAsset = () => {
       .get("/categories")
       .then((response) => {
         if (response.data.success === true) {
-          setCategoryData(response.data.data);
+          const sortedCategoryData = response.data.data.sort((a, b) =>
+            a.name.localeCompare(b.name)
+          );
+          setCategoryData(sortedCategoryData);
           setIsLoading(false);
         } else {
           message.error(response.data.message);
@@ -167,19 +178,22 @@ const CreateAsset = () => {
     } else if (name === "specification") {
       setSpecification(trimmedValue);
       form.setFieldsValue({ specification: trimmedValue });
+    } else if (name === "newCategoryName") {
+      setNewCategoryName(trimmedValue);
+      categoryForm.setFieldsValue({ categoryName: trimmedValue });
+    } else if (name === "newCategoryPrefix") {
+      setNewCategoryPrefix(trimmedValue.replace(/\s/g, ""));
+      categoryForm.setFieldsValue({ prefix: trimmedValue.replace(/\s/g, "") });
     }
     form.validateFields([name]);
   };
 
   const showModal = () => {
     setIsCategoryModalVisible(true);
-  };
-
-  const handleCategoryModalCancel = () => {
-    setIsCategoryModalVisible(false);
     setNewCategoryName("");
     setNewCategoryPrefix("");
-    categoryForm.resetFields(); // Reset form fields when the modal is closed
+    setIsAddCategoryButtonDisabled(true); // Reset button state on modal open
+    categoryForm.resetFields(); // Reset form fields when the modal is opened
   };
 
   const handleAddCategory = () => {
@@ -196,8 +210,8 @@ const CreateAsset = () => {
         .post("/categories", newCategory)
         .then((response) => {
           if (response.data.success) {
-            setCategoryData([...categoryData, response.data.data]);
-            message.success("New category added successfully!");
+            setCategoryData([response.data.data, ...categoryData]);
+            message.success("A category is created!");
           } else {
             message.error(response.data.message);
           }
@@ -382,9 +396,30 @@ const CreateAsset = () => {
         <Modal
           title="Add New Category"
           visible={isCategoryModalVisible}
-          onCancel={handleCategoryModalCancel}
-          onOk={handleAddCategory}
-          okButtonProps={{ disabled: isAddCategoryButtonDisabled }} // Disable button based on state
+          closable={false}
+          footer={[
+            <Popconfirm
+              title="Cancel creating new category?"
+              description="Are you sure you want to cancel creating the new category?"
+              onConfirm={handleCancel}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                key="ok"
+                icon={<CloseOutlined />}
+                className="bg-white text-red-600 border-red-500 border-1"
+              />
+            </Popconfirm>,
+
+            <Button
+              key="ok"
+              onClick={handleAddCategory}
+              disabled={isAddCategoryButtonDisabled}
+              icon={<CheckOutlined />}
+              className="bg-white text-green-600 border-green-500 border-1"
+            />,
+          ]}
         >
           <Form
             layout="vertical"
@@ -403,7 +438,8 @@ const CreateAsset = () => {
               <Input
                 value={newCategoryName}
                 onChange={handleCategoryNameChange}
-                placeholder="Enter new category name"
+                placeholder="Enter Category name..."
+                onBlur={handleBlur("newCategoryName")}
               />
             </Form.Item>
             <Form.Item
@@ -419,6 +455,7 @@ const CreateAsset = () => {
                 value={newCategoryPrefix}
                 onChange={(e) => setNewCategoryPrefix(e.target.value)}
                 placeholder="Enter prefix for category code"
+                onBlur={handleBlur("newCategoryPrefix")}
               />
             </Form.Item>
           </Form>
