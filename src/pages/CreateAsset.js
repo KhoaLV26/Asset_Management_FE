@@ -16,7 +16,7 @@ import {
 import "../styles/CreateAsset.css";
 import axiosInstance from "../axios/axiosInstance";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
-import TextArea from "antd/es/input/TextArea";
+const { TextArea } = Input; 
 const { Option } = Select;
 
 const CreateAsset = () => {
