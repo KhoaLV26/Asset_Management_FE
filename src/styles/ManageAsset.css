@@ -1,0 +1,27 @@
+.custom-modal .ant-modal-content {
+    border-radius: 8px;
+    padding-top: 0;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  
+  .custom-modal .ant-modal-close-x {
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border: 3px solid #d6001c;
+    color: #d6001c;
+    font-weight: 900 !important;
+    border-radius: 0%;
+    background: #f1f1f1;
+    text-align: center;
+  }
+  
+  .ant-pagination-item {
+    background: #d6001c !important;
+    color: #FFFFFF !important;
+  }
+  
+  .ant-pagination .ant-pagination-item a {
+    color: #FFFFFF !important;
+  }

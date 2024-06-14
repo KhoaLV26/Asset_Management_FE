@@ -1,3 +1,4 @@
+
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Layout, Menu } from "antd";
@@ -10,7 +11,6 @@ const navBar = [
     { key: "5", label: "Request for Returning", link: "/request-for-returning" },
     { key: "6", label: "Report", link: "/report" },
   ];
-
 
 const { Sider } = Layout;
 
@@ -59,3 +59,4 @@ const Navbar = () => {
 }
 
 export default Navbar;
+
