@@ -1,17 +1,20 @@
 import { Layout, Button } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
-
-const direction = ["Home", " > Status 1", " > Status 2"];
+import { useLocation } from "react-router-dom";
+import { capitalizeWords } from "../utils/helpers/HandleString";
 
 const Header = ()  => {
   const [stringLogin, setStringLogin] = useState(true);
+    const location = useLocation();
+    const pathNames = location.pathname.split('/').filter(x => x);
+
+    const pathStrings = pathNames.map((name) => name.replace(/-/g, ' ')).map((name) => capitalizeWords(name)).join(' > ');
+
     return (
         <Layout.Header className="bg-d6001c px-10 flex items-center justify-between w-full">
-            <div className="flex items-center text-white font-extrabold ml-8">
-                {direction.map((item, index) => (
-                    <span key={index} className="pl-2">{item}</span>
-                ))}
+            <div className="flex items-center text-white font-extrabold">
+                <span className="text-lg">{pathStrings}</span>
             </div>
             <Button
                 icon={React.createElement(UserOutlined)}

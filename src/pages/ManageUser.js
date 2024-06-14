@@ -11,7 +11,7 @@ import {
   message,
   Empty,
 } from "antd";
-import { removeExtraWhitespace } from "../ultils/helpers/HandleString";
+import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   FilterOutlined,
   EditFilled,
@@ -48,7 +48,7 @@ const ManageUser = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
-  const newUser = location?.state?.data;
+  const [newUser, setNewUser] = useState(location?.state?.newUser);
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     searchTerm: searchQuery,
@@ -95,13 +95,14 @@ const ManageUser = () => {
       )
       .then((res) => {
         if (res.data.success) {
-          setData(
+          if (params.pageNumber === 1){
+            setData(
             Array.from(
               new Set(
                 [newUser, ...res.data.data]
                   .map((user) => ({
                     ...user,
-                    fullName: `${user.firstName} ${user.lastName}`,
+                    fullName: `${user?.firstName} ${user?.lastName}`,
                   }))
                   ?.filter((user) => user.firstName !== undefined)
                   .map((user) => JSON.stringify(user))
@@ -110,6 +111,10 @@ const ManageUser = () => {
               .map((user) => JSON.parse(user))
               ?.slice(0, 15)
           );
+          }
+          else {
+            setData(res.data.data.map((user) => ({ ...user, fullName: `${user.firstName} ${user.lastName}`})))
+          }
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
@@ -142,6 +147,18 @@ const ManageUser = () => {
         message.error(err.message);
       });
   }, []);
+
+  useEffect(() => {
+    const isRefreshed = sessionStorage.getItem('isRefreshed');
+    if (isRefreshed === 'true') {
+      setNewUser(null);
+      sessionStorage.setItem('isRefreshed', 'false');
+    } else {
+      setNewUser(location.state?.data || null);
+      sessionStorage.setItem('isRefreshed', 'true');
+    }
+  }, [location.state, setNewUser]);
+
 
   const columns = [
     {
@@ -375,6 +392,7 @@ const ManageUser = () => {
             <Pagination
               className="text-center text-d6001c"
               defaultCurrent={params.pageNumber}
+              showSizeChanger={false}
               defaultPageSize={15}
               total={total}
               onChange={(page) =>

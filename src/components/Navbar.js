@@ -12,9 +12,7 @@ const navBar = [
     { key: "6", label: "Report", link: "/report" },
   ];
 
-
 const { Sider } = Layout;
-
 
 const Navbar = () => {
     const location = useLocation();
@@ -24,7 +22,6 @@ const Navbar = () => {
         const currentNavItem = navBar.find(item => currentPath.startsWith(item.link));
         return currentNavItem ? currentNavItem.key : "1"
     }
-
     return (
         <Sider
             className="Sider ml-4 container h-[110vh] text-lg bg-white w-2/5 flex">
@@ -34,7 +31,6 @@ const Navbar = () => {
                         src={
                             "https://thanhnien.mediacdn.vn/Uploaded/quochung.qc/2020_01_16/nashtech/nash_tech_primary_pos_srgb_OYCJ.png?width=500"
                         }
-
                         alt="Nash Tech logo"
                         width={150}
                         height={150}
@@ -52,7 +48,6 @@ const Navbar = () => {
                     {navBar.map((menuItem) => (
                         <Menu.Item
                             key={menuItem.key}
-
                         >
                             <Link to={menuItem.link}>{menuItem.label}</Link>
                         </Menu.Item>
@@ -62,7 +57,6 @@ const Navbar = () => {
         </Sider>
     )
 }
-
 
 export default Navbar;
 

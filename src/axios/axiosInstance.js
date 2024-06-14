@@ -8,7 +8,7 @@ import {
 import { message } from "antd";
 
 const axiosInstance = axios.create({
-  baseURL: "https://app-assetmanagement-web-shoutheast-dev-001.azurewebsites.net/api",
+  baseURL: process.env.REACT_APP_BASE_URL,
 });
 
 axiosInstance.interceptors.request.use(
@@ -49,7 +49,7 @@ axiosInstance.interceptors.response.use(
           throw new Error("No refresh token available");
         }
         const response = await axios.post(
-          "https://app-assetmanagement-web-shoutheast-dev-001.azurewebsites.net/api/auths/refresh-token",
+          `${process.env.REACT_APP_BASE_URL}/auths/refresh-token`,
           { refreshToken: refreshTokenCookie }
         );
         const { newToken, newRefreshToken, role, userId } = response.data.data;
