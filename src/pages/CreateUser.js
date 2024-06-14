@@ -64,7 +64,6 @@ const CreateUser = () => {
       .then((response) => {
         if (response.data.success === true) {
           message.success("User created successfully!");
-          setIsLoading(false);
           navigate("/manage-user", { state: { data: response.data.data } });
         } else {
           message.error(response.data.message);
@@ -75,6 +74,7 @@ const CreateUser = () => {
           message.error(error.response.data.message);
         } else message.error("Create user error occurred. Please try again.");
       });
+    setIsLoading(false);
   };
 
   const onFieldsChange = () => {
@@ -107,7 +107,7 @@ const CreateUser = () => {
   return (
     <LayoutPage>
       <Spin spinning={isLoading} className="w-full">
-        <div className=" ">
+        <div className="mt-[70px]">
           <h1 className="font-bold text-d6001c text-2xl">Create New User</h1>
           <Form
             className="mt-10"

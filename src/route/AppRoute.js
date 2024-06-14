@@ -1,5 +1,5 @@
-
 import LayoutPage from "../layout/LayoutPage";
+import CreateAsset from "../pages/CreateAsset";
 
 const { useRoutes } = require("react-router-dom");
 const { default: ManageUser } = require("../pages/ManageUser");
@@ -21,11 +21,14 @@ const AppRoutes = () => {
       element: <LayoutPage />,
     },
     {
-      path: '/manage-asset', 
-      element: <ManageAsset />
-    }
+      path: "/manage-asset",
+      element: <ManageAsset />,
+    },
+    {
+      path: "/manage-asset/create-asset",
+      element: <CreateAsset />,
+    },
   ]);
   return elements;
 };
 export default AppRoutes;
-
