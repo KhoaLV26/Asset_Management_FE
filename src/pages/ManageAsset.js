@@ -93,7 +93,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Code{" "}
           {params.sortBy === "AssetCode" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -118,7 +118,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Name{" "}
           {params.sortBy === "AssetName" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -143,7 +143,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Category{" "}
           {params.sortBy === "Category" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -168,7 +168,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           State{" "}
           {params.sortBy === "State" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -189,7 +189,7 @@ const ManageAsset = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Action",
+      title: "",
       key: "action",
       width: "10%",
       render: (_, record) => (
@@ -222,7 +222,6 @@ const ManageAsset = () => {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    console.log(params);
     axiosInstance
       .get(
         "/Assets", { params }
@@ -239,7 +238,10 @@ const ManageAsset = () => {
         }
       })
       .catch((err) => {
-        message.error(err.message);
+        if (err.response.status === 409) {
+          setData([])
+          setTotal(0)
+        } else message.error(err.message);
       });
   }, [params]);
   useEffect(() => {
@@ -253,7 +255,7 @@ const ManageAsset = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  },[])
+  }, [])
   useEffect(() => {
     if (isModalOpen) {
       console.log(selectedAsset);
@@ -278,7 +280,7 @@ const ManageAsset = () => {
             <Select
               open={openStateDropdown}
               defaultValue={"State"}
-              suffixIcon={<FilterOutlined onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
+              suffixIcon={<FilterOutlined style={{fontSize:"16px"}} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, state: value }))
@@ -287,19 +289,27 @@ const ManageAsset = () => {
               options={[
                 {
                   value: "",
-                  label: "Defaults",
-                },
-                {
-                  value: "2",
-                  label: "Available",
+                  label: "All",
                 },
                 {
                   value: "1",
                   label: "Not available",
                 },
                 {
+                  value: "2",
+                  label: "Available",
+                },
+                {
                   value: "3",
                   label: "Assigned",
+                },
+                {
+                  value: "4",
+                  label: "Waiting for recycling",
+                },
+                {
+                  value: "5",
+                  label: "Recycled",
                 }
               ]}
             />
@@ -308,13 +318,13 @@ const ManageAsset = () => {
             <Select
               open={openCategoryDropdown}
               defaultValue={"Category"}
-              suffixIcon={<FilterOutlined onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
+              suffixIcon={<FilterOutlined style={{fontSize:"16px"}} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, category: value }))
               }
               onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
-              options={categories.map(c => {return {value:c.id,label:c.name}})}
+              options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
             />
           </Space.Compact>
           <div className="flex gap-10">
@@ -393,15 +403,13 @@ const ManageAsset = () => {
               {selectedAsset?.assignmentResponses?.map(item =>
               (
                 <div>
-                  <span> Time: {item.assignedDate.slice(0,10)} </span>
+                  <span> Time: {item.assignedDate.slice(0, 10)} </span>
                   <span> | </span>
                   <span> Assigned By: {item.by}</span>
                   <span> Assigned To: {item.to}</span>
                 </div>
               )
               )}
-              {/* {selectedAsset?.assignmentResponses?.map(i => <h1>{i.id}</h1>)} */}
-              
             </div>
           </div>
         </Modal>
