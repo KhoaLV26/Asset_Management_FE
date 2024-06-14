@@ -9,22 +9,11 @@ import {
   CaretUpOutlined,
   CaretDownOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
 import CustomPagination from "../components/CustomPagination";
 const { Search } = Input;
-
-const itemRender = (_, type, originalElement) => {
-  if (type === "prev") {
-    return <span>Previous</span>;
-  }
-  if (type === "next") {
-    return <span>Next</span>;
-  }
-  return originalElement;
-};
-
 const stateConvert = (id) => {
   let stateName = "";
   switch (id) {
@@ -44,7 +33,7 @@ const stateConvert = (id) => {
       stateName = "Recycled";
       break;
   }
-  return <span>{stateName}</span>;
+  return stateName
 };
 
 const ManageAsset = () => {
@@ -54,8 +43,10 @@ const ManageAsset = () => {
   const handleSearch = (value) => {
     setParams((prev) => ({ ...prev, pageNumber: 1, search: value }));
   };
+  const [newAsset, setNewAsset] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
   const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
@@ -66,7 +57,7 @@ const ManageAsset = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState({pageNumber:1});
+  const [params, setParams] = useState({ pageNumber: 1 });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -195,7 +186,7 @@ const ManageAsset = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
-          disabled = {record.state.props.children == "Assigned"}
+            disabled={record?.state == "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("edit-asset");
@@ -204,8 +195,8 @@ const ManageAsset = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
-          disabled = {record.state.props.children == "Assigned"}
-          onClick={(e) => {
+            disabled={record?.state == "Assigned"}
+            onClick={(e) => {
               e.stopPropagation();
               navigate("delete-asset");
             }}
@@ -216,36 +207,63 @@ const ManageAsset = () => {
       ),
     },
   ];
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+  useEffect(() => {
+    const isFirstTimeAsset = sessionStorage.getItem("isFirstTimeAsset") === null;
+    if (isFirstTimeAsset) {
+      if (location?.state?.data) {
+        setNewAsset(location.state.data);
+      }
+      sessionStorage.setItem("isFirstTimeAsset", "false");
+    } else {
+      setNewAsset(null);
+    }
+
+    return () => {
+      sessionStorage.removeItem("isFirstTimeAsset");
+    };
+  }, [location]);
   useEffect(() => {
     axiosInstance
       .get("/Assets", { params })
       .then((res) => {
         if (res.data.success) {
-          setData(
-            res.data.data.map((asset) => ({
+          if (params.pageNumber === 1) {
+            const uniqueAssets = Array.from(
+              new Set(
+                [newAsset, ...res.data.data]
+                  .map((asset) => ({
+                    ...asset,
+                    state: stateConvert(asset?.status),
+                  }))
+                  .filter((asset) => asset.assetCode !== undefined)
+                  .map((asset) => JSON.stringify(asset))
+              )
+            )
+              .map((asset) => JSON.parse(asset))
+              ?.slice(0, 15);
+            setData(uniqueAssets);
+            setTotal(res.data.totalCount);
+          }
+          else {
+            setData(res.data.data.map(asset => ({
               ...asset,
               state: stateConvert(asset.status),
-            }))
-          );
-          setTotal(res.data.totalCount);
-        } else {
-          message.error(res.data.message);
+            })))
+          }
         }
-      })
+      }
+      )
       .catch((err) => {
-        if (err.response.status === 409) {
+        console.log(err);
+        if (err.response?.status === 409) {
           setData([])
           setTotal(0)
         } else message.error(err.message);
       });
-  }, [params]);
+  }, [params, newAsset]);
   useEffect(() => {
     axiosInstance
       .get("/Categories")
@@ -286,10 +304,10 @@ const ManageAsset = () => {
             <Select
               open={openStateDropdown}
               defaultValue={"State"}
-              suffixIcon={<FilterOutlined style={{fontSize:"16px"}} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
-                setParams((prev) => ({ ...prev, state: value }))
+                setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
               }
               onSelect={() => setOpenStateDropdown(!openStateDropdown)}
               options={[
@@ -324,10 +342,10 @@ const ManageAsset = () => {
             <Select
               open={openCategoryDropdown}
               defaultValue={"Category"}
-              suffixIcon={<FilterOutlined style={{fontSize:"16px"}} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
-                setParams((prev) => ({ ...prev, category: value }))
+                setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
               }
               onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
               options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
@@ -361,6 +379,7 @@ const ManageAsset = () => {
           </div>
         </div>
         <div className="justify-center items-center mt-0">
+          {console.log(data)}
           <Table
             locale={{
               emptyText: (
