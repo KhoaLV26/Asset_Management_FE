@@ -189,7 +189,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Full Name{" "}
-          {params.sortBy === "" && nameType === "FullName" ? (
+          {params.sortBy === "default" && nameType === "FullName" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -215,7 +215,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Username{" "}
-          {params.sortBy === "" && nameType === "UserName" ? (
+          {params.sortBy === "default" && nameType === "UserName" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -324,7 +324,7 @@ const ManageUser = () => {
     <LayoutPage>
       <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">User List</h1>
-        <div className="flex items-center justify-between mt-7 mb-2">
+        <div className="flex items-center justify-between mt-8">
           <Space.Compact>
             <Select
               open={open}
@@ -334,6 +334,8 @@ const ManageUser = () => {
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
+                setParams((prev) => ({ ...prev, pageNumber: 1 }));
+
               }}
               onSelect={() => setOpen(!open)}
               options={roles}
