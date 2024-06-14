@@ -48,7 +48,7 @@ const ManageUser = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
-  const [newUser, setNewUser] = useState(location?.state?.newUser || null);
+  const [newUser, setNewUser] = useState(location?.state?.newUser);
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     searchTerm: searchQuery,
@@ -150,17 +150,15 @@ const ManageUser = () => {
 
   useEffect(() => {
     const isRefreshed = sessionStorage.getItem('isRefreshed');
-
-    if (isRefreshed) {
+    if (isRefreshed === 'true') {
       setNewUser(null);
+      sessionStorage.setItem('isRefreshed', 'false');
     } else {
+      setNewUser(location.state?.data || null);
       sessionStorage.setItem('isRefreshed', 'true');
     }
+  }, [location.state, setNewUser]);
 
-    return () => {
-      sessionStorage.removeItem('isRefreshed');
-    };
-  }, []);
 
   const columns = [
     {
@@ -316,8 +314,6 @@ const ManageUser = () => {
     },
   ];
 
-  console.log(data);
-  console.log(newUser);
   return (
     <LayoutPage>
       <div className="w-full">
@@ -394,6 +390,7 @@ const ManageUser = () => {
             <Pagination
               className="text-center text-d6001c"
               defaultCurrent={params.pageNumber}
+              showSizeChanger={false}
               defaultPageSize={15}
               total={total}
               onChange={(page) =>
