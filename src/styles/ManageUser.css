@@ -28,3 +28,7 @@
 .ant-table-wrapper {
   margin-top: 1.5rem !important;
 }
+
+.ant-pagination-item-link active {
+  border: none;
+}

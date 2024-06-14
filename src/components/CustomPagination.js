@@ -16,9 +16,10 @@ const CustomPagination = ({ params, setParams, total }) => {
         type="button"
         className={`ant-pagination-item-link ${isActive ? 'active' : ''}`}
         style={{
-            width: '100%',
+          width: '100%',
           background: isActive ? '#d6001c' : 'white',
           color: isActive ? 'white' : '#d6001c',
+          border: 'none',
         }}
         onClick={() => setParams(prev => ({ ...prev, pageNumber: current }))}>
         {current}
@@ -29,6 +30,7 @@ const CustomPagination = ({ params, setParams, total }) => {
   return (
     <Pagination
       className="text-center text-d6001c"
+      current={params.pageNumber}
       defaultCurrent={params.pageNumber}
       showSizeChanger={false}
       defaultPageSize={15}
