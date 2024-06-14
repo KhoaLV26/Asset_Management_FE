@@ -107,7 +107,7 @@ const CreateUser = () => {
   return (
     <LayoutPage>
       <Spin spinning={isLoading} className="w-full">
-        <div className=" ">
+        <div className="mt-[70px]">
           <h1 className="font-bold text-d6001c text-2xl">Create New User</h1>
           <Form
             className="mt-10"
