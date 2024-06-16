@@ -1,5 +1,5 @@
-import LayoutPage from "../layout/LayoutPage";
 import CreateAsset from "../pages/CreateAsset";
+import Home from "../pages/Home";
 
 const { useRoutes } = require("react-router-dom");
 const { default: ManageUser } = require("../pages/ManageUser");
@@ -18,7 +18,7 @@ const AppRoutes = () => {
     },
     {
       path: "/*",
-      element: <LayoutPage />,
+      element: <Home />,
     },
     {
       path: "/manage-asset",
