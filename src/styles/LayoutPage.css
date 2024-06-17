@@ -1,19 +1,25 @@
-.ant-menu-dark, .ant-menu-dark .ant-menu-item {
-    border-radius:0 !important;
-    background-color: #f1f3f6 !important;
-    color: #000000 !important;
-    border-bottom: 2px solid white !important;
-    margin: 0 !important;
-    width: 100%;
-    font-size: 20px;
-    height: 60px;
-  }
+.ant-menu-dark,
+.ant-menu-dark .ant-menu-item {
+  border-radius: 0 !important;
+  background-color: #f1f3f6 !important;
+  color: #000000 !important;
+  border-bottom: 2px solid white !important;
+  margin: 0 !important;
+  width: 100%;
+  font-size: 20px;
+  height: 60px;
+}
 
 .ant-menu-dark .ant-menu-item-selected {
-    background-color: #d6001c !important;
-    color: #FFFFFF !important;
-  }
+  background-color: #d6001c !important;
+  color: #ffffff !important;
+}
 
 .ant-menu-dark .ant-menu-item:hover {
-    color: #FFFFFF !important;
-  }
+  color: #ffffff !important;
+}
+
+.ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
+  border-color: #d6001c !important;
+  background-color: #d6001c !important;
+}

@@ -34,7 +34,6 @@ const ManageUser = () => {
   const [direction, setDirection] = useState(true);
   const [modalData, setModalData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [nameType, setNameType] = useState("FullName");
   const navigate = useNavigate();
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
@@ -81,7 +80,8 @@ const ManageUser = () => {
   useEffect(() => {
     axiosInstance
       .get(
-        `/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`
+        '/Users/search', {params}
+        //`/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`
       )
       .then((res) => {
         if (res.data.success) {
@@ -178,6 +178,7 @@ const ManageUser = () => {
       dataIndex: "staffCode",
       key: "staffcode",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("StaffCode");
@@ -189,7 +190,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Full Name{" "}
-          {params.sortBy === "" && nameType === "FullName" ? (
+          {params.sortBy === "default" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -203,10 +204,10 @@ const ManageUser = () => {
       dataIndex: "fullName",
       key: "name",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("default");
-          setNameType("FullName");
         },
       }),
       render: (text) => <span>{text}</span>,
@@ -215,7 +216,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Username{" "}
-          {params.sortBy === "" && nameType === "UserName" ? (
+          {params.sortBy === "Username" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -229,10 +230,10 @@ const ManageUser = () => {
       dataIndex: "username",
       key: "username",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("default");
-          setNameType("UserName");
+          sorterLog("Username");
         },
       }),
       render: (text) => <span>{text}</span>,
@@ -255,6 +256,7 @@ const ManageUser = () => {
       dataIndex: "dateJoined",
       key: "dateJoined",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("JoinedDate");
@@ -280,6 +282,7 @@ const ManageUser = () => {
       key: "roleName",
       dataIndex: "roleName",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("Role");
@@ -291,6 +294,7 @@ const ManageUser = () => {
       title: "",
       key: "action",
       width: "10%",
+      ellipsis: true,
       render: () => (
         <Space size="middle">
           <Button
@@ -308,7 +312,6 @@ const ManageUser = () => {
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
-              navigate("edit-user");
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
