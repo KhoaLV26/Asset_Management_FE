@@ -23,3 +23,7 @@
   border-color: #d6001c !important;
   background-color: #d6001c !important;
 }
+
+.ant-table-tbody > tr:hover {
+  cursor: pointer;
+}

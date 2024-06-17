@@ -37,7 +37,6 @@ const ManageUser = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
-  const [newUser, setNewUser] = useState("new");
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     searchTerm: searchQuery,
@@ -45,7 +44,7 @@ const ManageUser = () => {
     sortBy: "StaffCode",
     sortDirection: "asc",
     pageNumber: 1,
-    pageSize: 15,
+    newStaffCode: location?.state?.data?.staffCode || 0,
   });
 
   const sorterLog = (name) => {
@@ -81,34 +80,15 @@ const ManageUser = () => {
     axiosInstance
       .get(
         '/Users/search', {params}
-        //`/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`
       )
       .then((res) => {
         if (res.data.success) {
-          if (params.pageNumber === 1) {
-            setData(
-              Array.from(
-                new Set(
-                  [newUser, ...res.data.data]
-                    .map((user) => ({
-                      ...user,
-                      fullName: `${user?.firstName} ${user?.lastName}`,
-                    }))
-                    ?.filter((user) => user.firstName !== undefined)
-                    .map((user) => JSON.stringify(user))
-                )
-              )
-                .map((user) => JSON.parse(user))
-                ?.slice(0, 15)
-            );
-          } else {
             setData(
               res.data.data.map((user) => ({
                 ...user,
                 fullName: `${user.firstName} ${user.lastName}`,
               }))
             );
-          }
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
@@ -117,7 +97,7 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, [params, newUser]);
+  }, [params]);
 
   useEffect(() => {
     axiosInstance
@@ -146,18 +126,17 @@ const ManageUser = () => {
     const isFirstTime = sessionStorage.getItem("isFirstTime") === null;
     if (isFirstTime) {
       if (location?.state?.data) {
-        setNewUser(location.state.data);
+        setParams((prev) => ({ ...prev, newStaffCode: location.state.data.staffCode }));
       }
       sessionStorage.setItem("isFirstTime", "false");
     } else {
-      setNewUser(null);
+      setParams((prev) => ({ ...prev, newStaffCode: "" }));
     }
 
     return () => {
       sessionStorage.removeItem("isFirstTime");
     };
   }, [location]);
-  console.log(newUser);
 
   const columns = [
     {
@@ -322,7 +301,6 @@ const ManageUser = () => {
   ];
 
   console.log(data);
-  console.log(newUser);
   return (
     <LayoutPage>
       <div className="w-full mt-10">
