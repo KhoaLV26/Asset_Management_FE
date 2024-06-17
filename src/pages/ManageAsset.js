@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message } from "antd";
+import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message, Empty } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
 import {
@@ -9,22 +9,11 @@ import {
   CaretUpOutlined,
   CaretDownOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
-
+import CustomPagination from "../components/CustomPagination";
 const { Search } = Input;
-
-const itemRender = (_, type, originalElement) => {
-  if (type === "prev") {
-    return <span>Previous</span>;
-  }
-  if (type === "next") {
-    return <span>Next</span>;
-  }
-  return originalElement;
-};
-
 const stateConvert = (id) => {
   let stateName = "";
   switch (id) {
@@ -44,29 +33,31 @@ const stateConvert = (id) => {
       stateName = "Recycled";
       break;
   }
-  return <span>{stateName}</span>
-}
+  return stateName
+};
 
 const ManageAsset = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
   const handleSearch = (value) => {
-    setParams((prev) => ({ ...prev, currentPage: 1, search: value }));
+    setParams((prev) => ({ ...prev, pageNumber: 1, search: value }));
   };
+  const [newAsset, setNewAsset] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
   const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
   const handleClicked = (data) => {
-    setIsModalOpen(true)
+    setIsModalOpen(true);
     setSelectedAsset(data);
-  }
+  };
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState({});
+  const [params, setParams] = useState({ pageNumber: 1 });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -86,14 +77,14 @@ const ManageAsset = () => {
       title: "Id",
       dataIndex: "id",
       key: "id",
-      hidden: true
+      hidden: true,
     },
     {
       title: (
         <span className="flex items-center justify-between">
           Asset Code{" "}
           {params.sortBy === "AssetCode" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -118,7 +109,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Name{" "}
           {params.sortBy === "AssetName" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -143,7 +134,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Category{" "}
           {params.sortBy === "Category" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -168,7 +159,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           State{" "}
           {params.sortBy === "State" ? (
-            params.sortOrder === "asc" ? (
+            params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -189,12 +180,13 @@ const ManageAsset = () => {
       render: (text) => <span>{text}</span>,
     },
     {
-      title: "Action",
+      title: "",
       key: "action",
       width: "10%",
       render: (_, record) => (
         <Space size="middle">
           <Button
+            disabled={record?.state == "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("edit-asset");
@@ -203,6 +195,7 @@ const ManageAsset = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
+            disabled={record?.state == "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("delete-asset");
@@ -214,26 +207,69 @@ const ManageAsset = () => {
       ),
     },
   ];
-  const showModal = () => {
-    setIsModalOpen(true);
-  };
-
   const handleCancel = () => {
     setIsModalOpen(false);
   };
   useEffect(() => {
-    console.log(params);
+    const isFirstTimeAsset = sessionStorage.getItem("isFirstTimeAsset") === null;
+    if (isFirstTimeAsset) {
+      if (location?.state?.data) {
+        setNewAsset(location.state.data);
+      }
+      sessionStorage.setItem("isFirstTimeAsset", "false");
+    } else {
+      setNewAsset(null);
+    }
+
+    return () => {
+      sessionStorage.removeItem("isFirstTimeAsset");
+    };
+  }, [location]);
+  useEffect(() => {
     axiosInstance
-      .get(
-        "/Assets", { params }
-      )
+      .get("/Assets", { params })
       .then((res) => {
         if (res.data.success) {
-          setData(res.data.data.map(asset => ({
-            ...asset,
-            state: stateConvert(asset.status)
-          })));
-          setTotal(res.data.totalCount);
+          if (params.pageNumber === 1) {
+            const uniqueAssets = Array.from(
+              new Set(
+                [newAsset, ...res.data.data]
+                  .map((asset) => ({
+                    ...asset,
+                    state: stateConvert(asset?.status),
+                  }))
+                  .filter((asset) => asset.assetCode !== undefined)
+                  .map((asset) => JSON.stringify(asset))
+              )
+            )
+              .map((asset) => JSON.parse(asset))
+              ?.slice(0, 15);
+            setData(uniqueAssets);
+            setTotal(res.data.totalCount);
+          }
+          else {
+            setData(res.data.data.map(asset => ({
+              ...asset,
+              state: stateConvert(asset.status),
+            })))
+          }
+        }
+      }
+      )
+      .catch((err) => {
+        console.log(err);
+        if (err.response?.status === 409) {
+          setData([])
+          setTotal(0)
+        } else message.error(err.message);
+      });
+  }, [params, newAsset]);
+  useEffect(() => {
+    axiosInstance
+      .get("/Categories")
+      .then((res) => {
+        if (res.data.success) {
+          setCategories(res.data.data);
         } else {
           message.error(res.data.message);
         }
@@ -241,65 +277,63 @@ const ManageAsset = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, [params]);
-  useEffect(() => {
-    axiosInstance.get("/Categories").then((res) => {
-      if (res.data.success) {
-        setCategories(res.data.data);
-      } else {
-        message.error(res.data.message);
-      }
-    })
-      .catch((err) => {
-        message.error(err.message);
-      });
-  },[])
+  }, []);
   useEffect(() => {
     if (isModalOpen) {
       console.log(selectedAsset);
-      axiosInstance.get(`/Assets/${selectedAsset.id}`).then((res) => {
-        if (res.data.success) {
-          setSelectedAsset(res.data.data);
-        } else {
-          message.error(res.data.message);
-        }
-      })
+      axiosInstance
+        .get(`/Assets/${selectedAsset.id}`)
+        .then((res) => {
+          if (res.data.success) {
+            setSelectedAsset(res.data.data);
+          } else {
+            message.error(res.data.message);
+          }
+        })
         .catch((err) => {
           message.error(err.message);
         });
     }
-  }, [isModalOpen])
+  }, [isModalOpen]);
   return (
     <LayoutPage>
-      <div className="w-full">
+      <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">Asset List</h1>
-        <div className="flex items-center justify-between mt-5">
+        <div className="flex items-center justify-between mt-7 mb-2">
           <Space.Compact>
             <Select
               open={openStateDropdown}
               defaultValue={"State"}
-              suffixIcon={<FilterOutlined onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
-                setParams((prev) => ({ ...prev, state: value }))
+                setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
               }
               onSelect={() => setOpenStateDropdown(!openStateDropdown)}
               options={[
                 {
-                  value: "",
-                  label: "Defaults",
-                },
-                {
-                  value: "2",
-                  label: "Available",
+                  value: "All",
+                  label: "All",
                 },
                 {
                   value: "1",
                   label: "Not available",
                 },
                 {
+                  value: "2",
+                  label: "Available",
+                },
+                {
                   value: "3",
                   label: "Assigned",
+                },
+                {
+                  value: "4",
+                  label: "Waiting for recycling",
+                },
+                {
+                  value: "5",
+                  label: "Recycled",
                 }
               ]}
             />
@@ -308,13 +342,13 @@ const ManageAsset = () => {
             <Select
               open={openCategoryDropdown}
               defaultValue={"Category"}
-              suffixIcon={<FilterOutlined onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
               className="w-[250px]"
               onChange={(value) =>
-                setParams((prev) => ({ ...prev, category: value }))
+                setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
               }
               onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
-              options={categories.map(c => {return {value:c.id,label:c.name}})}
+              options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
             />
           </Space.Compact>
           <div className="flex gap-10">
@@ -336,32 +370,47 @@ const ManageAsset = () => {
               className="flex items-center w-[200px] h-[32px] bg-d6001c"
               type="primary"
               size="large"
+              onClick={() => {
+                navigate("create-asset");
+              }}
             >
               Create new asset
             </Button>
           </div>
         </div>
-        <Table pagination={false} className="mt-10" columns={columns} dataSource={data} defaultPageSize={15}
-          onRow={(record) => {
-            return {
-              onDoubleClick: () => {
-                handleClicked(record);
-              },
-            };
-          }} />
-        <div className="w-full flex justify-end">
-          <Pagination
-            className="text-center text-d6001c"
-            defaultCurrent={params.pageNumber}
+        <div className="justify-center items-center mt-0">
+          {console.log(data)}
+          <Table
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="No Search Result"
+                />
+              ),
+            }}
+            pagination={false}
+            className="mt-10"
+            columns={columns}
+            dataSource={data}
             defaultPageSize={15}
-            total={total}
-            onChange={(page) =>
-              setParams((prev) => ({ ...prev, currentPage: page }))
-            }
-            itemRender={itemRender}
+            onRow={(record) => {
+              return {
+                onDoubleClick: () => {
+                  handleClicked(record);
+                },
+              };
+            }}
           />
+          <div className="w-full flex justify-end">
+            <CustomPagination
+              params={params}
+              setParams={setParams}
+              total={total}
+            />
+          </div>
         </div>
-
+        {console.log(selectedAsset)}
         <Modal
           title={
             <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
@@ -384,30 +433,27 @@ const ManageAsset = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
-              <span>{stateConvert(selectedAsset?.state)}</span>
+              <span>{stateConvert(selectedAsset?.status)}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">History Assignment:</span>
             </div>
             <div className="mb-[10px]">
-              {selectedAsset?.assignmentResponses?.map(item =>
-              (
+              {selectedAsset?.assignmentResponses?.map((item) => (
                 <div>
-                  <span> Time: {item.assignedDate.slice(0,10)} </span>
+                  <span> Time: {item.assignedDate.slice(0, 10)} </span>
                   <span> | </span>
                   <span> Assigned By: {item.by}</span>
                   <span> Assigned To: {item.to}</span>
                 </div>
               )
               )}
-              {/* {selectedAsset?.assignmentResponses?.map(i => <h1>{i.id}</h1>)} */}
-              
             </div>
           </div>
         </Modal>
       </div>
     </LayoutPage>
-  )
-}
+  );
+};
 
-export default ManageAsset
+export default ManageAsset;
