@@ -96,6 +96,7 @@ const ManageAsset = () => {
       dataIndex: "assetCode",
       key: "name",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("AssetCode");
@@ -121,6 +122,7 @@ const ManageAsset = () => {
       dataIndex: "assetName",
       key: "name",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("AssetName");
@@ -146,6 +148,7 @@ const ManageAsset = () => {
       dataIndex: "categoryName",
       key: "category",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("Category");
@@ -171,6 +174,7 @@ const ManageAsset = () => {
       key: "state",
       dataIndex: "state",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("State");
@@ -182,6 +186,7 @@ const ManageAsset = () => {
       title: "",
       key: "action",
       width: "10%",
+      ellipsis: true,
       render: (_, record) => (
         <Space size="middle">
           <Button
