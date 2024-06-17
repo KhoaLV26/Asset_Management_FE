@@ -1,12 +1,189 @@
 import React, { useState } from "react";
 import { Table, Button, Input } from "antd";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
+import {
+  CaretDownOutlined,
+  CaretUpOutlined,
+} from "@ant-design/icons";
 
 const { Search } = Input;
-export const SelectModal = ({ setisShowModal
+export const SelectModal = ({ setisShowModal, params, setParams
   //, columns, data 
 }) => {
+  const [direction, setDirection] = useState(true)
   const [searchQuery, setSearchQuery] = useState("");
+
+  const sorterLog = (name) => {
+    if (params.sortBy === name) {
+      if (direction === true) {
+        setParams((prev) => ({ ...prev, sortDirection: "desc" }));
+      } else {
+        setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+      }
+      setDirection(!direction);
+    } else {
+      setParams((prev) => ({ ...prev, sortBy: name }));
+      setDirection(true);
+      setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+    }
+  };
+
+  const userColumns = [
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Staff Code{" "}
+          {params.sortBy === "StaffCode" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "staffCode",
+      key: "staffcode",
+      width: "18%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("StaffCode");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Full Name{" "}
+          {params.sortBy === "default" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "fullName",
+      key: "name",
+      width: "18%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("default");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Type{" "}
+          {params.sortBy === "Role" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      key: "roleName",
+      dataIndex: "roleName",
+      width: "18%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("Role");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    }
+  ]
+
+  const assetColumns = [
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Asset Code{" "}
+          {params.sortBy === "AssetCode" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "assetCode",
+      key: "assetcode",
+      width: "18%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssetCode");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Asset Name{" "}
+          {params.sortBy === "AssetName" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "assetName",
+      key: "assetName",
+      width: "18%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssetName");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Category{" "}
+          {params.sortBy === "Category" ? (
+            params.sortDirection === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      key: "categoryName",
+      dataIndex: "categoryName",
+      width: "18%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("Category");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    }
+  ]
+
   const columns = [
     {
       title: "Full Name",
