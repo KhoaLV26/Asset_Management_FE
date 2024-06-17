@@ -410,7 +410,7 @@ const ManageAsset = () => {
             />
           </div>
         </div>
-
+        {console.log(selectedAsset)}
         <Modal
           title={
             <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
@@ -433,7 +433,7 @@ const ManageAsset = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
-              <span>{stateConvert(selectedAsset?.state)}</span>
+              <span>{stateConvert(selectedAsset?.status)}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">History Assignment:</span>
