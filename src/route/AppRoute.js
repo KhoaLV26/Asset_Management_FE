@@ -5,6 +5,7 @@ const { useRoutes } = require("react-router-dom");
 const { default: ManageUser } = require("../pages/ManageUser");
 const { default: CreateUser } = require("../pages/CreateUser");
 const { default: ManageAsset } = require("../pages/ManageAsset");
+const { default: CreateAssignment } = require("../pages/CreateAssignment");
 
 const AppRoutes = () => {
   const elements = useRoutes([
@@ -28,6 +29,10 @@ const AppRoutes = () => {
       path: "/manage-asset/create-asset",
       element: <CreateAsset />,
     },
+    {
+      path: "/manage-assignment/create-assignment",
+      element: <CreateAssignment />,
+    }
   ]);
   return elements;
 };
