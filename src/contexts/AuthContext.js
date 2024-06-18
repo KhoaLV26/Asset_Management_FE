@@ -83,7 +83,7 @@ export const getUser = () => {
 };
 
 export const setTokens = (token, refreshToken, user) => {
-  Cookies.set("token", token, { expires: 1 / 48 }); // 30 minutes
+  Cookies.set("token", token, { expires: 7 });
   Cookies.set("refreshToken", refreshToken, { expires: 7 }); // 7 days
   localStorage.setItem("user", JSON.stringify(user));
 };
