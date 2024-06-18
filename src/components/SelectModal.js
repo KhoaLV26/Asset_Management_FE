@@ -33,7 +33,7 @@ export const SelectModal = ({
 
   useEffect(() => {
     if (type === "Select User") {
-      setURL(`/Users/search`);
+      setURL(`/Users`);
       setColumns(userColumns);
     }
     if (type === "Select Asset") {
