@@ -1,27 +1,71 @@
-import React, { useState } from "react";
-import { Table, Button, Input } from "antd";
+import React, { useState, useEffect } from "react";
+import { Table, Button, Input, message } from "antd";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
-import {
-  CaretDownOutlined,
-  CaretUpOutlined,
-} from "@ant-design/icons";
-import CustomPagination from "./CustomPagination"
+import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
+import CustomPagination from "./CustomPagination";
+import axiosInstance from "../axios/axiosInstance";
 
 const { Search } = Input;
-export const SelectModal = ({ setisShowModal,
-  //, columns, data 
+export const SelectModal = ({
+  setisShowModal,
+  type,
+  setName,
+  setId,
+  chosenId,
 }) => {
-  const [direction, setDirection] = useState(true)
+  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
+  const [direction, setDirection] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [currentName, setCurrentName] = useState("");
+  const [currentId, setCurrentId] = useState("");
+  const [data, setData] = useState([]);
+  const [total, setTotal] = useState(0);
+  const [url, setURL] = useState("");
+  const [columns, setColumns] = useState([]);
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
-    searchTerm: searchQuery,
+    search: searchQuery,
     role: "",
     sortBy: "StaffCode",
     sortDirection: "asc",
     pageNumber: 1,
-    pageSize: 15,
   });
+
+  useEffect(() => {
+    if (type === "Select User") {
+      setURL(`/Users/search`);
+      setColumns(userColumns);
+    }
+    if (type === "Select Asset") {
+      setURL(`/Assets`);
+      setColumns(assetColumns);
+    }
+    if (url !== "") {
+      axiosInstance
+        .get(url, { params })
+        .then((res) => {
+          if (res.data.success) {
+            setData(
+              res.data.data
+                .map((user) => ({
+                  ...user,
+                  fullName: `${user?.firstName} ${user?.lastName}`,
+                }))
+                .map((asset) => ({
+                  ...asset,
+                  state: stateConvert(asset?.status),
+                }))
+            );
+            setTotal(res.data.totalCount);
+          } else {
+            message.error(res.data.message);
+          }
+        })
+        .catch((err) => {
+          message.error(err.message);
+        });
+    }
+  }, [params, type, url]);
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -36,6 +80,28 @@ export const SelectModal = ({ setisShowModal,
       setDirection(true);
       setParams((prev) => ({ ...prev, sortDirection: "asc" }));
     }
+  };
+
+  const stateConvert = (id) => {
+    let stateName = "";
+    switch (id) {
+      case 1:
+        stateName = "Not available";
+        break;
+      case 2:
+        stateName = "Available";
+        break;
+      case 3:
+        stateName = "Assigned";
+        break;
+      case 4:
+        stateName = "Waiting for recycling";
+        break;
+      default:
+        stateName = "Recycled";
+        break;
+    }
+    return stateName;
   };
 
   const userColumns = [
@@ -56,7 +122,7 @@ export const SelectModal = ({ setisShowModal,
       ),
       dataIndex: "staffCode",
       key: "staffcode",
-      width: "18%",
+      width: "15%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("StaffCode");
@@ -81,7 +147,7 @@ export const SelectModal = ({ setisShowModal,
       ),
       dataIndex: "fullName",
       key: "name",
-      width: "18%",
+      width: "70%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("default");
@@ -106,15 +172,15 @@ export const SelectModal = ({ setisShowModal,
       ),
       key: "roleName",
       dataIndex: "roleName",
-      width: "18%",
+      width: "10%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("Role");
         },
       }),
       render: (text) => <span>{text}</span>,
-    }
-  ]
+    },
+  ];
 
   const assetColumns = [
     {
@@ -134,7 +200,7 @@ export const SelectModal = ({ setisShowModal,
       ),
       dataIndex: "assetCode",
       key: "assetcode",
-      width: "18%",
+      width: "15%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("AssetCode");
@@ -159,7 +225,7 @@ export const SelectModal = ({ setisShowModal,
       ),
       dataIndex: "assetName",
       key: "assetName",
-      width: "18%",
+      width: "70%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("AssetName");
@@ -184,93 +250,34 @@ export const SelectModal = ({ setisShowModal,
       ),
       key: "categoryName",
       dataIndex: "categoryName",
-      width: "18%",
+      width: "10%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("Category");
         },
       }),
       render: (text) => <span>{text}</span>,
-    }
-  ]
-
-  const columns = [
-    {
-      title: "Full Name",
-      width: 100,
-      dataIndex: "name",
-      key: "name",
-      fixed: "left",
-    },
-    {
-      title: "Age",
-      width: 100,
-      dataIndex: "age",
-      key: "age",
-      fixed: "left",
-      sorter: true,
-    },
-    {
-      title: "Column 1",
-      dataIndex: "address",
-      key: "1",
-    },
-    {
-      title: "Column 2",
-      dataIndex: "address",
-      key: "2",
-    },
-    {
-      title: "Column 3",
-      dataIndex: "address",
-      key: "3",
-    },
-    {
-      title: "Column 4",
-      dataIndex: "address",
-      key: "4",
-    },
-    {
-      title: "Column 5",
-      dataIndex: "address",
-      key: "5",
-    },
-    {
-      title: "Column 6",
-      dataIndex: "address",
-      key: "6",
-    },
-    {
-      title: "Column 7",
-      dataIndex: "address",
-      key: "7",
-    },
-    {
-      title: "Column 8",
-      dataIndex: "address",
-      key: "8",
-    },
-    {
-      title: "Action",
-      key: "operation",
-      fixed: "right",
-      width: 100,
-      render: () => <a>action</a>,
     },
   ];
-  const data = [];
-  for (let i = 0; i < 46; i++) {
-    data.push({
-      key: i,
-      name: `Edward King ${i}`,
-      age: 32,
-      address: `London, Park Lane no. ${i}`,
-    });
-  }
 
-  const handleSearch = (query) => {
-    console.log(removeExtraWhitespace(query))
-  }
+  useEffect(() => {
+    if (data.length > 0) {
+      const firstKey = type === "Select User" ? data[0].staffCode : data[0].assetCode;
+      const name = type === "Select User" ? data[0].fullName : data[0].assetName 
+      setSelectedRowKeys([firstKey]);
+      setCurrentName(name);
+      setCurrentId(firstKey);
+    }
+  }, [data]);
+
+  const handleSearch = (value) => {
+    setParams((prev) => ({ ...prev, pageNumber: 1 }));
+
+    setParams((prev) => ({
+      ...prev,
+      search: removeExtraWhitespace(value),
+    }));
+  };
 
   return (
     <div
@@ -288,7 +295,7 @@ export const SelectModal = ({ setisShowModal,
       >
         <div className="flex items-center justify-between mt-7">
           <span className="text-2xl ml-5 text-d6001c font-extrabold">
-            Select User
+            {type}
           </span>
           <Search
             className="w-[40%] mr-9"
@@ -302,39 +309,62 @@ export const SelectModal = ({ setisShowModal,
             }}
           />
         </div>
-        <div className="flex flex-wrap gap-1 mx-3">
+        <div className="flex flex-wrap gap-1 mx-8">
           <Table
             columns={columns}
             dataSource={data}
+            rowKey={(record) => {
+              if (type=== "Select User") return record.staffCode
+              if (type=== "Select Asset") return record.assetCode
+            }}
+            rowSelection={{
+              type: "radio",
+              selectedRowKeys,
+              onChange: (selectedRowKeys, selectedRow) => {
+                setSelectedRowKeys(selectedRowKeys);
+                console.log(selectedRow[0])
+                if (type === "Select User") {
+                  setCurrentName(selectedRow[0].fullName);
+                  setCurrentId(selectedRow[0].staffCode);
+                }
+                if (type === "Select Asset") {
+                  setCurrentName(selectedRow[0].assetName);
+                  setCurrentId(selectedRow[0].assetCode);
+                }
+              },
+            }}
             scroll={{ y: 400 }}
-            rowSelection={{ type: "radio" }}
             pagination={false}
           />
           <div className="w-full flex justify-end">
             <CustomPagination
               params={params}
               setParams={setParams}
-              total={100}
+              total={total}
             />
           </div>
-          <div className="flex gap-5 justify-end w-full">
-            <Button
-              className="bg-d6001c w-[7%] text-white"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              Save
-            </Button>
-            <Button
-              className="w-[7%] text-gray-500"
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              Cancel
-            </Button>
-          </div>
+        </div>
+        <div className="flex gap-5 justify-end w-full px-6 py-5">
+          <Button
+            className="bg-d6001c w-[7%] text-white"
+            onClick={(e) => {
+              e.stopPropagation();
+              setName(currentName);
+              setId(currentId);
+              setisShowModal(false);
+            }}
+          >
+            Save
+          </Button>
+          <Button
+            className="w-[7%] text-gray-500"
+            onClick={(e) => {
+              e.stopPropagation();
+              setisShowModal(false);
+            }}
+          >
+            Cancel
+          </Button>
         </div>
       </div>
     </div>

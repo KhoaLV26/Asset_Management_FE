@@ -1,16 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SelectModal from "../components/SelectModal";
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/CreateAssignment.css";
 import moment from "moment";
 import axiosInstance from "../axios/axiosInstance";
+import dayjs from "dayjs";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
-  Option,
-  Modal,
-  Radio,
-  Select,
   Spin,
   message,
   Button,
@@ -20,17 +17,20 @@ import {
   Popconfirm,
 } from "antd";
 
-const { TextArea } = Input;
-//const { Option } = Select;
+const { TextArea, Search } = Input;
 
 const CreateAssignment = () => {
   const [userId, setUserId] = useState("");
   const [assetId, setAssetId] = useState("");
+  const [userName, setUserName] = useState("");
+  const [assetName, setAssetName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
   const [form] = Form.useForm();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [viewModal, setViewModal] = useState(false);
+  const [viewModalUser, setViewModalUser] = useState(false);
+  const [viewModalAsset, setViewModalAsset] = useState(false);
+  const today = moment().format("YYYY-MM-DD");
   const [params, setParams] = useState({
     userId: "",
     assetId: "",
@@ -54,8 +54,15 @@ const CreateAssignment = () => {
     // assetForm.resetFields();
   };
 
+  useEffect(() => {
+    form.setFieldsValue({
+      user: userName,
+      asset: assetName,
+    });
+  }, [userName, assetName, form]);
+
   const onFinish = (values) => {
-    // setIsLoading(true);
+    setIsLoading(true);
     values.assignedBy = adminId;
     values.createdBy = adminId;
     values.createdAt = values.createdAt.format("YYYY-MM-DD");
@@ -76,46 +83,17 @@ const CreateAssignment = () => {
           message.error(error.response.data.message);
         } else message.error("Create asset error occurred. Please try again.");
       });
-    // setIsLoading(false);
-  };
-
-  const handleBlur = () => (e) => {
-    const trimmedValue = removeExtraWhitespace(e.target.value);
-    form.setFieldsValue({ note: trimmedValue }); // Update form field value
-    form.validateFields("name"); // Trigger validation on blur
+    setIsLoading(false);
   };
 
   const handleConfirm = () => {
     navigate("/manage-user");
   };
 
-  useEffect(() => {
-    // // setIsLoading(true);
-    // axiosInstance
-    //     .get("/users")
-    //     .then((response) =>{
-    //         if (response.data.success === true) {
-    //             const sortedUserData = response.data.data.sort((a, b) =>
-    //             a.name.localeCompare(b.name)
-    //         );
-    //         setUserData(sortedUserData);
-    // setIsLoading(false);
-    //         }
-    //         else{
-    //             message.error("Get users error occurred. Please try again.");
-    //         }});
-  }, []);
-
   const onFieldsChange = () => {
-    // const fieldsError = form
-    //   .getFieldsError()
-    //   .filler(({ error }) => error.length).length;
-    // const allFieldsTouched = form.isFieldsTouched(true);
-    // setIsButtonDisabled(fieldsError > 0 || !allFieldsTouched);
     const errors = form.getFieldsError().filter(({ errors }) => errors.length);
     const fieldsWithError = errors.length;
     const allFieldsTouched = form.isFieldsTouched(true);
-
     setIsButtonDisabled(fieldsWithError > 0 || !allFieldsTouched);
   };
 
@@ -142,18 +120,21 @@ const CreateAssignment = () => {
               rules={[
                 { required: true, message: "Please chose an user!" },
                 {
-                  min: 6,
-                  max: 6,
+                  min: 4,
+                  max: 100,
                   message: "Please chose a valid user!",
                 },
               ]}
-              validateTrigger="onBlur"
+              validateTrigger="onSearch"
             >
-              <Input
+              <Search
+                readOnly
                 placeholder="Chose an user...."
-                value={params.userId}
+                value={userName}
                 className="w-full"
-                //onBlur={handleBlur("firstName")}
+                onSearch={() => {
+                  setViewModalUser(true);
+                }}
               />
             </Form.Item>
 
@@ -164,19 +145,21 @@ const CreateAssignment = () => {
               rules={[
                 { required: true, message: "Please chose an asset!" },
                 {
-                  min: 6,
-                  max: 6,
+                  min: 4,
+                  max: 100,
                   message: "Please chose a valid asset!",
                 },
-                //{ validator: validateName },
               ]}
-              validateTrigger="onBlur"
+              validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
-              <Input
+              <Search
+                readOnly
                 placeholder="Chose an asset...."
-                value={params.assetId}
+                value={assetName}
                 className="w-full"
-                //onBlur={handleBlur("lastName")}
+                onSearch={() => {
+                  setViewModalAsset(true);
+                }}
               />
             </Form.Item>
 
@@ -189,7 +172,7 @@ const CreateAssignment = () => {
                   validator(_, value) {
                     if (!value) {
                       return Promise.reject(
-                        new Error("Please input the joined date!")
+                        new Error("Please input the assigned date!")
                       );
                     }
 
@@ -197,28 +180,18 @@ const CreateAssignment = () => {
                     if (value.isBefore(today)) {
                       return Promise.reject(
                         new Error(
-                          "Assigned date is not later than today's date. Please select a different date."
+                          "Assigned date is not later than today's date."
                         )
                       );
                     }
-
-                    const day = value.day();
-                    if (day === 0 || day === 6) {
-                      return Promise.reject(
-                        new Error(
-                          "Assigned date is Saturday or Sunday. Please select a different date."
-                        )
-                      );
-                    }
-
                     return Promise.resolve();
                   },
                 }),
               ]}
-              validateTrigger="onBlur"
+              validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
               <DatePicker
-                format="YYYY-MM-DD"
+                defaultValue={dayjs(today, "YYYY-MM-DD")}
                 className="w-full"
                 inputReadOnly
                 allowClear={false}
@@ -233,7 +206,7 @@ const CreateAssignment = () => {
                 {
                   min: 0,
                   max: 255,
-                  message: "abcxyz",
+                  message: "This field can only contain 255 characters",
                 },
               ]}
               validateTrigger="onBlur"
@@ -245,7 +218,6 @@ const CreateAssignment = () => {
                 placeholder="Note...."
                 className="w-full"
                 style={{ height: 120, resize: "none" }}
-                onBlur={handleBlur}
               />
             </Form.Item>
 
@@ -271,8 +243,24 @@ const CreateAssignment = () => {
               </Popconfirm>
             </Form.Item>
           </Form>
-          <Button onClick={() => setViewModal(true)}>View Modal</Button>
-          {viewModal && <SelectModal setisShowModal={setViewModal} />}
+          {viewModalUser && (
+            <SelectModal
+              setisShowModal={setViewModalUser}
+              type={"Select User"}
+              setName={setUserName}
+              setId={setUserId}
+              chosenId={userId}
+            />
+          )}
+          {viewModalAsset && (
+            <SelectModal
+              setisShowModal={setViewModalAsset}
+              type={"Select Asset"}
+              setName={setAssetName}
+              setId={setAssetId}
+              chosenId={assetId}
+            />
+          )}
         </div>
       </Spin>
     </LayoutPage>
