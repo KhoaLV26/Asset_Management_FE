@@ -65,7 +65,7 @@ export const SelectModal = ({
           message.error(err.message);
         });
     }
-  }, [params, type, url]);
+  }, [params]);
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -263,10 +263,11 @@ export const SelectModal = ({
   useEffect(() => {
     if (data.length > 0) {
       const firstKey = type === "Select User" ? data[0].staffCode : data[0].assetCode;
-      const name = type === "Select User" ? data[0].fullName : data[0].assetName 
+      const name = type === "Select User" ? data[0].fullName : data[0].assetName;
+      const id = data[0].id;
       setSelectedRowKeys([firstKey]);
       setCurrentName(name);
-      setCurrentId(firstKey);
+      setCurrentId(id);
       (type === "Select User") ? setParams((prev) => ({ ...prev, newStaffCode: chosenId })) : setParams((prev) => ({ ...prev, newAssetCode: chosenId }));
     }
   }, [data]);
@@ -326,11 +327,11 @@ export const SelectModal = ({
                 console.log(selectedRow[0])
                 if (type === "Select User") {
                   setCurrentName(selectedRow[0].fullName);
-                  setCurrentId(selectedRow[0].staffCode);
+                  setCurrentId(selectedRow[0].id);
                 }
                 if (type === "Select Asset") {
                   setCurrentName(selectedRow[0].assetName);
-                  setCurrentId(selectedRow[0].assetCode);
+                  setCurrentId(selectedRow[0].id);
                 }
               },
             }}
