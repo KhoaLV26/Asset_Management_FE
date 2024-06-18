@@ -1,78 +1,75 @@
 import { createContext, useEffect, useState } from "react";
 import axiosInstance from "../axios/axiosInstance";
+import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  // const navigate = useNavigate();
   const [auth, setAuth] = useState({
     token: null,
     refreshToken: null,
-    role: null,
-    userId: null,
+    user: null,
   });
   const [isAuthen, setIsAuthen] = useState(!!getToken());
 
   useEffect(() => {
     const token = getToken();
     const refreshToken = getRefreshToken();
-    const role = getRole();
-    const userId = getUserId();
-    if (token && refreshToken && role && userId) {
-      setAuth({ token, refreshToken, role, userId });
+    const user = getUser();
+    if (token && refreshToken && user) {
+      setAuth({ token, refreshToken, user });
     }
   }, []);
 
   const login = (data) => {
     setAuth(data);
     setIsAuthen(true);
-    setTokens(data.token, data.refreshToken, data.role, data.userId);
+    setTokens(data.token, data.refreshToken, data.user);
   };
 
   const logout = async () => {
-    await axiosInstance.get("/auths/logout");
-    setAuth({
-      token: null,
-      refreshToken: null,
-      role: null,
-      userId: null,
-    });
-    setIsAuthen(false);
-    removeTokens();
+    try {
+      await axiosInstance.get("/auths/logout");
+      setAuth({
+        token: null,
+        refreshToken: null,
+        user: null,
+      });
+      setIsAuthen(false);
+      removeTokens();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthen, auth, login, logout }}>
+    <AuthContext.Provider value={{ isAuthen, auth, login, logout, setAuth }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const getToken = () => {
-  return localStorage.getItem("token");
+  return Cookies.get("token");
 };
 
 export const getRefreshToken = () => {
-  return localStorage.getItem("refreshToken");
+  return Cookies.get("refreshToken");
 };
 
-export const getRole = () => {
-  return localStorage.getItem("role");
+export const getUser = () => {
+  return JSON.parse(localStorage.getItem("user"));
 };
 
-export const getUserId = () => {
-  return localStorage.getItem("userId");
-};
-
-export const setTokens = (token, refreshToken, role, userId) => {
-  localStorage.setItem("token", token);
-  localStorage.setItem("refreshToken", refreshToken);
-  localStorage.setItem("role", role);
-  localStorage.setItem("userId", userId);
+export const setTokens = (token, refreshToken, user) => {
+  Cookies.set("token", token, { expires: 1 / 48 }); // 30 minutes
+  Cookies.set("refreshToken", refreshToken, { expires: 7 }); // 7 days
+  localStorage.setItem("user", JSON.stringify(user));
 };
 
 export const removeTokens = () => {
-  localStorage.removeItem("token");
-  localStorage.removeItem("refreshToken");
-  localStorage.removeItem("role");
-  localStorage.removeItem("userId");
+  Cookies.remove("token");
+  Cookies.remove("refreshToken");
+  localStorage.removeItem("user");
 };
