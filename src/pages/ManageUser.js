@@ -79,7 +79,7 @@ const ManageUser = () => {
   useEffect(() => {
     axiosInstance
       .get(
-        '/Users/search', {params}
+        '/Users', {params}
       )
       .then((res) => {
         if (res.data.success) {
