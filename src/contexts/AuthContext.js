@@ -5,7 +5,6 @@ import Cookies from "js-cookie";
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // const navigate = useNavigate();
   const [auth, setAuth] = useState({
     token: null,
     refreshToken: null,
@@ -26,6 +25,7 @@ export const AuthProvider = ({ children }) => {
     setAuth(data);
     setIsAuthen(true);
     setTokens(data.token, data.refreshToken, data.user);
+    localStorage.setItem("logout-event", Date.now()); // Trigger logout event for other tabs
   };
 
   const logout = async () => {
@@ -38,10 +38,30 @@ export const AuthProvider = ({ children }) => {
         refreshToken: null,
         user: null,
       });
+      localStorage.setItem("logout-event", Date.now()); // Trigger logout event for other tabs
     } catch (err) {
       console.log(err);
     }
   };
+
+  useEffect(() => {
+    const syncLogout = (event) => {
+      if (event.key === "logout-event") {
+        setIsAuthen(false);
+        setAuth({
+          token: null,
+          refreshToken: null,
+          user: null,
+        });
+        window.location.href = "/login"; // Redirect to login page
+      }
+    };
+
+    window.addEventListener("storage", syncLogout);
+    return () => {
+      window.removeEventListener("storage", syncLogout);
+    };
+  }, []);
 
   return (
     <AuthContext.Provider value={{ isAuthen, auth, login, logout, setAuth }}>
