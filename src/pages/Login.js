@@ -38,7 +38,6 @@ const Login = () => {
 
   const onFinish = async (values) => {
     if (getUser()) {
-      debugger;
       return message.error("You are already logged in!");
     }
     setLoading(true);
