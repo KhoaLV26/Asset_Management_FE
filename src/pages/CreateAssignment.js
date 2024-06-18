@@ -29,6 +29,7 @@ const CreateAssignment = () => {
   const [viewModalUser, setViewModalUser] = useState(false);
   const [viewModalAsset, setViewModalAsset] = useState(false);
   const today = moment().format("YYYY-MM-DD");
+  const [note, setNote] = useState("")
 
   const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
   const navigate = useNavigate();
@@ -61,6 +62,7 @@ const CreateAssignment = () => {
         assignedBy: adminId,
         assignedDate: today,
         assetId: assetId,
+        note: note.trim(),
         status: 1
       })
       .then((response) => {
@@ -88,25 +90,22 @@ const CreateAssignment = () => {
   const onFieldsChange = () => {
     const errors = form.getFieldsError().filter(({ errors }) => errors.length);
     const fieldsWithError = errors.length;
-    const allFieldsTouched = form.isFieldsTouched(true);
-    setIsButtonDisabled(fieldsWithError > 0 || !allFieldsTouched);
+    setIsButtonDisabled(fieldsWithError > 0);
   };
 
   return (
     <LayoutPage>
       <Spin spinning={isLoading} className="w-full">
-        <div className="mt-[70px] w-full flex">
+        <div className="mt-[70px] w-full  justify-center items-center m-[34%]">
           <h1 className="font-bold text-d6001c text-2xl">
             Create New Assignment
           </h1>
           <Form
-            className="mt-20 w-2/5"
+            className="mt-10"
             onFinish={onFinish}
             form={form}
             onFieldsChange={onFieldsChange}
-            initialValues={{ createBy: "defaultUser" }}
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 18 }}
+            initialValues={{ createBy: "defaultUser", assignedDate: dayjs(today, "YYYY-MM-DD") }}
           >
             <Form.Item
               className="name-form-item"
@@ -126,7 +125,7 @@ const CreateAssignment = () => {
                 readOnly
                 placeholder="Chose an user...."
                 value={userName}
-                className="w-full"
+                className="w-full ml-20"
                 onSearch={() => {
                   setViewModalUser(true);
                 }}
@@ -151,7 +150,7 @@ const CreateAssignment = () => {
                 readOnly
                 placeholder="Chose an asset...."
                 value={assetName}
-                className="w-full"
+                className="w-full ml-[75px]"
                 onSearch={() => {
                   setViewModalAsset(true);
                 }}
@@ -187,7 +186,7 @@ const CreateAssignment = () => {
             >
               <DatePicker
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
-                className="w-full"
+                className="w-[115%] ml-[20px]"
                 inputReadOnly
                 allowClear={false}
               />
@@ -197,26 +196,18 @@ const CreateAssignment = () => {
               className="name-form-item"
               label="Note"
               name="note"
-              rules={[
-                {
-                  min: 0,
-                  max: 255,
-                  message: "This field can only contain 255 characters",
-                },
-              ]}
-              validateTrigger="onBlur"
             >
-              <TextArea
+              <TextArea         
                 showCount
                 maxLength={255}
-                //onChange={onChange}
+                onChange={(e) => setNote(e.target.value)}
                 placeholder="Note...."
-                className="w-full"
+                className="w-[97%] ml-[90px]"
                 style={{ height: 120, resize: "none" }}
               />
             </Form.Item>
 
-            <Form.Item className="gap-4 mx-[45%] items-center justify-center w-full">
+            <Form.Item className="gap-4 justify-end flex">
               <Button
                 type="primary"
                 htmlType="submit"

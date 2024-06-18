@@ -22,6 +22,7 @@ export const SelectModal = ({
   const [total, setTotal] = useState(0);
   const [url, setURL] = useState("");
   const [columns, setColumns] = useState([]);
+  const [fetched,setFetched] = useState(true);
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     search: searchQuery,
@@ -41,6 +42,7 @@ export const SelectModal = ({
       setColumns(assetColumns);
     }
     if (url !== "") {
+      fetched &&
       axiosInstance
         .get(url, { params })
         .then((res) => {
@@ -57,6 +59,7 @@ export const SelectModal = ({
                 }))
             );
             setTotal(res.data.totalCount);
+            setFetched(false)
           } else {
             message.error(res.data.message);
           }
@@ -65,7 +68,7 @@ export const SelectModal = ({
           message.error(err.message);
         });
     }
-  }, [params, type]);
+  }, [params, type, url]);
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
