@@ -1,5 +1,6 @@
 import CreateAsset from "../pages/CreateAsset";
 import Home from "../pages/Home";
+import ManageAssignment from "../pages/ManageAssignment";
 
 const { useRoutes } = require("react-router-dom");
 const { default: ManageUser } = require("../pages/ManageUser");
@@ -23,6 +24,10 @@ const AppRoutes = () => {
     {
       path: "/manage-asset",
       element: <ManageAsset />,
+    },
+    {
+      path: "/manage-assignment",
+      element: <ManageAssignment />,
     },
     {
       path: "/manage-asset/create-asset",
