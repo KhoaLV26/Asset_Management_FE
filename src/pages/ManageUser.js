@@ -46,7 +46,6 @@ const ManageUser = () => {
     sortBy: "StaffCode",
     sortDirection: "asc",
     pageNumber: 1,
-    pageSize: 15,
   });
 
   const sorterLog = (name) => {

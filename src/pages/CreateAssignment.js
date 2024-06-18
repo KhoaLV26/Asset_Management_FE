@@ -6,7 +6,6 @@ import "../styles/CreateAssignment.css";
 import moment from "moment";
 import axiosInstance from "../axios/axiosInstance";
 import dayjs from "dayjs";
-import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   Spin,
   message,
@@ -25,18 +24,11 @@ const CreateAssignment = () => {
   const [userName, setUserName] = useState("");
   const [assetName, setAssetName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  // const [isLoading, setIsLoading] = useState(true);
   const [form] = Form.useForm();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [viewModalUser, setViewModalUser] = useState(false);
   const [viewModalAsset, setViewModalAsset] = useState(false);
   const today = moment().format("YYYY-MM-DD");
-  const [params, setParams] = useState({
-    userId: "",
-    assetId: "",
-    assignedDate: "",
-    note: "",
-  });
 
   const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
   const navigate = useNavigate();
@@ -227,7 +219,7 @@ const CreateAssignment = () => {
                 htmlType="submit"
                 disabled={isButtonDisabled}
                 className=" me-5 bg-red-600"
-                //loading={isLoading}
+                loading={isLoading}
               >
                 Save
               </Button>

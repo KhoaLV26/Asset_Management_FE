@@ -267,6 +267,7 @@ export const SelectModal = ({
       setSelectedRowKeys([firstKey]);
       setCurrentName(name);
       setCurrentId(firstKey);
+      (type === "Select User") ? setParams((prev) => ({ ...prev, newStaffCode: chosenId })) : setParams((prev) => ({ ...prev, newAssetCode: chosenId }));
     }
   }, [data]);
 
