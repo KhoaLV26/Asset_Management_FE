@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SelectModal from "../components/SelectModal";
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/CreateAssignment.css";
+import moment from "moment";
 import axiosInstance from "../axios/axiosInstance";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
@@ -25,6 +26,7 @@ const { TextArea } = Input;
 const CreateAssignment = () => {
   const [userId, setUserId] = useState("");
   const [assetId, setAssetId] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
   const [form] = Form.useForm();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -119,128 +121,160 @@ const CreateAssignment = () => {
 
   return (
     <LayoutPage>
-      {/* <Spin> */}
-      <div className="mt-[70px] w-full flex">
-        <h1 className="font-bold text-d6001c text-2xl">
-          Create New Assignment
-        </h1>
-        <Form
-          className="mt-20 w-2/5"
-          onFinish={onFinish}
-          form={form}
-          onFieldsChange={onFieldsChange}
-          initialValues={{ createBy: "defaultUser" }}
-          labelCol={{ span: 6 }}
-          wrapperCol={{ span: 18 }}
-        >
-          <Form.Item
-            className="name-form-item"
-            label="User:"
-            name="user"
-            rules={[
-              { required: true, message: "Please chose an user!" },
-              {
-                min: 6,
-                max: 6,
-                message: "Please chose a valid user!",
-              },
-            ]}
-            validateTrigger="onBlur"
+      <Spin spinning={isLoading} className="w-full">
+        <div className="mt-[70px] w-full flex">
+          <h1 className="font-bold text-d6001c text-2xl">
+            Create New Assignment
+          </h1>
+          <Form
+            className="mt-20 w-2/5"
+            onFinish={onFinish}
+            form={form}
+            onFieldsChange={onFieldsChange}
+            initialValues={{ createBy: "defaultUser" }}
+            labelCol={{ span: 6 }}
+            wrapperCol={{ span: 18 }}
           >
-            <Input
-              placeholder="Enter your first name...."
-              value={params.userId}
-              className="w-full"
-              //onBlur={handleBlur("firstName")}
-            />
-          </Form.Item>
-
-          <Form.Item
-            className="name-form-item"
-            label="Asset"
-            name="asset"
-            rules={[
-              { required: true, message: "Please chose an asset!" },
-              {
-                min: 6,
-                max: 6,
-                message: "Please chose a valid asset!",
-              },
-              //{ validator: validateName },
-            ]}
-            validateTrigger="onBlur"
-          >
-            <Input
-              value={params.assetId}
-              className="w-full"
-              //onBlur={handleBlur("lastName")}
-            />
-          </Form.Item>
-
-          <Form.Item
-            label="Assigned Date"
-            name="assignedDate"
-            required
-            rules={[]}
-            validateTrigger="onBlur"
-          >
-            <DatePicker
-              format="YYYY-MM-DD"
-              className="w-full"
-              inputReadOnly
-              allowClear={false}
-            />
-          </Form.Item>
-
-          <Form.Item
-            className="name-form-item"
-            label="Note"
-            name="note"
-            rules={[
-              {
-                min: 0,
-                max: 255,
-                message: "abcxyz",
-              },
-            ]}
-            validateTrigger="onBlur"
-          >
-            <TextArea
-              showCount
-              maxLength={255}
-              //onChange={onChange}
-              placeholder="Note...."
-              className="w-full"
-              style={{ height: 120, resize: "none" }}
-              onBlur={handleBlur}
-            />
-          </Form.Item>
-
-          <Form.Item className="gap-4 mx-[45%] items-center justify-center w-full">
-            <Button
-              type="primary"
-              htmlType="submit"
-              disabled={isButtonDisabled}
-              className=" me-5 bg-red-600"
-              //loading={isLoading}
+            <Form.Item
+              className="name-form-item"
+              label="User:"
+              name="user"
+              rules={[
+                { required: true, message: "Please chose an user!" },
+                {
+                  min: 6,
+                  max: 6,
+                  message: "Please chose a valid user!",
+                },
+              ]}
+              validateTrigger="onBlur"
             >
-              Save
-            </Button>
-            <Popconfirm
-              title="Cancel creating user?"
-              description="Are you sure you want to cancel creating user"
-              onConfirm={handleConfirm}
-              onCancel={handleCancel}
-              okText="Yes"
-              cancelText="No"
+              <Input
+                placeholder="Chose an user...."
+                value={params.userId}
+                className="w-full"
+                //onBlur={handleBlur("firstName")}
+              />
+            </Form.Item>
+
+            <Form.Item
+              className="name-form-item"
+              label="Asset"
+              name="asset"
+              rules={[
+                { required: true, message: "Please chose an asset!" },
+                {
+                  min: 6,
+                  max: 6,
+                  message: "Please chose a valid asset!",
+                },
+                //{ validator: validateName },
+              ]}
+              validateTrigger="onBlur"
             >
-              <Button danger>Cancel</Button>
-            </Popconfirm>
-          </Form.Item>
-        </Form>
-        {viewModal && <SelectModal setisShowModal={setViewModal} />}
-      </div>
-      {/* </Spin> */}
+              <Input
+                placeholder="Chose an asset...."
+                value={params.assetId}
+                className="w-full"
+                //onBlur={handleBlur("lastName")}
+              />
+            </Form.Item>
+
+            <Form.Item
+              label="Assigned Date"
+              name="assignedDate"
+              required
+              rules={[
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value) {
+                      return Promise.reject(
+                        new Error("Please input the joined date!")
+                      );
+                    }
+
+                    const today = moment().startOf("day");
+                    if (value.isBefore(today)) {
+                      return Promise.reject(
+                        new Error(
+                          "Assigned date is not later than today's date. Please select a different date."
+                        )
+                      );
+                    }
+
+                    const day = value.day();
+                    if (day === 0 || day === 6) {
+                      return Promise.reject(
+                        new Error(
+                          "Assigned date is Saturday or Sunday. Please select a different date."
+                        )
+                      );
+                    }
+
+                    return Promise.resolve();
+                  },
+                }),
+              ]}
+              validateTrigger="onBlur"
+            >
+              <DatePicker
+                format="YYYY-MM-DD"
+                className="w-full"
+                inputReadOnly
+                allowClear={false}
+              />
+            </Form.Item>
+
+            <Form.Item
+              className="name-form-item"
+              label="Note"
+              name="note"
+              rules={[
+                {
+                  min: 0,
+                  max: 255,
+                  message: "abcxyz",
+                },
+              ]}
+              validateTrigger="onBlur"
+            >
+              <TextArea
+                showCount
+                maxLength={255}
+                //onChange={onChange}
+                placeholder="Note...."
+                className="w-full"
+                style={{ height: 120, resize: "none" }}
+                onBlur={handleBlur}
+              />
+            </Form.Item>
+
+            <Form.Item className="gap-4 mx-[45%] items-center justify-center w-full">
+              <Button
+                type="primary"
+                htmlType="submit"
+                disabled={isButtonDisabled}
+                className=" me-5 bg-red-600"
+                //loading={isLoading}
+              >
+                Save
+              </Button>
+              <Popconfirm
+                title="Cancel creating user?"
+                description="Are you sure you want to cancel creating user"
+                onConfirm={handleConfirm}
+                onCancel={handleCancel}
+                okText="Yes"
+                cancelText="No"
+              >
+                <Button danger>Cancel</Button>
+              </Popconfirm>
+            </Form.Item>
+          </Form>
+          <Button onClick={() => setViewModal(true)}>View Modal</Button>
+          {viewModal && <SelectModal setisShowModal={setViewModal} />}
+        </div>
+      </Spin>
     </LayoutPage>
   );
 };

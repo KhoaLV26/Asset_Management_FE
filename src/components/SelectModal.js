@@ -5,13 +5,23 @@ import {
   CaretDownOutlined,
   CaretUpOutlined,
 } from "@ant-design/icons";
+import CustomPagination from "./CustomPagination"
 
 const { Search } = Input;
-export const SelectModal = ({ setisShowModal, params, setParams
+export const SelectModal = ({ setisShowModal,
   //, columns, data 
 }) => {
   const [direction, setDirection] = useState(true)
   const [searchQuery, setSearchQuery] = useState("");
+  const [params, setParams] = useState({
+    location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
+    searchTerm: searchQuery,
+    role: "",
+    sortBy: "StaffCode",
+    sortDirection: "asc",
+    pageNumber: 1,
+    pageSize: 15,
+  });
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -292,13 +302,21 @@ export const SelectModal = ({ setisShowModal, params, setParams
             }}
           />
         </div>
-        <div className="flex flex-wrap gap-1">
+        <div className="flex flex-wrap gap-1 mx-3">
           <Table
             columns={columns}
             dataSource={data}
             scroll={{ y: 400 }}
             rowSelection={{ type: "radio" }}
+            pagination={false}
           />
+          <div className="w-full flex justify-end">
+            <CustomPagination
+              params={params}
+              setParams={setParams}
+              total={100}
+            />
+          </div>
           <div className="flex gap-5 justify-end w-full">
             <Button
               className="bg-d6001c w-[7%] text-white"
