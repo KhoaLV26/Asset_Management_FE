@@ -305,7 +305,7 @@ const ManageUser = () => {
     <LayoutPage>
       <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">User List</h1>
-        <div className="flex items-center justify-between mt-7 mb-2">
+        <div className="flex items-center justify-between mt-8">
           <Space.Compact>
             <Select
               open={open}
@@ -315,6 +315,8 @@ const ManageUser = () => {
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
+                setParams((prev) => ({ ...prev, pageNumber: 1 }));
+
               }}
               onSelect={() => setOpen(!open)}
               options={roles}
@@ -323,6 +325,7 @@ const ManageUser = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
+              placeholder="Enter text"
                 className="w-[100%]"
                 value={searchQuery}
                 allowClear
