@@ -5,7 +5,6 @@ import {
   DatePicker,
   Form,
   Input,
-  Popconfirm,
   Radio,
   Select,
   Spin,
@@ -255,6 +254,14 @@ const CreateUser = () => {
                       return Promise.reject(
                         new Error(
                           "Joined date is Saturday or Sunday. Please select a different date."
+                        )
+                      );
+                    }
+
+                    if (dob && value.isBefore(dob.clone().add(18, "years"))) {
+                      return Promise.reject(
+                        new Error(
+                          "Joined date must be at least 18 years after the Date of Birth. Please select a different date."
                         )
                       );
                     }
