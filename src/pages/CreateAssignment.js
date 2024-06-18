@@ -55,11 +55,14 @@ const CreateAssignment = () => {
 
   const onFinish = (values) => {
     setIsLoading(true);
-    values.assignedBy = adminId;
-    values.createdBy = adminId;
-    values.createdAt = values.createdAt.format("YYYY-MM-DD");
     axiosInstance
-      .post("/assignments", values)
+      .post("/assignments", {
+        assignedTo: userId,
+        assignedBy: adminId,
+        assignedDate: today,
+        assetId: assetId,
+        status: 1
+      })
       .then((response) => {
         if (response.data.success === true) {
           message.success("An assignment is created!");
@@ -73,7 +76,7 @@ const CreateAssignment = () => {
       .catch((error) => {
         if (error.response.status === 409) {
           message.error(error.response.data.message);
-        } else message.error("Create asset error occurred. Please try again.");
+        } else message.error("Create assignment error occurred. Please try again.");
       });
     setIsLoading(false);
   };
