@@ -29,14 +29,18 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = async () => {
-    await axiosInstance.get("/auths/logout");
-    setAuth({
-      token: null,
-      refreshToken: null,
-      user: null,
-    });
-    setIsAuthen(false);
-    removeTokens();
+    try {
+      await axiosInstance.get("/auths/logout");
+      setAuth({
+        token: null,
+        refreshToken: null,
+        user: null,
+      });
+      setIsAuthen(false);
+      removeTokens();
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
