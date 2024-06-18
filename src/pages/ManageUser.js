@@ -39,7 +39,7 @@ const ManageUser = () => {
   const [roleHolder, setRoleHolder] = useState("Type");
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
-    searchTerm: searchQuery,
+    search: searchQuery,
     role: "",
     sortBy: "StaffCode",
     sortDirection: "asc",
@@ -72,14 +72,14 @@ const ManageUser = () => {
 
     setParams((prev) => ({
       ...prev,
-      searchTerm: removeExtraWhitespace(value),
+      search: removeExtraWhitespace(value),
     }));
   };
 
   useEffect(() => {
     axiosInstance
       .get(
-        '/Users/search', {params}
+        '/Users', {params}
       )
       .then((res) => {
         if (res.data.success) {
