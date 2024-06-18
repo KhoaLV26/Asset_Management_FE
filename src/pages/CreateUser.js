@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LayoutPage from "../layout/LayoutPage";
 import {
   Button,
   DatePicker,
   Form,
   Input,
-  Popconfirm,
   Radio,
   Select,
   Spin,
@@ -15,6 +14,7 @@ import "../styles/CreateUser.css";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import axiosInstance from "../axios/axiosInstance";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 const { Option } = Select;
 
 const CreateUser = () => {
@@ -24,7 +24,9 @@ const CreateUser = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
+  const { auth } = useContext(AuthContext);
+
+  const adminId = auth?.user?.id;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -256,6 +258,14 @@ const CreateUser = () => {
                       );
                     }
 
+                    if (dob && value.isBefore(dob.clone().add(18, "years"))) {
+                      return Promise.reject(
+                        new Error(
+                          "Joined date must be at least 18 years after the Date of Birth. Please select a different date."
+                        )
+                      );
+                    }
+
                     return Promise.resolve();
                   },
                 }),
@@ -297,16 +307,10 @@ const CreateUser = () => {
               >
                 Save
               </Button>
-              <Popconfirm
-                title="Cancel creating user?"
-                description="Are you sure you want to cancel creating user"
-                onConfirm={handleConfirm}
-                onCancel={handleCancel}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button danger>Cancel</Button>
-              </Popconfirm>
+
+              <Button onClick={handleConfirm} danger>
+                Cancel
+              </Button>
             </Form.Item>
           </Form>
         </div>

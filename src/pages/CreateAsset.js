@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import LayoutPage from "../layout/LayoutPage";
 import {
@@ -17,6 +17,7 @@ import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import "../styles/CreateAsset.css";
 import axiosInstance from "../axios/axiosInstance";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
+import { AuthContext } from "../contexts/AuthContext";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -35,8 +36,9 @@ const CreateAsset = () => {
   const [isDropdownClicked, setIsDropdownClicked] = useState(false);
   const [isAddCategoryButtonDisabled, setIsAddCategoryButtonDisabled] =
     useState(true); // New state for category button
+  const { auth } = useContext(AuthContext);
 
-  const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
+  const adminId = auth?.user?.id;
   const navigate = useNavigate();
 
   const handleCancel = () => {
@@ -392,16 +394,9 @@ const CreateAsset = () => {
               >
                 Save
               </Button>
-              <Popconfirm
-                title="Cancel creating asset?"
-                description="Are you sure you want to cancel creating the new asset?"
-                onConfirm={handleConfirm}
-                onCancel={handleCancel}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button danger>Cancel</Button>
-              </Popconfirm>
+              <Button onClick={handleConfirm} danger>
+                Cancel
+              </Button>
             </Form.Item>
           </Form>
         </div>
@@ -410,27 +405,22 @@ const CreateAsset = () => {
           visible={isCategoryModalVisible}
           closable={false}
           footer={[
-            <Popconfirm
-              title="Cancel creating new category?"
-              description="Are you sure you want to cancel creating the new category?"
-              onConfirm={handleCancel}
-              okText="Yes"
-              cancelText="No"
-            >
+            <>
               <Button
                 key="ok"
+                onClick={handleCancel}
                 icon={<CloseOutlined />}
                 className="bg-white text-red-600 border-red-500 border-1"
               />
-            </Popconfirm>,
-
-            <Button
-              key="ok"
-              onClick={handleAddCategory}
-              disabled={isAddCategoryButtonDisabled}
-              icon={<CheckOutlined />}
-              className="bg-white text-green-600 border-green-500 border-1"
-            />,
+              <Button
+                key="ok"
+                onClick={handleAddCategory}
+                disabled={isAddCategoryButtonDisabled}
+                icon={<CheckOutlined />}
+                className="bg-white text-green-600 border-green-500 border-1"
+              />
+              ,
+            </>,
           ]}
         >
           <Form

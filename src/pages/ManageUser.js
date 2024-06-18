@@ -34,18 +34,17 @@ const ManageUser = () => {
   const [direction, setDirection] = useState(true);
   const [modalData, setModalData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
-  const [nameType, setNameType] = useState("FullName");
   const navigate = useNavigate();
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
-  const [newUser, setNewUser] = useState("new");
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
-    searchTerm: searchQuery,
+    search: searchQuery,
     role: "",
     sortBy: "StaffCode",
     sortDirection: "asc",
     pageNumber: 1,
+    newStaffCode: location?.state?.data?.staffCode || 0, 
   });
 
   const sorterLog = (name) => {
@@ -73,41 +72,23 @@ const ManageUser = () => {
 
     setParams((prev) => ({
       ...prev,
-      searchTerm: removeExtraWhitespace(value),
+      search: removeExtraWhitespace(value),
     }));
   };
 
   useEffect(() => {
     axiosInstance
       .get(
-        `/Users/search?location=${params.location}&searchTerm=${params.searchTerm}&role=${params.role}&sortBy=${params.sortBy}&sortDirection=${params.sortDirection}&pageNumber=${params.pageNumber}&pageSize=${params.pageSize}`
+        '/Users', {params}
       )
       .then((res) => {
         if (res.data.success) {
-          if (params.pageNumber === 1) {
-            setData(
-              Array.from(
-                new Set(
-                  [newUser, ...res.data.data]
-                    .map((user) => ({
-                      ...user,
-                      fullName: `${user?.firstName} ${user?.lastName}`,
-                    }))
-                    ?.filter((user) => user.firstName !== undefined)
-                    .map((user) => JSON.stringify(user))
-                )
-              )
-                .map((user) => JSON.parse(user))
-                ?.slice(0, 15)
-            );
-          } else {
             setData(
               res.data.data.map((user) => ({
                 ...user,
                 fullName: `${user.firstName} ${user.lastName}`,
               }))
             );
-          }
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
@@ -116,7 +97,7 @@ const ManageUser = () => {
       .catch((err) => {
         message.error(err.message);
       });
-  }, [params, newUser]);
+  }, [params]);
 
   useEffect(() => {
     axiosInstance
@@ -145,18 +126,17 @@ const ManageUser = () => {
     const isFirstTime = sessionStorage.getItem("isFirstTime") === null;
     if (isFirstTime) {
       if (location?.state?.data) {
-        setNewUser(location.state.data);
+        setParams((prev) => ({ ...prev, newStaffCode: location.state.data.staffCode }));
       }
       sessionStorage.setItem("isFirstTime", "false");
     } else {
-      setNewUser(null);
+      setParams((prev) => ({ ...prev, newStaffCode: "" }));
     }
 
     return () => {
       sessionStorage.removeItem("isFirstTime");
     };
   }, [location]);
-  console.log(newUser);
 
   const columns = [
     {
@@ -177,6 +157,7 @@ const ManageUser = () => {
       dataIndex: "staffCode",
       key: "staffcode",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("StaffCode");
@@ -188,7 +169,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Full Name{" "}
-          {params.sortBy === "default" && nameType === "FullName" ? (
+          {params.sortBy === "default" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -202,10 +183,10 @@ const ManageUser = () => {
       dataIndex: "fullName",
       key: "name",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("default");
-          setNameType("FullName");
         },
       }),
       render: (text) => <span>{text}</span>,
@@ -214,7 +195,7 @@ const ManageUser = () => {
       title: (
         <span className="flex items-center justify-between">
           Username{" "}
-          {params.sortBy === "default" && nameType === "UserName" ? (
+          {params.sortBy === "Username" ? (
             params.sortDirection === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -228,10 +209,10 @@ const ManageUser = () => {
       dataIndex: "username",
       key: "username",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("default");
-          setNameType("UserName");
+          sorterLog("Username");
         },
       }),
       render: (text) => <span>{text}</span>,
@@ -254,6 +235,7 @@ const ManageUser = () => {
       dataIndex: "dateJoined",
       key: "dateJoined",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("JoinedDate");
@@ -279,6 +261,7 @@ const ManageUser = () => {
       key: "roleName",
       dataIndex: "roleName",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("Role");
@@ -307,7 +290,6 @@ const ManageUser = () => {
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
-              navigate("edit-user");
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -318,12 +300,11 @@ const ManageUser = () => {
   ];
 
   console.log(data);
-  console.log(newUser);
   return (
     <LayoutPage>
       <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">User List</h1>
-        <div className="flex items-center justify-between mt-8">
+        <div className="flex items-center justify-between mt-7 mb-2">
           <Space.Compact>
             <Select
               open={open}
@@ -333,8 +314,6 @@ const ManageUser = () => {
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
-                setParams((prev) => ({ ...prev, pageNumber: 1 }));
-
               }}
               onSelect={() => setOpen(!open)}
               options={roles}
@@ -343,7 +322,6 @@ const ManageUser = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-              placeholder="Enter text"
                 className="w-[100%]"
                 value={searchQuery}
                 allowClear
@@ -416,35 +394,35 @@ const ManageUser = () => {
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Staff Code:</span>
-              <span>{modalData?.staffCode}</span>
+              <span className="w-full">{modalData?.staffCode}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Full Name:</span>
-              <span>{modalData?.fullName}</span>
+              <span className="w-full">{modalData?.fullName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Username:</span>
-              <span>{modalData?.username}</span>
+              <span className="w-full">{modalData?.username}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Date of Birth:</span>
-              <span>{modalData?.dateOfBirth}</span>
+              <span className="w-full">{modalData?.dateOfBirth}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Gender:</span>
               {modalData?.Gender === 1 ? (
-                <span>Female</span>
+                <span className="w-full">Female</span>
               ) : (
-                <span>Male</span>
+                <span className="w-full">Male</span>
               )}
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Type:</span>
-              <span>{modalData?.roleName}</span>
+              <span className="w-full">{modalData?.roleName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Location:</span>
-              <span>{modalData?.locationName}</span>
+              <span className="w-full">{modalData?.locationName}</span>
             </div>
           </div>
         </Modal>
