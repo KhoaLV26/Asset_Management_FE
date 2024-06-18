@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { AuthContext } from "../contexts/AuthContext";
+import { AuthContext, getUser } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import { Button, Form, Input, message } from "antd";
@@ -37,7 +37,7 @@ const Login = () => {
   };
 
   const onFinish = async (values) => {
-    if (auth?.user) {
+    if (getUser()) {
       return message.error("You are already logged in!");
     }
     setLoading(true);
