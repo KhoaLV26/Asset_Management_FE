@@ -64,7 +64,7 @@ const AppRoutes = () => {
     {
       path: "/manage-assignment/create-assignment",
       element: <CreateAssignment />,
-    }
+    },
     { path: "*", element: <NotFound /> },
   ]);
   return elements;
