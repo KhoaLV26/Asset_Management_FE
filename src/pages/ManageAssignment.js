@@ -228,7 +228,7 @@ const ManageAsset = () => {
       title: (
         <span className="flex items-center justify-between">
           State{" "}
-          {params.sortBy === "State" ? (
+          {params.sortBy === "AssignedDate" ? (
             params.sortOrder === "desc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
@@ -239,12 +239,12 @@ const ManageAsset = () => {
           )}
         </span>
       ),
-      key: "state",
-      dataIndex: "state",
+      key: "assignedDate",
+      dataIndex: "assignedDate",
       width: "18%",
       onHeaderCell: () => ({
         onClick: () => {
-          sorterLog("State");
+          sorterLog("AssignedDate");
         },
       }),
       render: (text) => <span>{text}</span>,
