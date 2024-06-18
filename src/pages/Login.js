@@ -47,7 +47,7 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       if (error.response && error.response.status === 409) {
-        message.error("Invalid credentials!");
+        message.error("Username or password is incorrect. Please try again");
       } else {
         message.error("Login failed! Please try again.");
       }
