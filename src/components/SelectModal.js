@@ -65,7 +65,7 @@ export const SelectModal = ({
           message.error(err.message);
         });
     }
-  }, [params]);
+  }, [params, type]);
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
