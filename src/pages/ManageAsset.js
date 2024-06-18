@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Space, Table, Modal, Dropdown, Menu, Select, Pagination, message, Empty } from "antd";
+import { Button, Input, Space, Table, Modal, Select, message, Empty } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
 import {
@@ -43,7 +43,6 @@ const ManageAsset = () => {
   const handleSearch = (value) => {
     setParams((prev) => ({ ...prev, pageNumber: 1, search: value }));
   };
-  const [newAsset, setNewAsset] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,6 +96,7 @@ const ManageAsset = () => {
       dataIndex: "assetCode",
       key: "name",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("AssetCode");
@@ -122,6 +122,7 @@ const ManageAsset = () => {
       dataIndex: "assetName",
       key: "name",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("AssetName");
@@ -147,6 +148,7 @@ const ManageAsset = () => {
       dataIndex: "categoryName",
       key: "category",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("Category");
@@ -172,6 +174,7 @@ const ManageAsset = () => {
       key: "state",
       dataIndex: "state",
       width: "18%",
+      ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("State");
@@ -183,10 +186,11 @@ const ManageAsset = () => {
       title: "",
       key: "action",
       width: "10%",
+      ellipsis: true,
       render: (_, record) => (
         <Space size="middle">
           <Button
-            disabled={record?.state == "Assigned"}
+            disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("edit-asset");
@@ -195,7 +199,7 @@ const ManageAsset = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
-            disabled={record?.state == "Assigned"}
+            disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("delete-asset");
@@ -210,51 +214,35 @@ const ManageAsset = () => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
+
   useEffect(() => {
     const isFirstTimeAsset = sessionStorage.getItem("isFirstTimeAsset") === null;
     if (isFirstTimeAsset) {
       if (location?.state?.data) {
-        setNewAsset(location.state.data);
+        setParams((prev) => ({ ...prev, newAssetCode: location.state.data.assetCode }));
       }
       sessionStorage.setItem("isFirstTimeAsset", "false");
     } else {
-      setNewAsset(null);
+      setParams((prev) => ({ ...prev, newAssetCode: ""}));
     }
 
     return () => {
       sessionStorage.removeItem("isFirstTimeAsset");
     };
   }, [location]);
+
   useEffect(() => {
     axiosInstance
       .get("/Assets", { params })
       .then((res) => {
-        if (res.data.success) {
-          if (params.pageNumber === 1) {
-            const uniqueAssets = Array.from(
-              new Set(
-                [newAsset, ...res.data.data]
-                  .map((asset) => ({
-                    ...asset,
-                    state: stateConvert(asset?.status),
-                  }))
-                  .filter((asset) => asset.assetCode !== undefined)
-                  .map((asset) => JSON.stringify(asset))
-              )
-            )
-              .map((asset) => JSON.parse(asset))
-              ?.slice(0, 15);
-            setData(uniqueAssets);
+        if (res.data.success) {      
             setTotal(res.data.totalCount);
-          }
-          else {
             setData(res.data.data.map(asset => ({
               ...asset,
               state: stateConvert(asset.status),
             })))
           }
         }
-      }
       )
       .catch((err) => {
         console.log(err);
@@ -263,7 +251,8 @@ const ManageAsset = () => {
           setTotal(0)
         } else message.error(err.message);
       });
-  }, [params, newAsset]);
+  }, [params]);
+
   useEffect(() => {
     axiosInstance
       .get("/Categories")
@@ -278,9 +267,9 @@ const ManageAsset = () => {
         message.error(err.message);
       });
   }, []);
+
   useEffect(() => {
     if (isModalOpen) {
-      console.log(selectedAsset);
       axiosInstance
         .get(`/Assets/${selectedAsset.id}`)
         .then((res) => {
@@ -295,6 +284,7 @@ const ManageAsset = () => {
         });
     }
   }, [isModalOpen]);
+
   return (
     <LayoutPage>
       <div className="w-full mt-10">

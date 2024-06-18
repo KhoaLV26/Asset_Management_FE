@@ -20,6 +20,10 @@
 }
 
 .ant-radio-wrapper .ant-radio-checked .ant-radio-inner {
-  border-color: #d6001c;
-  background-color: #d6001c;
+  border-color: #d6001c !important;
+  background-color: #d6001c !important;
+}
+
+.ant-table-tbody > tr:hover {
+  cursor: pointer;
 }
