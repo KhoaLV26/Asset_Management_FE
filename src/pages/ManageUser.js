@@ -44,7 +44,7 @@ const ManageUser = () => {
     sortBy: "StaffCode",
     sortDirection: "asc",
     pageNumber: 1,
-    newStaffCode: location?.state?.data?.staffCode || 0,
+    newStaffCode: location?.state?.data?.staffCode || 0, 
   });
 
   const sorterLog = (name) => {
