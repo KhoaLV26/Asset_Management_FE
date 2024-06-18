@@ -30,9 +30,9 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setIsAuthen(false);
-    removeTokens();
     try {
       await axiosInstance.get("/auths/logout");
+      removeTokens();
       setAuth({
         token: null,
         refreshToken: null,
