@@ -1,6 +1,6 @@
 import { Pagination } from "antd";
 
-const CustomPagination = ({ params, setParams, total }) => {
+const CustomPagination = ({ params, setParams, total, setFetch }) => {
   const itemRender = (current, type, originalElement) => {
     if (type === "prev") {
       return <span>Previous</span>;
@@ -22,9 +22,14 @@ const CustomPagination = ({ params, setParams, total }) => {
             color: isActive ? "white" : "#d6001c",
             border: "none",
           }}
-          onClick={() =>
+          onClick={() =>{
             setParams((prev) => ({ ...prev, pageNumber: current }))
-          }
+            try {
+              setFetch(true)
+            } catch {
+
+            }
+          }}
         >
           {current}
         </button>
@@ -41,7 +46,14 @@ const CustomPagination = ({ params, setParams, total }) => {
       showSizeChanger={false}
       defaultPageSize={10}
       total={total}
-      onChange={(page) => setParams((prev) => ({ ...prev, pageNumber: page }))}
+      onChange={(page) => {
+        setParams((prev) => ({ ...prev, pageNumber: page }))
+        try {
+          setFetch(true)
+        } catch {
+
+        }
+      }}
       itemRender={itemRender}
     />
   );

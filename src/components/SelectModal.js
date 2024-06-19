@@ -11,7 +11,8 @@ export const SelectModal = ({
   type,
   setName,
   setId,
-  chosenId,
+  chosenCode,
+  setCode
 }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [direction, setDirection] = useState(true);
@@ -20,27 +21,30 @@ export const SelectModal = ({
   const [currentId, setCurrentId] = useState("");
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
-  const [url, setURL] = useState("");
   const [columns, setColumns] = useState([]);
+  const [fetched,setFetched] = useState(true);
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     search: searchQuery,
     role: "",
-    sortBy: "StaffCode",
+    sortBy: type === "Select User" ? "StaffCode" : "AssetCode",
     sortDirection: "asc",
     pageNumber: 1,
+    state: 2,
+    newStaffCode: chosenCode,
+    newAssetCode: chosenCode
   });
-
+  const url = type === "Select User" ? '/Users' : '/Assets'
+    console.log(data)
   useEffect(() => {
     if (type === "Select User") {
-      setURL(`/Users`);
       setColumns(userColumns);
     }
     if (type === "Select Asset") {
-      setURL(`/Assets`);
       setColumns(assetColumns);
     }
     if (url !== "") {
+      fetched &&
       axiosInstance
         .get(url, { params })
         .then((res) => {
@@ -57,6 +61,7 @@ export const SelectModal = ({
                 }))
             );
             setTotal(res.data.totalCount);
+            setFetched(false)
           } else {
             message.error(res.data.message);
           }
@@ -65,9 +70,10 @@ export const SelectModal = ({
           message.error(err.message);
         });
     }
-  }, [params]);
+  }, [params, type]);
 
   const sorterLog = (name) => {
+    setFetched(true)
     if (params.sortBy === name) {
       if (direction === true) {
         setParams((prev) => ({ ...prev, sortDirection: "desc" }));
@@ -268,11 +274,11 @@ export const SelectModal = ({
       setSelectedRowKeys([firstKey]);
       setCurrentName(name);
       setCurrentId(id);
-      (type === "Select User") ? setParams((prev) => ({ ...prev, newStaffCode: chosenId })) : setParams((prev) => ({ ...prev, newAssetCode: chosenId }));
     }
   }, [data]);
 
   const handleSearch = (value) => {
+    setFetched(true)
     setParams((prev) => ({ ...prev, pageNumber: 1 }));
 
     setParams((prev) => ({
@@ -328,11 +334,14 @@ export const SelectModal = ({
                 if (type === "Select User") {
                   setCurrentName(selectedRow[0].fullName);
                   setCurrentId(selectedRow[0].id);
+                  setCode(selectedRow[0].staffCode);
                 }
                 if (type === "Select Asset") {
                   setCurrentName(selectedRow[0].assetName);
                   setCurrentId(selectedRow[0].id);
+                  setCode(selectedRow[0].assetCode);
                 }
+              
               },
             }}
             scroll={{ y: 400 }}
@@ -342,6 +351,7 @@ export const SelectModal = ({
             <CustomPagination
               params={params}
               setParams={setParams}
+              setFetch={setFetched}
               total={total}
             />
           </div>

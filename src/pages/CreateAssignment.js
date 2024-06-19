@@ -19,6 +19,8 @@ import {
 const { TextArea, Search } = Input;
 
 const CreateAssignment = () => {
+  const [staffCode, setStaffCode] = useState("");
+  const [assetCode, setAssetCode] = useState("");
   const [userId, setUserId] = useState("");
   const [assetId, setAssetId] = useState("");
   const [userName, setUserName] = useState("");
@@ -29,22 +31,10 @@ const CreateAssignment = () => {
   const [viewModalUser, setViewModalUser] = useState(false);
   const [viewModalAsset, setViewModalAsset] = useState(false);
   const today = moment().format("YYYY-MM-DD");
+  const [note, setNote] = useState("")
 
   const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
   const navigate = useNavigate();
-
-  const handleCancel = () => {
-    // setIsUserModalVisible(false);
-    // setIsAssetModalVisible(false);
-    // setNewUserName("");
-    // setNewAssetName("");
-    // setNewUserPrefix("");
-    // setNewAssetPrefix("");
-    // setIsAddUserButtonDisabled(true); // Disable button on cancel
-    // setIsAddAssetButtonDisabled(true);
-    // userForm.resetFields(); // Reset form fields when the modal is closed
-    // assetForm.resetFields();
-  };
 
   useEffect(() => {
     form.setFieldsValue({
@@ -61,6 +51,7 @@ const CreateAssignment = () => {
         assignedBy: adminId,
         assignedDate: today,
         assetId: assetId,
+        note: note.trim(),
         status: 1
       })
       .then((response) => {
@@ -88,70 +79,67 @@ const CreateAssignment = () => {
   const onFieldsChange = () => {
     const errors = form.getFieldsError().filter(({ errors }) => errors.length);
     const fieldsWithError = errors.length;
-    const allFieldsTouched = form.isFieldsTouched(true);
-    setIsButtonDisabled(fieldsWithError > 0 || !allFieldsTouched);
+    setIsButtonDisabled(fieldsWithError > 0);
   };
 
   return (
     <LayoutPage>
       <Spin spinning={isLoading} className="w-full">
-        <div className="mt-[70px] w-full flex">
+        <div className="mt-[70px] w-full  justify-center items-center m-[34%]">
           <h1 className="font-bold text-d6001c text-2xl">
             Create New Assignment
           </h1>
           <Form
-            className="mt-20 w-2/5"
+            className="mt-10"
             onFinish={onFinish}
             form={form}
             onFieldsChange={onFieldsChange}
-            initialValues={{ createBy: "defaultUser" }}
-            labelCol={{ span: 6 }}
-            wrapperCol={{ span: 18 }}
+            initialValues={{ createBy: "defaultUser", assignedDate: dayjs(today, "YYYY-MM-DD") }}
           >
             <Form.Item
-              className="name-form-item"
+              className="choose-user-form-item"
               label="User:"
               name="user"
               rules={[
-                { required: true, message: "Please chose an user!" },
+                { required: true, message: "Please choose an user!" },
                 {
                   min: 4,
                   max: 100,
-                  message: "Please chose a valid user!",
-                },
-              ]}
-              validateTrigger="onSearch"
-            >
-              <Search
-                readOnly
-                placeholder="Chose an user...."
-                value={userName}
-                className="w-full"
-                onSearch={() => {
-                  setViewModalUser(true);
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              className="name-form-item"
-              label="Asset"
-              name="asset"
-              rules={[
-                { required: true, message: "Please chose an asset!" },
-                {
-                  min: 4,
-                  max: 100,
-                  message: "Please chose a valid asset!",
+                  message: "Please choose a valid user!",
                 },
               ]}
               validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
               <Search
                 readOnly
-                placeholder="Chose an asset...."
+                placeholder="Choose an user...."
+                value={userName}
+                className="w-[400px] ml-20"
+                onSearch={() => {
+                  setViewModalUser(true);
+                }}
+              />
+              
+            </Form.Item>
+            <Form.Item
+              className="choose-asset-form-item"
+              label="Asset"
+              name="asset"
+              rules={[
+                { required: true, message: "Please choose an asset!" },
+                {
+                  min: 4,
+                  max: 100,
+                  message: "Please choose a valid asset!",
+                },
+              ]}
+              validateTrigger={["onSearch", "onBlur", "onChange"]}
+            >
+              <Search
+                readOnly
+                placeholder="Choose an asset...."
                 value={assetName}
-                className="w-full"
+                className="w-[400px] ml-[75px]"
                 onSearch={() => {
                   setViewModalAsset(true);
                 }}
@@ -159,6 +147,7 @@ const CreateAssignment = () => {
             </Form.Item>
 
             <Form.Item
+              className="choose-assigned-date-form-item"
               label="Assigned Date"
               name="assignedDate"
               required
@@ -187,36 +176,28 @@ const CreateAssignment = () => {
             >
               <DatePicker
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
-                className="w-full"
+                className="w-[400px] ml-[19px]"
                 inputReadOnly
                 allowClear={false}
               />
             </Form.Item>
 
             <Form.Item
-              className="name-form-item"
+              className="note-form-item"
               label="Note"
               name="note"
-              rules={[
-                {
-                  min: 0,
-                  max: 255,
-                  message: "This field can only contain 255 characters",
-                },
-              ]}
-              validateTrigger="onBlur"
             >
-              <TextArea
+              <TextArea         
                 showCount
                 maxLength={255}
-                //onChange={onChange}
+                onChange={(e) => setNote(e.target.value)}
                 placeholder="Note...."
-                className="w-full"
+                className="w-[400px] ml-[90px]"
                 style={{ height: 120, resize: "none" }}
               />
             </Form.Item>
 
-            <Form.Item className="gap-4 mx-[45%] items-center justify-center w-full">
+            <Form.Item className="gap-4 justify-end flex">
               <Button
                 type="primary"
                 htmlType="submit"
@@ -230,7 +211,7 @@ const CreateAssignment = () => {
                 title="Cancel creating user?"
                 description="Are you sure you want to cancel creating user"
                 onConfirm={handleConfirm}
-                onCancel={handleCancel}
+                onCancel={() => {}}
                 okText="Yes"
                 cancelText="No"
               >
@@ -244,7 +225,8 @@ const CreateAssignment = () => {
               type={"Select User"}
               setName={setUserName}
               setId={setUserId}
-              chosenId={userId}
+              chosenCode={staffCode}
+              setCode={setStaffCode}
             />
           )}
           {viewModalAsset && (
@@ -253,7 +235,8 @@ const CreateAssignment = () => {
               type={"Select Asset"}
               setName={setAssetName}
               setId={setAssetId}
-              chosenId={assetId}
+              chosenCode={assetCode}
+              setCode={setAssetCode}
             />
           )}
         </div>
