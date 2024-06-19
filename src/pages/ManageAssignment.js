@@ -126,7 +126,7 @@ const ManageAssignment = () => {
             title: (
                 <span className="flex items-center justify-between">
                     Assigned to{" "}
-                    {params.sortBy === "Category" ? (
+                    {params.sortBy === "AssignedTo" ? (
                         params.sortOrder === "desc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
@@ -137,12 +137,12 @@ const ManageAssignment = () => {
                     )}
                 </span>
             ),
-            dataIndex: "categoryName",
-            key: "category",
+            dataIndex: "assignedTo",
+            key: "assignedTo",
             ellipsis: true,
             onHeaderCell: () => ({
                 onClick: () => {
-                    sorterLog("Category");
+                    sorterLog("AssignedTo");
                 },
             }),
             render: (text) => <span>{text}</span>,
@@ -151,7 +151,7 @@ const ManageAssignment = () => {
             title: (
                 <span className="flex items-center justify-between">
                     Assigned by{" "}
-                    {params.sortBy === "State" ? (
+                    {params.sortBy === "AssignedBy" ? (
                         params.sortOrder === "desc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
@@ -162,12 +162,12 @@ const ManageAssignment = () => {
                     )}
                 </span>
             ),
-            key: "state",
-            dataIndex: "state",
+            key: "assignedBy",
+            dataIndex: "assignedBy",
             ellipsis: true,
             onHeaderCell: () => ({
                 onClick: () => {
-                    sorterLog("State");
+                    sorterLog("AssignedBy");
                 },
             }),
             render: (text) => <span>{text}</span>,
@@ -176,7 +176,7 @@ const ManageAssignment = () => {
             title: (
                 <span className="flex items-center justify-between">
                     Assigned Date{" "}
-                    {params.sortBy === "State" ? (
+                    {params.sortBy === "AssignedDate" ? (
                         params.sortOrder === "desc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
@@ -187,12 +187,12 @@ const ManageAssignment = () => {
                     )}
                 </span>
             ),
-            key: "state",
-            dataIndex: "state",
+            key: "assignedDate",
+            dataIndex: "assignedDate",
             ellipsis: true,
             onHeaderCell: () => ({
                 onClick: () => {
-                    sorterLog("State");
+                    sorterLog("AssignedDate");
                 },
             }),
             render: (text) => <span>{text}</span>,
