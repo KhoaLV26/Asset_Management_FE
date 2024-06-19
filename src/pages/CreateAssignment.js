@@ -34,19 +34,6 @@ const CreateAssignment = () => {
   const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
   const navigate = useNavigate();
 
-  const handleCancel = () => {
-    // setIsUserModalVisible(false);
-    // setIsAssetModalVisible(false);
-    // setNewUserName("");
-    // setNewAssetName("");
-    // setNewUserPrefix("");
-    // setNewAssetPrefix("");
-    // setIsAddUserButtonDisabled(true); // Disable button on cancel
-    // setIsAddAssetButtonDisabled(true);
-    // userForm.resetFields(); // Reset form fields when the modal is closed
-    // assetForm.resetFields();
-  };
-
   useEffect(() => {
     form.setFieldsValue({
       user: userName,
@@ -108,49 +95,49 @@ const CreateAssignment = () => {
             initialValues={{ createBy: "defaultUser", assignedDate: dayjs(today, "YYYY-MM-DD") }}
           >
             <Form.Item
-              className="name-form-item"
+              className="choose-user-form-item"
               label="User:"
               name="user"
               rules={[
-                { required: true, message: "Please chose an user!" },
+                { required: true, message: "Please choose an user!" },
                 {
                   min: 4,
                   max: 100,
-                  message: "Please chose a valid user!",
-                },
-              ]}
-              validateTrigger="onSearch"
-            >
-              <Search
-                readOnly
-                placeholder="Chose an user...."
-                value={userName}
-                className="w-full ml-20"
-                onSearch={() => {
-                  setViewModalUser(true);
-                }}
-              />
-            </Form.Item>
-
-            <Form.Item
-              className="name-form-item"
-              label="Asset"
-              name="asset"
-              rules={[
-                { required: true, message: "Please chose an asset!" },
-                {
-                  min: 4,
-                  max: 100,
-                  message: "Please chose a valid asset!",
+                  message: "Please choose a valid user!",
                 },
               ]}
               validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
               <Search
                 readOnly
-                placeholder="Chose an asset...."
+                placeholder="Choose an user...."
+                value={userName}
+                className="w-[400px] ml-20"
+                onSearch={() => {
+                  setViewModalUser(true);
+                }}
+              />
+              
+            </Form.Item>
+            <Form.Item
+              className="choose-asset-form-item"
+              label="Asset"
+              name="asset"
+              rules={[
+                { required: true, message: "Please choose an asset!" },
+                {
+                  min: 4,
+                  max: 100,
+                  message: "Please choose a valid asset!",
+                },
+              ]}
+              validateTrigger={["onSearch", "onBlur", "onChange"]}
+            >
+              <Search
+                readOnly
+                placeholder="Choose an asset...."
                 value={assetName}
-                className="w-full ml-[75px]"
+                className="w-[400px] ml-[75px]"
                 onSearch={() => {
                   setViewModalAsset(true);
                 }}
@@ -158,6 +145,7 @@ const CreateAssignment = () => {
             </Form.Item>
 
             <Form.Item
+              className="choose-assigned-date-form-item"
               label="Assigned Date"
               name="assignedDate"
               required
@@ -186,14 +174,14 @@ const CreateAssignment = () => {
             >
               <DatePicker
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
-                className="w-[115%] ml-[20px]"
+                className="w-[400px] ml-[19px]"
                 inputReadOnly
                 allowClear={false}
               />
             </Form.Item>
 
             <Form.Item
-              className="name-form-item"
+              className="note-form-item"
               label="Note"
               name="note"
             >
@@ -202,7 +190,7 @@ const CreateAssignment = () => {
                 maxLength={255}
                 onChange={(e) => setNote(e.target.value)}
                 placeholder="Note...."
-                className="w-[97%] ml-[90px]"
+                className="w-[400px] ml-[90px]"
                 style={{ height: 120, resize: "none" }}
               />
             </Form.Item>
@@ -221,7 +209,7 @@ const CreateAssignment = () => {
                 title="Cancel creating user?"
                 description="Are you sure you want to cancel creating user"
                 onConfirm={handleConfirm}
-                onCancel={handleCancel}
+                onCancel={() => {}}
                 okText="Yes"
                 cancelText="No"
               >
