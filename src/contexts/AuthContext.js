@@ -79,17 +79,17 @@ export const getRefreshToken = () => {
 };
 
 export const getUser = () => {
-  return JSON.parse(localStorage.getItem("user"));
+  return Cookies.get("user") ? JSON.parse(Cookies.get("user")) : null;
 };
 
 export const setTokens = (token, refreshToken, user) => {
   Cookies.set("token", token, { expires: 7 });
   Cookies.set("refreshToken", refreshToken, { expires: 7 }); // 7 days
-  localStorage.setItem("user", JSON.stringify(user));
+  Cookies.set("user", JSON.stringify(user), { expires: 7 }); // 7 days
 };
 
 export const removeTokens = () => {
   Cookies.remove("token");
   Cookies.remove("refreshToken");
-  localStorage.removeItem("user");
+  Cookies.remove("user");
 };
