@@ -30,7 +30,7 @@ const CreateAssignment = () => {
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [viewModalUser, setViewModalUser] = useState(false);
   const [viewModalAsset, setViewModalAsset] = useState(false);
-  const today = moment().format("YYYY-MM-DD");
+  const [today, setToday] = useState(moment().format("YYYY-MM-DD"));
   const [note, setNote] = useState("")
 
   const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
@@ -77,7 +77,9 @@ const CreateAssignment = () => {
   };
 
   const onFieldsChange = () => {
-    const errors = form.getFieldsError().filter(({ errors }) => errors.length);
+    const errors = form.getFieldsError().filter(({ name, errors }) => {
+      return errors.length && ( name !== "note" && name !== "assignedDate" )
+    });
     const fieldsWithError = errors.length;
     setIsButtonDisabled(fieldsWithError > 0);
   };
@@ -94,7 +96,7 @@ const CreateAssignment = () => {
             onFinish={onFinish}
             form={form}
             onFieldsChange={onFieldsChange}
-            initialValues={{ createBy: "defaultUser", assignedDate: dayjs(today, "YYYY-MM-DD") }}
+            initialValues={{ assignedDate: dayjs(today, "YYYY-MM-DD") }}
           >
             <Form.Item
               className="choose-user-form-item"
@@ -150,7 +152,6 @@ const CreateAssignment = () => {
               className="choose-assigned-date-form-item"
               label="Assigned Date"
               name="assignedDate"
-              required
               rules={[
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -178,6 +179,7 @@ const CreateAssignment = () => {
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
                 className="w-[400px] ml-[19px]"
                 inputReadOnly
+                onChange={(date, dateString) => setToday(dateString)}
                 allowClear={false}
               />
             </Form.Item>
