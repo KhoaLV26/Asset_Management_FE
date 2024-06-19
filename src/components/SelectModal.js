@@ -70,6 +70,7 @@ export const SelectModal = ({
   }, [params, type]);
 
   const sorterLog = (name) => {
+    setFetched(true)
     if (params.sortBy === name) {
       if (direction === true) {
         setParams((prev) => ({ ...prev, sortDirection: "desc" }));
@@ -275,6 +276,7 @@ export const SelectModal = ({
   }, [data]);
 
   const handleSearch = (value) => {
+    setFetched(true)
     setParams((prev) => ({ ...prev, pageNumber: 1 }));
 
     setParams((prev) => ({
