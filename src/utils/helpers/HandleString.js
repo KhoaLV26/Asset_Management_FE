@@ -2,6 +2,9 @@ export function removeExtraWhitespace(str) {
   return str.replace(/\s+/g, " ").trim();
 }
 
+export function removeAllWhitespace(str) {
+  return str.replace(/\s+/g, "").trim();
+}
 export function capitalizeWords(str) {
   return str
     .split(" ")

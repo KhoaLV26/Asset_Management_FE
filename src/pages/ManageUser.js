@@ -39,12 +39,12 @@ const ManageUser = () => {
   const [roleHolder, setRoleHolder] = useState("Type");
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
-    searchTerm: searchQuery,
+    search: searchQuery,
     role: "",
     sortBy: "StaffCode",
     sortDirection: "asc",
     pageNumber: 1,
-    newStaffCode: location?.state?.data?.staffCode || 0,
+    newStaffCode: location?.state?.data?.staffCode || 0, 
   });
 
   const sorterLog = (name) => {
@@ -72,14 +72,14 @@ const ManageUser = () => {
 
     setParams((prev) => ({
       ...prev,
-      searchTerm: removeExtraWhitespace(value),
+      search: removeExtraWhitespace(value),
     }));
   };
 
   useEffect(() => {
     axiosInstance
       .get(
-        '/Users/search', {params}
+        '/Users', {params}
       )
       .then((res) => {
         if (res.data.success) {
@@ -273,7 +273,6 @@ const ManageUser = () => {
       title: "",
       key: "action",
       width: "10%",
-      ellipsis: true,
       render: () => (
         <Space size="middle">
           <Button
@@ -305,7 +304,7 @@ const ManageUser = () => {
     <LayoutPage>
       <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">User List</h1>
-        <div className="flex items-center justify-between mt-8">
+        <div className="flex items-center justify-between mt-7 mb-2">
           <Space.Compact>
             <Select
               open={open}
@@ -315,8 +314,6 @@ const ManageUser = () => {
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
-                setParams((prev) => ({ ...prev, pageNumber: 1 }));
-
               }}
               onSelect={() => setOpen(!open)}
               options={roles}
@@ -325,7 +322,6 @@ const ManageUser = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-              placeholder="Enter text"
                 className="w-[100%]"
                 value={searchQuery}
                 allowClear
@@ -398,35 +394,35 @@ const ManageUser = () => {
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Staff Code:</span>
-              <span>{modalData?.staffCode}</span>
+              <span className="w-full">{modalData?.staffCode}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Full Name:</span>
-              <span>{modalData?.fullName}</span>
+              <span className="w-full">{modalData?.fullName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Username:</span>
-              <span>{modalData?.username}</span>
+              <span className="w-full">{modalData?.username}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Date of Birth:</span>
-              <span>{modalData?.dateOfBirth}</span>
+              <span className="w-full">{modalData?.dateOfBirth}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Gender:</span>
               {modalData?.Gender === 1 ? (
-                <span>Female</span>
+                <span className="w-full">Female</span>
               ) : (
-                <span>Male</span>
+                <span className="w-full">Male</span>
               )}
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Type:</span>
-              <span>{modalData?.roleName}</span>
+              <span className="w-full">{modalData?.roleName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Location:</span>
-              <span>{modalData?.locationName}</span>
+              <span className="w-full">{modalData?.locationName}</span>
             </div>
           </div>
         </Modal>

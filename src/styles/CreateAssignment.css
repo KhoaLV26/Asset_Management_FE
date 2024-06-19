@@ -1,0 +1,14 @@
+.choose-user-form-item .ant-form-item-explain,
+.choose-user-form-item .ant-form-item-extra {
+    margin-left: 80px;
+}
+
+.choose-asset-form-item .ant-form-item-explain,
+.choose-asset-form-item .ant-form-item-extra {
+    margin-left: 75px;
+}
+
+.choose-assigned-date-form-item .ant-form-item-explain,
+.choose-assigned-date-form-item .ant-form-item-extra {
+    margin-left: 28px;
+}

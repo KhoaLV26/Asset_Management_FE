@@ -1,0 +1,22 @@
+.change-password-title {
+    border-bottom: 1px solid black;
+    color: #d6001c;
+    background-color: #f0f0f0;
+    display: block;
+    padding: 8px;
+    width: 100%;
+}
+
+.old-password-form-item .ant-form-item-explain,
+.old-password-form-item .ant-form-item-extra {
+    margin-left: 27px;
+}
+
+.new-password-form-item .ant-form-item-explain,
+.new-password-form-item .ant-form-item-extra {
+    margin-left: 23px;
+}
+
+.ant-modal .ant-modal-content .css-modal-change-password{
+    padding: 0px !important;
+}

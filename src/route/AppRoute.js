@@ -1,38 +1,71 @@
+import NotFound from "../components/NotFound";
+import RequireAdmin from "../components/RequireAdmin";
+import UnAuthor from "../components/UnAuthor";
 import CreateAsset from "../pages/CreateAsset";
 import Home from "../pages/Home";
-import ManageAssignment from "../pages/ManageAssignment";
+import Login from "../pages/Login";
 
 const { useRoutes } = require("react-router-dom");
 const { default: ManageUser } = require("../pages/ManageUser");
 const { default: CreateUser } = require("../pages/CreateUser");
 const { default: ManageAsset } = require("../pages/ManageAsset");
+const { default: CreateAssignment } = require("../pages/CreateAssignment");
 
 const AppRoutes = () => {
   const elements = useRoutes([
     {
+      path: "/login",
+      element: <Login />,
+    },
+    {
       path: "/manage-user/create-user",
-      element: <CreateUser />,
+      element: (
+        <RequireAdmin>
+          <CreateUser />
+        </RequireAdmin>
+      ),
     },
     {
       path: "/manage-user",
-      element: <ManageUser />,
+      element: (
+        <RequireAdmin>
+          <ManageUser />
+        </RequireAdmin>
+      ),
     },
     {
-      path: "/*",
+      path: "/",
+      element: <Home />,
+    },
+    {
+      path: "/home",
       element: <Home />,
     },
     {
       path: "/manage-asset",
-      element: <ManageAsset />,
-    },
-    {
-      path: "/manage-assignment",
-      element: <ManageAssignment />,
+      element: (
+        <RequireAdmin>
+          <ManageAsset />
+        </RequireAdmin>
+      ),
     },
     {
       path: "/manage-asset/create-asset",
-      element: <CreateAsset />,
+      element: (
+        <RequireAdmin>
+          <CreateAsset />
+        </RequireAdmin>
+      ),
     },
+    {
+      path: "unauthorized",
+      element: <UnAuthor />,
+    },
+    {
+      path: "/manage-assignment/create-assignment",
+      element: <CreateAssignment />,
+    },
+    { path: "*", element: <NotFound /> },
   ]);
   return elements;
 };

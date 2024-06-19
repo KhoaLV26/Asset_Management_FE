@@ -22,3 +22,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .env
+.vs/Asset_Management_FE/v17/DocumentLayout.json
+.vs/slnx.sqlite
+.vs/VSWorkspaceState.json
+.vs/Asset_Management_FE/v17/.wsuo
