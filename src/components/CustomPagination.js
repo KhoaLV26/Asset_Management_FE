@@ -27,7 +27,7 @@ const CustomPagination = ({ params, setParams, total, setFetch }) => {
             try {
               setFetch(true)
             } catch {
-              
+
             }
           }}
         >
@@ -46,7 +46,14 @@ const CustomPagination = ({ params, setParams, total, setFetch }) => {
       showSizeChanger={false}
       defaultPageSize={10}
       total={total}
-      onChange={(page) => setParams((prev) => ({ ...prev, pageNumber: page }))}
+      onChange={(page) => {
+        setParams((prev) => ({ ...prev, pageNumber: page }))
+        try {
+          setFetch(true)
+        } catch {
+
+        }
+      }}
       itemRender={itemRender}
     />
   );
