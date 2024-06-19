@@ -197,8 +197,13 @@ const CreateAssignment = () => {
             >
               <TextArea         
                 showCount
+                value={note}
                 maxLength={255}
                 onChange={(e) => setNote(e.target.value)}
+                onBlur={(e) => {
+                  setNote(e.target.value.trim());
+                  form.setFieldsValue({ note: e.target.value.trim() });
+                }}
                 placeholder="Note...."
                 className="w-[400px] ml-[90px]"
                 style={{ height: 120, resize: "none" }}
