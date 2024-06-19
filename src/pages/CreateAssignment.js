@@ -19,6 +19,8 @@ import {
 const { TextArea, Search } = Input;
 
 const CreateAssignment = () => {
+  const [staffCode, setStaffCode] = useState("");
+  const [assetCode, setAssetCode] = useState("");
   const [userId, setUserId] = useState("");
   const [assetId, setAssetId] = useState("");
   const [userName, setUserName] = useState("");
@@ -223,7 +225,8 @@ const CreateAssignment = () => {
               type={"Select User"}
               setName={setUserName}
               setId={setUserId}
-              chosenId={userId}
+              chosenCode={staffCode}
+              setCode={setStaffCode}
             />
           )}
           {viewModalAsset && (
@@ -232,7 +235,8 @@ const CreateAssignment = () => {
               type={"Select Asset"}
               setName={setAssetName}
               setId={setAssetId}
-              chosenId={assetId}
+              chosenCode={assetCode}
+              setCode={setAssetCode}
             />
           )}
         </div>

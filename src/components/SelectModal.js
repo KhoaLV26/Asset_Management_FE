@@ -11,7 +11,8 @@ export const SelectModal = ({
   type,
   setName,
   setId,
-  chosenId,
+  chosenCode,
+  setCode
 }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [direction, setDirection] = useState(true);
@@ -29,7 +30,9 @@ export const SelectModal = ({
     sortBy: type === "Select User" ? "StaffCode" : "AssetCode",
     sortDirection: "asc",
     pageNumber: 1,
-    state: 2
+    state: 2,
+    newStaffCode: chosenCode,
+    newAssetCode: chosenCode
   });
   const url = type === "Select User" ? '/Users' : '/Assets'
     console.log(data)
@@ -271,7 +274,6 @@ export const SelectModal = ({
       setSelectedRowKeys([firstKey]);
       setCurrentName(name);
       setCurrentId(id);
-      (type === "Select User") ? setParams((prev) => ({ ...prev, newStaffCode: chosenId })) : setParams((prev) => ({ ...prev, newAssetCode: chosenId }));
     }
   }, [data]);
 
@@ -332,11 +334,14 @@ export const SelectModal = ({
                 if (type === "Select User") {
                   setCurrentName(selectedRow[0].fullName);
                   setCurrentId(selectedRow[0].id);
+                  setCode(selectedRow[0].staffCode);
                 }
                 if (type === "Select Asset") {
                   setCurrentName(selectedRow[0].assetName);
                   setCurrentId(selectedRow[0].id);
+                  setCode(selectedRow[0].assetCode);
                 }
+              
               },
             }}
             scroll={{ y: 400 }}
