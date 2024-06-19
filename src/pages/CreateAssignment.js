@@ -110,13 +110,16 @@ const CreateAssignment = () => {
                   message: "Please choose a valid user!",
                 },
               ]}
-              validateTrigger={["onSearch", "onBlur", "onChange"]}
+              validateTrigger={["onSearch", "onBlur", "onChange", "onClick"]}
             >
               <Search
                 readOnly
                 placeholder="Choose an user...."
                 value={userName}
                 className="w-[400px] ml-20"
+                onClick={() => {
+                  setViewModalUser(true);
+                }}
                 onSearch={() => {
                   setViewModalUser(true);
                 }}
@@ -135,13 +138,16 @@ const CreateAssignment = () => {
                   message: "Please choose a valid asset!",
                 },
               ]}
-              validateTrigger={["onSearch", "onBlur", "onChange"]}
+              validateTrigger={["onSearch", "onBlur", "onChange", "onClick"]}
             >
               <Search
                 readOnly
                 placeholder="Choose an asset...."
                 value={assetName}
                 className="w-[400px] ml-[75px]"
+                onClick={() => {
+                  setViewModalAsset(true);
+                }}
                 onSearch={() => {
                   setViewModalAsset(true);
                 }}
