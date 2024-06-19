@@ -3,7 +3,7 @@ import { AuthContext, getUser } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import { Button, Form, Input, message } from "antd";
-import { removeExtraWhitespace } from "../utils/helpers/HandleString";
+import { removeAllWhitespace } from "../utils/helpers/HandleString";
 
 const Login = () => {
   const { login, auth } = useContext(AuthContext);
@@ -14,7 +14,7 @@ const Login = () => {
   const [username, setUsername] = useState("");
 
   const handleBlur = (e) => {
-    const trimmedValue = removeExtraWhitespace(e.target.value);
+    const trimmedValue = removeAllWhitespace(e.target.value);
     setUsername(trimmedValue);
     form.setFieldsValue({ username: trimmedValue });
   };
