@@ -13,7 +13,6 @@ import {
   Form,
   Input,
   DatePicker,
-  Popconfirm,
 } from "antd";
 
 const { TextArea, Search } = Input;
@@ -71,7 +70,7 @@ const CreateAssignment = () => {
       });
     setIsLoading(false);
   };
-
+  console.log(assetName)
   const handleConfirm = () => {
     navigate("/manage-user");
   };
@@ -104,11 +103,6 @@ const CreateAssignment = () => {
               name="user"
               rules={[
                 { required: true, message: "Please choose an user!" },
-                {
-                  min: 4,
-                  max: 100,
-                  message: "Please choose a valid user!",
-                },
               ]}
               validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
@@ -129,11 +123,6 @@ const CreateAssignment = () => {
               name="asset"
               rules={[
                 { required: true, message: "Please choose an asset!" },
-                {
-                  min: 4,
-                  max: 100,
-                  message: "Please choose a valid asset!",
-                },
               ]}
               validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
@@ -173,7 +162,7 @@ const CreateAssignment = () => {
                   },
                 }),
               ]}
-              validateTrigger={["onSearch", "onBlur", "onChange"]}
+              validateTrigger={["onBlur", "onChange"]}
             >
               <DatePicker
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
@@ -204,21 +193,12 @@ const CreateAssignment = () => {
                 type="primary"
                 htmlType="submit"
                 disabled={isButtonDisabled}
-                className=" me-5 bg-red-600"
+                className="me-5 bg-red-600"
                 loading={isLoading}
               >
                 Save
               </Button>
-              <Popconfirm
-                title="Cancel creating user?"
-                description="Are you sure you want to cancel creating user"
-                onConfirm={handleConfirm}
-                onCancel={() => {}}
-                okText="Yes"
-                cancelText="No"
-              >
-                <Button danger>Cancel</Button>
-              </Popconfirm>
+                <Button danger onClick={() => navigate("/manage-assignment")}>Cancel</Button>
             </Form.Item>
           </Form>
           {viewModalUser && (
