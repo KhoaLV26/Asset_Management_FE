@@ -4,6 +4,7 @@ import UnAuthor from "../components/UnAuthor";
 import CreateAsset from "../pages/CreateAsset";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
+import ManageAssignment from "../pages/ManageAssignment";
 
 const { useRoutes } = require("react-router-dom");
 const { default: ManageUser } = require("../pages/ManageUser");
@@ -60,6 +61,14 @@ const AppRoutes = () => {
     {
       path: "unauthorized",
       element: <UnAuthor />,
+    },
+    {
+      path: "/manage-assignment",
+      element: (
+        <RequireAdmin>
+          <ManageAssignment />
+        </RequireAdmin>
+      ),
     },
     {
       path: "/manage-assignment/create-assignment",

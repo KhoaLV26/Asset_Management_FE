@@ -94,6 +94,9 @@ const CreateAssignment = () => {
                 placeholder="Choose an user...."
                 value={userName}
                 className="w-[400px] ml-20"
+                onClick={() => {
+                  setViewModalUser(true);
+                }}
                 onSearch={() => {
                   setViewModalUser(true);
                 }}
@@ -111,6 +114,9 @@ const CreateAssignment = () => {
                 placeholder="Choose an asset...."
                 value={assetName}
                 className="w-[400px] ml-[75px]"
+                onClick={() => {
+                  setViewModalAsset(true);
+                }}
                 onSearch={() => {
                   setViewModalAsset(true);
                 }}
@@ -146,7 +152,7 @@ const CreateAssignment = () => {
             >
               <DatePicker
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
-                className="w-[400px] ml-[19px]"
+                className="w-[400px] ml-[27px]"
                 inputReadOnly
                 minDate={dayjs(today, "YYYY-MM-DD")}
                 onChange={(date, dateString) => setToday(dateString)}
@@ -157,8 +163,13 @@ const CreateAssignment = () => {
             <Form.Item className="note-form-item" label="Note" name="note">
               <TextArea
                 showCount
+                value={note}
                 maxLength={255}
                 onChange={(e) => setNote(e.target.value)}
+                onBlur={(e) => {
+                  setNote(e.target.value.trim());
+                  form.setFieldsValue({ note: e.target.value.trim() });
+                }}
                 placeholder="Note...."
                 className="w-[400px] ml-[90px]"
                 style={{ height: 120, resize: "none" }}
