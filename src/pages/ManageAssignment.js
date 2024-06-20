@@ -45,6 +45,8 @@ const stateConvert = (id) => {
 };
 
 const ManageAssignment = () => {
+    const [sortOrder, setSortOrder] = useState("asc");
+    const [sortPos, setSortPos] = useState(false);
     const [direction, setDirection] = useState(true);
     const [total, setTotal] = useState(1);
     const [data, setData] = useState([]);
@@ -64,6 +66,8 @@ const ManageAssignment = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [params, setParams] = useState({ pageNumber: 1 });
     const sorterLog = (name) => {
+        setSortPos(false)
+        setSortOrder("asc")
         if (params.sortBy === name) {
             if (direction === true) {
                 setParams((prev) => ({ ...prev, sortOrder: "asc" }));
@@ -83,7 +87,7 @@ const ManageAssignment = () => {
                 <span className="flex items-center justify-between">
                     No{" "}
                     {
-                        params.sortOrder === "desc" ? (
+                        sortPos && sortOrder === "desc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
                             <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -94,7 +98,34 @@ const ManageAssignment = () => {
             dataIndex: "index",
             width: "6%",
             key: "index",
-            render: (text, record, index) => <span>{params.sortOrder !== "desc" ? index + 1 + ((params?.pageNumber - 1) * 10) : ((params?.pageNumber) * 10) - index - 1}</span>
+            render: (text, record, index) =>
+                <span>
+                    {sortOrder === "desc" && sortPos === true ? total - ((params?.pageNumber - 1) * 10) - index : index + 1 + ((params?.pageNumber - 1) * 10)}
+                </span>,
+            onHeaderCell: () => ({
+                onClick: () => {
+                    if (params.sortOrder === "asc") {
+                        setParams({ ...params, sortOrder: "desc" })
+                    }
+                    else if (params.sortOrder === "desc") {
+                        setParams({ ...params, sortOrder: "asc" })
+                    }
+                    else {
+                        setParams({ ...params, sortOrder: "desc" })
+                    }
+                    
+                    setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                    // if (sortOrder === "asc") {
+                    //     setParams({ ...params, sortOrder: "desc" })
+                    //     // setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+                    // }
+                    // else if (sortOrder === "desc") {
+                    //     setParams({ ...params, sortOrder: "asc" })
+                    // }
+
+                    setSortPos(true)
+                },
+            }),
         },
         {
             title: (
@@ -428,7 +459,7 @@ const ManageAssignment = () => {
                         className="mt-10"
                         columns={columns}
                         dataSource={data}
-                        defaultPageSize={15}
+                        defaultPageSize={10}
                         onRow={(record) => {
                             return {
                                 onDoubleClick: () => {
