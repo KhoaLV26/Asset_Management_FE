@@ -19,7 +19,6 @@ const { Search } = Input;
 const formatDateTime = (input) => {
     // Tạo một đối tượng Date từ chuỗi input
     let date = new Date(input);
-
     // Lấy phần ngày và phần thời gian
     let datePart = date.toISOString().split('T')[0];
     let timePart = date.toISOString().split('T')[1].split('.')[0];
@@ -80,11 +79,21 @@ const ManageAssignment = () => {
     };
     const columns = [
         {
-            title: "No",
+            title: (
+                <span className="flex items-center justify-between">
+                    No{" "}
+                    {
+                        params.sortOrder === "desc" ? (
+                            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+                        ) : (
+                            <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+                        )
+                    }
+                </span>
+            ),
             dataIndex: "index",
             width: "6%",
             key: "index",
-            sorter: (a, b, indexA, indexB) => indexA - indexB,
             render: (text, record, index) => <span>{params.sortOrder !== "desc" ? index + 1 + ((params?.pageNumber - 1) * 10) : ((params?.pageNumber) * 10) - index - 1}</span>
         },
         {
@@ -456,7 +465,7 @@ const ManageAssignment = () => {
                         </div>
                         <div className="flex mb-[10px]">
                             <span className="font-bold w-[150px]">Time:</span>
-                            <span>{formatDateTime(selectedAssignment?.assignedDate)}</span>
+                            <span>{selectedAssignment && formatDateTime(selectedAssignment?.assignedDate)}</span>
                         </div>
                         <div className="flex mb-[10px]">
                             <span className="font-bold w-[150px]">State:</span>
