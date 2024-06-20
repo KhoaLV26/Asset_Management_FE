@@ -34,8 +34,9 @@ export const SelectModal = ({
     newStaffCode: chosenCode,
     newAssetCode: chosenCode
   });
+
   const url = type === "Select User" ? '/Users' : '/Assets'
-    console.log(data)
+
   useEffect(() => {
     if (type === "Select User") {
       setColumns(userColumns);
@@ -67,7 +68,11 @@ export const SelectModal = ({
           }
         })
         .catch((err) => {
-          message.error(err.message);
+          console.log(err);
+          if (err.response?.status === 409) {
+            setData([])
+            setTotal(0)
+          } else message.error(err.message);
         });
     }
   }, [params, type]);
@@ -274,9 +279,9 @@ export const SelectModal = ({
       const firstKey = type === "Select User" ? data[0].staffCode : data[0].assetCode;
       const name = type === "Select User" ? data[0].fullName : data[0].assetName;
       const id = data[0].id;
-      setSelectedRowKeys([firstKey]);
-      setCurrentName(name);
-      setCurrentId(id);
+      chosenCode && setSelectedRowKeys([firstKey]);
+      chosenCode && setCurrentName(name);
+      chosenCode && setCurrentId(id); 
     }
   }, [data]);
 
@@ -362,6 +367,7 @@ export const SelectModal = ({
         <div className="flex gap-5 justify-end w-full px-6 py-5">
           <Button
             className="bg-d6001c w-[7%] text-white"
+            disabled={!currentId}
             onClick={(e) => {
               e.stopPropagation();
               setName(currentName);
