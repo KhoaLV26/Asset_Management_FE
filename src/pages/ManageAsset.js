@@ -186,7 +186,7 @@ const ManageAsset = () => {
       title: "",
       key: "action",
       width: "10%",
-      ellipsis: true,
+      
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -223,7 +223,7 @@ const ManageAsset = () => {
       }
       sessionStorage.setItem("isFirstTimeAsset", "false");
     } else {
-      setParams((prev) => ({ ...prev, newAssetCode: ""}));
+      setParams((prev) => ({ ...prev, newAssetCode: "" }));
     }
 
     return () => {
@@ -235,14 +235,14 @@ const ManageAsset = () => {
     axiosInstance
       .get("/Assets", { params })
       .then((res) => {
-        if (res.data.success) {      
-            setTotal(res.data.totalCount);
-            setData(res.data.data.map(asset => ({
-              ...asset,
-              state: stateConvert(asset.status),
-            })))
-          }
+        if (res.data.success) {
+          setTotal(res.data.totalCount);
+          setData(res.data.data.map(asset => ({
+            ...asset,
+            state: stateConvert(asset.status),
+          })))
         }
+      }
       )
       .catch((err) => {
         console.log(err);
@@ -290,61 +290,59 @@ const ManageAsset = () => {
       <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">Asset List</h1>
         <div className="flex items-center justify-between mt-7 mb-2">
-          <Space.Compact>
-            <Select
-              open={openStateDropdown}
-              defaultValue={"State"}
-              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
-              className="w-[250px]"
-              onChange={(value) =>
-                setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
-              }
-              onSelect={() => setOpenStateDropdown(!openStateDropdown)}
-              options={[
-                {
-                  value: "All",
-                  label: "All",
-                },
-                {
-                  value: "1",
-                  label: "Not available",
-                },
-                {
-                  value: "2",
-                  label: "Available",
-                },
-                {
-                  value: "3",
-                  label: "Assigned",
-                },
-                {
-                  value: "4",
-                  label: "Waiting for recycling",
-                },
-                {
-                  value: "5",
-                  label: "Recycled",
+          <div className="flex gap-10 w-[30%]">   
+              <Select
+                open={openStateDropdown}
+                defaultValue={"State"}
+                suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
+                className="w-[100%]"
+                onChange={(value) =>
+                  setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
                 }
-              ]}
-            />
-          </Space.Compact>
-          <Space.Compact>
-            <Select
-              open={openCategoryDropdown}
-              defaultValue={"Category"}
-              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
-              className="w-[250px]"
-              onChange={(value) =>
-                setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
-              }
-              onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
-              options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
-            />
-          </Space.Compact>
+                onSelect={() => setOpenStateDropdown(!openStateDropdown)}
+                options={[
+                  {
+                    value: "All",
+                    label: "All",
+                  },
+                  {
+                    value: "1",
+                    label: "Not available",
+                  },
+                  {
+                    value: "2",
+                    label: "Available",
+                  },
+                  {
+                    value: "3",
+                    label: "Assigned",
+                  },
+                  {
+                    value: "4",
+                    label: "Waiting for recycling",
+                  },
+                  {
+                    value: "5",
+                    label: "Recycled",
+                  }
+                ]}
+              />
+              <Select
+                open={openCategoryDropdown}
+                defaultValue={"Category"}
+                suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
+                className="w-[100%]"
+                onChange={(value) =>
+                  setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
+                }
+                onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
+                options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
+              />
+          </div>
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-                className="w-[300px]"
+                className="w-[100%]"
                 maxLength={100}
                 placeholder="Enter text"
                 value={searchQuery}
@@ -357,7 +355,7 @@ const ManageAsset = () => {
               />
             </Space.Compact>
             <Button
-              className="flex items-center w-[200px] h-[32px] bg-d6001c"
+              className="flex items-center h-[32px] bg-d6001c"
               type="primary"
               size="large"
               onClick={() => {
