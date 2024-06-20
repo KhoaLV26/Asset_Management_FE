@@ -17,15 +17,10 @@ import CustomPagination from "../components/CustomPagination";
 
 const { Search } = Input;
 const formatDateTime = (input) => {
-    // Tạo một đối tượng Date từ chuỗi input
     let date = new Date(input);
-    // Lấy phần ngày và phần thời gian
     let datePart = date.toISOString().split('T')[0];
     let timePart = date.toISOString().split('T')[1].split('.')[0];
-
-    // Ghép lại thành chuỗi đã định dạng
     let formattedDateTime = datePart + ' ' + timePart;
-
     return formattedDateTime;
 }
 const stateConvert = (id) => {
@@ -113,16 +108,7 @@ const ManageAssignment = () => {
                     else {
                         setParams({ ...params, sortOrder: "desc" })
                     }
-                    
                     setSortOrder(sortOrder === "asc" ? "desc" : "asc")
-                    // if (sortOrder === "asc") {
-                    //     setParams({ ...params, sortOrder: "desc" })
-                    //     // setSortOrder(sortOrder === "asc" ? "desc" : "asc")
-                    // }
-                    // else if (sortOrder === "desc") {
-                    //     setParams({ ...params, sortOrder: "asc" })
-                    // }
-
                     setSortPos(true)
                 },
             }),
@@ -323,13 +309,10 @@ const ManageAssignment = () => {
         const isFirstTimeAssignment = sessionStorage.getItem("isFirstTimeAssignment") === null;
         if (isFirstTimeAssignment) {
             if (location?.state?.data) {
-                setParams((prev) => ({ ...prev, newAssetCode: location.state.data.assetCode }));
+                setParams((prev) => ({ ...prev, newAssignmentId: location.state.data.id }));
             }
             sessionStorage.setItem("isFirstTimeAssignment", "false");
-        } else {
-            setParams((prev) => ({ ...prev, newAssetCode: "" }));
-        }
-
+        } 
         return () => {
             sessionStorage.removeItem("isFirstTimeAssignment");
         };
@@ -357,25 +340,6 @@ const ManageAssignment = () => {
                 } else message.error(err.message);
             });
     }, [params]);
-
-
-
-    // useEffect(() => {
-    //     if (isModalOpen) {
-    //         axiosInstance
-    //             .get(`/Assets/${selectedAsset.id}`)
-    //             .then((res) => {
-    //                 if (res.data.success) {
-    //                     setSelectedAsset(res.data.data);
-    //                 } else {
-    //                     message.error(res.data.message);
-    //                 }
-    //             })
-    //             .catch((err) => {
-    //                 message.error(err.message);
-    //             });
-    //     }
-    // }, [isModalOpen]);
 
     return (
         <LayoutPage>
@@ -437,7 +401,7 @@ const ManageAssignment = () => {
                             type="primary"
                             size="large"
                             onClick={() => {
-                                navigate("create-asset");
+                                navigate("/manage-asset/create-asset");
                             }}
                         >
                             Create new assignment
@@ -493,6 +457,10 @@ const ManageAssignment = () => {
                         <div className="flex mb-[10px]">
                             <span className="font-bold w-[150px]">Asset Code:</span>
                             <span>{selectedAssignment?.assetCode}</span>
+                        </div>
+                        <div className="flex mb-[10px]">
+                            <span className="font-bold w-[150px]">Asset Name:</span>
+                            <span>{selectedAssignment?.assetName}</span>
                         </div>
                         <div className="flex mb-[10px]">
                             <span className="font-bold w-[150px]">Time:</span>
