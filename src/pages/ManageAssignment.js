@@ -274,7 +274,7 @@ const ManageAssignment = () => {
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("edit-asset");
+                            navigate("manage-assignment/edit-assignment");
                         }}
                     >
                         <EditFilled className="text-sm mb-1" />
@@ -283,7 +283,7 @@ const ManageAssignment = () => {
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("delete-asset");
+                            navigate("manage-assignment/delete-assignment");
                         }}
                     >
                         <CloseCircleOutlined className="text-red-600 text-sm mb-1" />
@@ -292,7 +292,7 @@ const ManageAssignment = () => {
                         disabled={record?.state === "Waiting for acceptance"}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("delete-asset");
+                            navigate("manage-assignment/return-assignment");
                         }}
                     >
                         <RedoOutlined className="text-blue-600 text-sm mb-1" />
@@ -377,7 +377,7 @@ const ManageAssignment = () => {
                         />
                     </Space.Compact>
                     <Space.Compact>
-                        <DatePicker className="w-[250px]" format="YYYY-MM-DD" placeholder="Assigned Date" onChange={(value) =>
+                        <DatePicker inputReadOnly className="w-[250px]" format="YYYY-MM-DD" placeholder="Assigned Date" onChange={(value) =>
                             setParams((prev) => ({ ...prev, pageNumber: 1, assignedDate: value?.format("YYYY-MM-DD") }))
                         } />
                     </Space.Compact>
@@ -401,7 +401,7 @@ const ManageAssignment = () => {
                             type="primary"
                             size="large"
                             onClick={() => {
-                                navigate("/manage-asset/create-asset");
+                                navigate("/manage-assignment/create-assignment");
                             }}
                         >
                             Create new assignment
