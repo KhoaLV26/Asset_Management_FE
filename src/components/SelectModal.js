@@ -26,9 +26,9 @@ export const SelectModal = ({
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     search: searchQuery,
-    role: "",
     sortBy: type === "Select User" ? "StaffCode" : "AssetCode",
     sortDirection: "asc",
+    sortOrder: "asc",
     pageNumber: 1,
     state: 2,
     newStaffCode: chosenCode,
@@ -77,14 +77,17 @@ export const SelectModal = ({
     if (params.sortBy === name) {
       if (direction === true) {
         setParams((prev) => ({ ...prev, sortDirection: "desc" }));
+        setParams((prev) => ({ ...prev, sortOrder: "desc" }));
       } else {
         setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+        setParams((prev) => ({ ...prev, sortOrder: "asc" }));
       }
       setDirection(!direction);
     } else {
       setParams((prev) => ({ ...prev, sortBy: name }));
       setDirection(true);
       setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+      setParams((prev) => ({ ...prev, sortOrder: "asc" }));
     }
   };
 
