@@ -42,7 +42,7 @@ const ManageUser = () => {
     search: searchQuery,
     role: "",
     sortBy: "StaffCode",
-    sortDirection: "asc",
+    sortOrder: "asc",
     pageNumber: 1,
     newStaffCode: location?.state?.data?.staffCode || 0, 
   });
@@ -50,15 +50,15 @@ const ManageUser = () => {
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
-        setParams((prev) => ({ ...prev, sortDirection: "desc" }));
+        setParams((prev) => ({ ...prev, sortOrder: "desc" }));
       } else {
-        setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+        setParams((prev) => ({ ...prev, sortOrder: "asc" }));
       }
       setDirection(!direction);
     } else {
       setParams((prev) => ({ ...prev, sortBy: name }));
       setDirection(true);
-      setParams((prev) => ({ ...prev, sortDirection: "asc" }));
+      setParams((prev) => ({ ...prev, sortOrder: "asc" }));
     }
   };
 
@@ -144,7 +144,7 @@ const ManageUser = () => {
         <span className="flex items-center justify-between">
           Staff Code{" "}
           {params.sortBy === "StaffCode" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -170,7 +170,7 @@ const ManageUser = () => {
         <span className="flex items-center justify-between">
           Full Name{" "}
           {params.sortBy === "default" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -196,7 +196,7 @@ const ManageUser = () => {
         <span className="flex items-center justify-between">
           Username{" "}
           {params.sortBy === "Username" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -222,7 +222,7 @@ const ManageUser = () => {
         <span className="flex items-center justify-between">
           Joined Date{" "}
           {params.sortBy === "JoinedDate" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -248,7 +248,7 @@ const ManageUser = () => {
         <span className="flex items-center justify-between">
           Type{" "}
           {params.sortBy === "Role" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Table, Button, Input, message } from "antd";
+import { Table, Button, Input, message, Empty } from "antd";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import CustomPagination from "./CustomPagination";
@@ -12,30 +12,30 @@ export const SelectModal = ({
   setName,
   setId,
   chosenCode,
-  setCode
+  setCode,
 }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [direction, setDirection] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentName, setCurrentName] = useState("");
   const [currentId, setCurrentId] = useState("");
+  const [currentCode, setCurrentCode] = useState("");
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [columns, setColumns] = useState([]);
-  const [fetched,setFetched] = useState(true);
+  const [fetched, setFetched] = useState(true);
   const [params, setParams] = useState({
     location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     search: searchQuery,
     sortBy: type === "Select User" ? "StaffCode" : "AssetCode",
-    sortDirection: "asc",
     sortOrder: "asc",
     pageNumber: 1,
     state: 2,
     newStaffCode: chosenCode,
-    newAssetCode: chosenCode
+    newAssetCode: chosenCode,
   });
 
-  const url = type === "Select User" ? '/Users' : '/Assets'
+  const url = type === "Select User" ? "/Users" : "/Assets";
 
   useEffect(() => {
     if (type === "Select User") {
@@ -46,52 +46,49 @@ export const SelectModal = ({
     }
     if (url !== "") {
       fetched &&
-      axiosInstance
-        .get(url, { params })
-        .then((res) => {
-          if (res.data.success) {
-            setData(
-              res.data.data
-                .map((user) => ({
-                  ...user,
-                  fullName: `${user?.firstName} ${user?.lastName}`,
-                }))
-                .map((asset) => ({
-                  ...asset,
-                  state: stateConvert(asset?.status),
-                }))
-            );
-            setTotal(res.data.totalCount);
-            setFetched(false)
-          } else {
-            message.error(res.data.message);
-          }
-        })
-        .catch((err) => {
-          console.log(err);
-          if (err.response?.status === 409) {
-            setData([])
-            setTotal(0)
-          } else message.error(err.message);
-        });
+        axiosInstance
+          .get(url, { params })
+          .then((res) => {
+            if (res.data.success) {
+              setData(
+                res.data.data
+                  .map((user) => ({
+                    ...user,
+                    fullName: `${user?.firstName} ${user?.lastName}`,
+                  }))
+                  .map((asset) => ({
+                    ...asset,
+                    state: stateConvert(asset?.status),
+                  }))
+              );
+              setTotal(res.data.totalCount);
+              setFetched(false);
+            } else {
+              message.error(res.data.message);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+            if (err.response?.status === 409) {
+              setData([]);
+              setTotal(0);
+            } else message.error(err.message);
+          });
     }
   }, [params, type]);
 
   const sorterLog = (name) => {
-    setFetched(true)
+    setFetched(true);
     if (params.sortBy === name) {
       if (direction === true) {
-        setParams((prev) => ({ ...prev, sortDirection: "desc" }));
         setParams((prev) => ({ ...prev, sortOrder: "desc" }));
       } else {
-        setParams((prev) => ({ ...prev, sortDirection: "asc" }));
         setParams((prev) => ({ ...prev, sortOrder: "asc" }));
       }
       setDirection(!direction);
     } else {
       setParams((prev) => ({ ...prev, sortBy: name }));
       setDirection(true);
-      setParams((prev) => ({ ...prev, sortDirection: "asc" }));
       setParams((prev) => ({ ...prev, sortOrder: "asc" }));
     }
   };
@@ -124,7 +121,7 @@ export const SelectModal = ({
         <span className="flex items-center justify-between">
           Staff Code{" "}
           {params.sortBy === "StaffCode" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -149,7 +146,7 @@ export const SelectModal = ({
         <span className="flex items-center justify-between">
           Full Name{" "}
           {params.sortBy === "default" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -174,7 +171,7 @@ export const SelectModal = ({
         <span className="flex items-center justify-between">
           Type{" "}
           {params.sortBy === "Role" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -202,7 +199,7 @@ export const SelectModal = ({
         <span className="flex items-center justify-between">
           Asset Code{" "}
           {params.sortBy === "AssetCode" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -227,7 +224,7 @@ export const SelectModal = ({
         <span className="flex items-center justify-between">
           Asset Name{" "}
           {params.sortBy === "AssetName" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -252,7 +249,7 @@ export const SelectModal = ({
         <span className="flex items-center justify-between">
           Category{" "}
           {params.sortBy === "Category" ? (
-            params.sortDirection === "asc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -276,17 +273,19 @@ export const SelectModal = ({
 
   useEffect(() => {
     if (data.length > 0) {
-      const firstKey = type === "Select User" ? data[0].staffCode : data[0].assetCode;
-      const name = type === "Select User" ? data[0].fullName : data[0].assetName;
+      const firstKey =
+        type === "Select User" ? data[0].staffCode : data[0].assetCode;
+      const name =
+        type === "Select User" ? data[0].fullName : data[0].assetName;
       const id = data[0].id;
       chosenCode && setSelectedRowKeys([firstKey]);
       chosenCode && setCurrentName(name);
-      chosenCode && setCurrentId(id); 
+      chosenCode && setCurrentId(id);
     }
   }, [data]);
 
   const handleSearch = (value) => {
-    setFetched(true)
+    setFetched(true);
     setParams((prev) => ({ ...prev, pageNumber: 1 }));
 
     setParams((prev) => ({
@@ -329,27 +328,34 @@ export const SelectModal = ({
           <Table
             columns={columns}
             dataSource={data}
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="No Search Result"
+                />
+              ),
+            }}
             rowKey={(record) => {
-              if (type=== "Select User") return record.staffCode
-              if (type=== "Select Asset") return record.assetCode
+              if (type === "Select User") return record.staffCode;
+              if (type === "Select Asset") return record.assetCode;
             }}
             rowSelection={{
               type: "radio",
               selectedRowKeys,
               onChange: (selectedRowKeys, selectedRow) => {
                 setSelectedRowKeys(selectedRowKeys);
-                console.log(selectedRow[0])
+                console.log(selectedRow[0]);
                 if (type === "Select User") {
                   setCurrentName(selectedRow[0].fullName);
                   setCurrentId(selectedRow[0].id);
-                  setCode(selectedRow[0].staffCode);
+                  setCurrentCode(selectedRow[0].staffCode);
                 }
                 if (type === "Select Asset") {
                   setCurrentName(selectedRow[0].assetName);
                   setCurrentId(selectedRow[0].id);
-                  setCode(selectedRow[0].assetCode);
+                  setCurrentCode(selectedRow[0].assetCode);
                 }
-              
               },
             }}
             scroll={{ y: 400 }}
@@ -372,6 +378,7 @@ export const SelectModal = ({
               e.stopPropagation();
               setName(currentName);
               setId(currentId);
+              setCode(currentCode);
               setisShowModal(false);
             }}
           >
@@ -381,6 +388,9 @@ export const SelectModal = ({
             className="w-[7%] text-gray-500"
             onClick={(e) => {
               e.stopPropagation();
+              setSelectedRowKeys(null);
+              setCurrentName(null);
+              setCurrentId(null);
               setisShowModal(false);
             }}
           >

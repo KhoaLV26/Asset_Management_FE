@@ -6,14 +6,7 @@ import "../styles/CreateAssignment.css";
 import moment from "moment";
 import axiosInstance from "../axios/axiosInstance";
 import dayjs from "dayjs";
-import {
-  Spin,
-  message,
-  Button,
-  Form,
-  Input,
-  DatePicker,
-} from "antd";
+import { Spin, message, Button, Form, Input, DatePicker } from "antd";
 
 const { TextArea, Search } = Input;
 
@@ -30,7 +23,7 @@ const CreateAssignment = () => {
   const [viewModalUser, setViewModalUser] = useState(false);
   const [viewModalAsset, setViewModalAsset] = useState(false);
   const [today, setToday] = useState(moment().format("YYYY-MM-DD"));
-  const [note, setNote] = useState("")
+  const [note, setNote] = useState("");
 
   const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
   const navigate = useNavigate();
@@ -42,6 +35,10 @@ const CreateAssignment = () => {
     });
   }, [userName, assetName, form]);
 
+  useEffect(() => {
+    setIsButtonDisabled(userName === "" || assetName === "");
+  }, [userName, assetName]);
+
   const onFinish = (values) => {
     setIsLoading(true);
     axiosInstance
@@ -51,7 +48,7 @@ const CreateAssignment = () => {
         assignedDate: today,
         assetId: assetId,
         note: note.trim(),
-        status: 1
+        status: 1,
       })
       .then((response) => {
         if (response.data.success === true) {
@@ -66,21 +63,10 @@ const CreateAssignment = () => {
       .catch((error) => {
         if (error.response.status === 409) {
           message.error(error.response.data.message);
-        } else message.error("Create assignment error occurred. Please try again.");
+        } else
+          message.error("Create assignment error occurred. Please try again.");
       });
     setIsLoading(false);
-  };
-  console.log(assetName)
-  const handleConfirm = () => {
-    navigate("/manage-user");
-  };
-
-  const onFieldsChange = () => {
-    const errors = form.getFieldsError().filter(({ name, errors }) => {
-      return errors.length && ( name !== "note" && name !== "assignedDate" )
-    });
-    const fieldsWithError = errors.length;
-    setIsButtonDisabled(fieldsWithError > 0);
   };
 
   return (
@@ -94,16 +80,13 @@ const CreateAssignment = () => {
             className="mt-10"
             onFinish={onFinish}
             form={form}
-            onFieldsChange={onFieldsChange}
             initialValues={{ assignedDate: dayjs(today, "YYYY-MM-DD") }}
           >
             <Form.Item
               className="choose-user-form-item"
               label="User:"
               name="user"
-              rules={[
-                { required: true, message: "Please choose an user!" },
-              ]}
+              rules={[{ required: true, message: "Please choose an user!" }]}
               validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
               <Search
@@ -115,15 +98,12 @@ const CreateAssignment = () => {
                   setViewModalUser(true);
                 }}
               />
-              
             </Form.Item>
             <Form.Item
               className="choose-asset-form-item"
               label="Asset"
               name="asset"
-              rules={[
-                { required: true, message: "Please choose an asset!" },
-              ]}
+              rules={[{ required: true, message: "Please choose an asset!" }]}
               validateTrigger={["onSearch", "onBlur", "onChange"]}
             >
               <Search
@@ -168,17 +148,14 @@ const CreateAssignment = () => {
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
                 className="w-[400px] ml-[19px]"
                 inputReadOnly
+                minDate={dayjs(today, "YYYY-MM-DD")}
                 onChange={(date, dateString) => setToday(dateString)}
                 allowClear={false}
               />
             </Form.Item>
 
-            <Form.Item
-              className="note-form-item"
-              label="Note"
-              name="note"
-            >
-              <TextArea         
+            <Form.Item className="note-form-item" label="Note" name="note">
+              <TextArea
                 showCount
                 maxLength={255}
                 onChange={(e) => setNote(e.target.value)}
@@ -198,7 +175,9 @@ const CreateAssignment = () => {
               >
                 Save
               </Button>
-                <Button danger onClick={() => navigate("/manage-assignment")}>Cancel</Button>
+              <Button danger onClick={() => navigate("/manage-assignment")}>
+                Cancel
+              </Button>
             </Form.Item>
           </Form>
           {viewModalUser && (
