@@ -236,7 +236,7 @@ export const SelectModal = ({
       ),
       dataIndex: "assetName",
       key: "assetName",
-      width: "70%",
+      width: "60%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("AssetName");
@@ -261,7 +261,7 @@ export const SelectModal = ({
       ),
       key: "categoryName",
       dataIndex: "categoryName",
-      width: "10%",
+      width: "20%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("Category");
