@@ -284,7 +284,10 @@ const ChangePasswordForm = ({
           ]}
           validateTrigger="onBlur"
         >
-          <Input.Password className="ms-[27px] w-[298px]" />
+          <Input.Password
+            className="ms-[28px] w-[298px]"
+            placeholder="Enter old password..."
+          />
         </Form.Item>
       )}
 
@@ -295,7 +298,10 @@ const ChangePasswordForm = ({
         rules={[{ required: true, validator: validatePassword }]}
         validateTrigger="onBlur"
       >
-        <Input.Password className="ms-[20px] w-[299px]" />
+        <Input.Password
+          className="ms-[21px] w-[299px]"
+          placeholder="Enter new password..."
+        />
       </Form.Item>
       <Form.Item
         className="px-5"
@@ -304,7 +310,7 @@ const ChangePasswordForm = ({
         rules={[{ required: true, validator: validateConfirmPassword }]}
         validateTrigger="onBlur"
       >
-        <Input.Password />
+        <Input.Password className="w-[297px]" placeholder="Enter confirm password..." />
       </Form.Item>
       <Form.Item
         className={auth?.user?.isFirstLogin ? "px-5 ms-[360px]" : "ms-[280px]"}
@@ -315,12 +321,12 @@ const ChangePasswordForm = ({
           disabled={isButtonDisabled}
           className="bg-red-600 text-white border-1"
           loading={loading}
-          style={{ marginLeft: "10px" }}
+          style={{ marginLeft: "10px", width: "75px" }}
         >
           Save
         </Button>
         {!auth?.user?.isFirstLogin && (
-          <Button onClick={handleCancel} className="ms-[27px]">
+          <Button onClick={handleCancel} className="ms-[20px] w-[75px]">
             Cancel
           </Button>
         )}
