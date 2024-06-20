@@ -29,7 +29,7 @@ const Navbar = () => {
     return currentNavItem ? currentNavItem.key : "1";
   };
   return (
-    <Sider className="Sider ml-4 container h-[150vh] text-lg bg-white w-2/5 flex">
+    <Sider className="Sider ml-4 container h-screen text-lg bg-white w-2/5 flex">
       <div className="ant-layout-sider-children bg-white w-full h-full">
         <div className="flex items-center bg-white">
           <img
