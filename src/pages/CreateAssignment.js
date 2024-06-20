@@ -154,7 +154,7 @@ const CreateAssignment = () => {
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
                 className="w-[400px] ml-[27px]"
                 inputReadOnly
-                minDate={dayjs(today, "YYYY-MM-DD")}
+                minDate={dayjs(moment().format("YYYY-MM-DD"), "YYYY-MM-DD")}
                 onChange={(date, dateString) => setToday(dateString)}
                 allowClear={false}
               />
