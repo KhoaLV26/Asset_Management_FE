@@ -368,7 +368,7 @@ const ManageAsset = () => {
             </Button>
           </div>
         </div>
-        <div className="justify-center items-center mt-0">
+        <div className="justify-center items-center mt-0 h-[780px]">
           {console.log(data)}
           <Table
             locale={{
@@ -380,7 +380,7 @@ const ManageAsset = () => {
               ),
             }}
             pagination={false}
-            className="mt-10"
+            className="mt-10 h-[730px]"
             columns={columns}
             dataSource={data}
             defaultPageSize={15}

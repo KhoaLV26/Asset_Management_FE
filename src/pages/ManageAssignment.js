@@ -324,7 +324,7 @@ const ManageAssignment = () => {
                             open={openStateDropdown}
                             defaultValue={"State"}
                             suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown((prev) => !prev)} />}
-                            className="w-[250px]"
+                            className="w-[200px]"
                             onChange={(value) =>
                                 setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
                             }
@@ -350,14 +350,14 @@ const ManageAssignment = () => {
                         />
                     </Space.Compact>
                     <Space.Compact>
-                        <DatePicker inputReadOnly className="w-[250px]" format="YYYY-MM-DD" placeholder="Assigned Date" onChange={(value) =>
+                        <DatePicker inputReadOnly className="w-[100%]" format="YYYY-MM-DD" placeholder="Assigned Date" onChange={(value) =>
                             setParams((prev) => ({ ...prev, pageNumber: 1, assignedDate: value?.format("YYYY-MM-DD") }))
                         } />
                     </Space.Compact>
                     <div className="flex gap-10">
                         <Space.Compact>
                             <Search
-                                className="w-[300px]"
+                                className="w-[100%]"
                                 maxLength={100}
                                 placeholder="Enter text"
                                 value={searchQuery}
@@ -381,7 +381,7 @@ const ManageAssignment = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="justify-center items-center mt-0">
+                <div className="justify-center items-center mt-0 h-[780px]">
                     {console.log(data)}
                     <Table
                         locale={{
@@ -393,7 +393,7 @@ const ManageAssignment = () => {
                             ),
                         }}
                         pagination={false}
-                        className="mt-10"
+                        className="mt-10 h-[730px]"
                         columns={columns}
                         dataSource={data}
                         defaultPageSize={10}
