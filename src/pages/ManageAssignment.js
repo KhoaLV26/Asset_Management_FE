@@ -477,10 +477,6 @@ const ManageAssignment = () => {
                             <span>{selectedAssignment?.to}</span>
                         </div>
                         <div className="flex mb-[10px]">
-                            <span className="font-bold w-[150px]">Assigned By: </span>
-                            <span>{selectedAssignment?.by}</span>
-                        </div>
-                        <div className="flex mb-[10px]">
                             <span className="font-bold w-[150px]">Note: </span>
                             <span>{selectedAssignment?.note}</span>
                         </div>
