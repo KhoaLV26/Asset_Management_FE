@@ -56,7 +56,7 @@ const ManageAsset = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState({ pageNumber: 1 });
+  const [params, setParams] = useState({ pageNumber: 1, sortOrder: "asc" });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -83,7 +83,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Code{" "}
           {params.sortBy === "AssetCode" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -109,7 +109,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Name{" "}
           {params.sortBy === "AssetName" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -135,7 +135,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Category{" "}
           {params.sortBy === "Category" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -161,7 +161,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           State{" "}
           {params.sortBy === "State" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -294,12 +294,12 @@ const ManageAsset = () => {
             <Select
               open={openStateDropdown}
               defaultValue={"State"}
-              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown((prev) => !prev)} />}
               className="w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
               }
-              onSelect={() => setOpenStateDropdown(!openStateDropdown)}
+              onDropdownVisibleChange={(isOpen => setOpenStateDropdown(isOpen))}
               options={[
                 {
                   value: "All",
@@ -332,12 +332,12 @@ const ManageAsset = () => {
             <Select
               open={openCategoryDropdown}
               defaultValue={"Category"}
-              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown((prev) => !prev)} />}
               className="w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
               }
-              onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
+              onDropdownVisibleChange={(isOpen => setOpenCategoryDropdown(isOpen))}
               options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
             />
           </Space.Compact>
@@ -375,7 +375,7 @@ const ManageAsset = () => {
               emptyText: (
                 <Empty
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description="No Search Result"
+                  ascription="No Search Result"
                 />
               ),
             }}

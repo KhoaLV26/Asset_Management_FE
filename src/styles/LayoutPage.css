@@ -27,3 +27,7 @@
 .ant-table-tbody > tr:hover {
   cursor: pointer;
 }
+
+.hover-red:hover {
+  color: #d6001c !important;
+}

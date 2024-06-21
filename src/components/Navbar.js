@@ -1,7 +1,8 @@
 import React, { useContext } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Layout, Menu } from "antd";
 import { AuthContext } from "../contexts/AuthContext";
+import "../styles/LayoutPage.css";
 
 const navBar = [
   { key: "1", label: "Home", link: "/home" },
@@ -20,6 +21,7 @@ const Navbar = () => {
   const location = useLocation();
   const { auth } = useContext(AuthContext);
   const role = auth?.user?.roleName;
+  const navigate = useNavigate();
 
   const getSelectedKey = () => {
     const currentPath = location.pathname;
@@ -37,6 +39,7 @@ const Navbar = () => {
               "https://thanhnien.mediacdn.vn/Uploaded/quochung.qc/2020_01_16/nashtech/nash_tech_primary_pos_srgb_OYCJ.png?width=500"
             }
             alt="Nash Tech logo"
+            onClick={() => navigate("/")}
             width={150}
             height={150}
           />
@@ -54,7 +57,7 @@ const Navbar = () => {
             {role === "Admin"
               ? navBar.map((item) => (
                   <Menu.Item key={item.key}>
-                    <Link to={item.link}>{item.label}</Link>
+                    <Link to={item.link} className="hover-red">{item.label}</Link>
                   </Menu.Item>
                 ))
               : role === "Staff"

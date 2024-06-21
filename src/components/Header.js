@@ -28,10 +28,25 @@ const Header = () => {
   const navigate = useNavigate();
   const pathNames = location.pathname.split("/").filter((x) => x);
 
-  const pathStrings = pathNames
-    .map((name) => name.replace(/-/g, " "))
-    .map((name) => capitalizeWords(name))
-    .join(" > ");
+  const breadcrumbLinks = pathNames.map((name, index) => {
+    const path = `/${pathNames.slice(0, index + 1).join("/")}`;
+    const displayName = capitalizeWords(name.replace(/-/g, " "));
+
+    return (
+      <span key={index}>
+        {index > 0 && " > "}
+        <a
+          href={path}
+          onClick={(e) => {
+            e.preventDefault();
+            window.location.href = path;
+          }}
+        >
+          {displayName}
+        </a>
+      </span>
+    );
+  });
 
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [isChangePasswordModalVisible, setChangePasswordModalVisible] =
@@ -75,7 +90,7 @@ const Header = () => {
     <>
       <Layout.Header className="bg-d6001c px-10 flex items-center justify-between w-full">
         <div className="flex items-center text-white font-extrabold">
-          <span className="text-lg">{pathStrings}</span>
+          <span className="text-lg">{breadcrumbLinks}</span>
         </div>
         {isAuthen ? (
           <Dropdown overlay={userMenu} trigger={["click"]}>
@@ -102,7 +117,7 @@ const Header = () => {
 
       <Modal
         title={<span className="change-password-title">Are you sure?</span>}
-        visible={isLogoutModalVisible}
+        open={isLogoutModalVisible}
         footer={null}
         closable={false}
       >
@@ -114,7 +129,7 @@ const Header = () => {
 
       <Modal
         title={<span className="change-password-title">Change Password</span>}
-        visible={isChangePasswordModalVisible}
+        open={isChangePasswordModalVisible}
         closable={false}
         footer={null}
       >
@@ -310,7 +325,10 @@ const ChangePasswordForm = ({
         rules={[{ required: true, validator: validateConfirmPassword }]}
         validateTrigger="onBlur"
       >
-        <Input.Password className="w-[297px]" placeholder="Enter confirm password..." />
+        <Input.Password
+          className="w-[297px]"
+          placeholder="Enter confirm password..."
+        />
       </Form.Item>
       <Form.Item
         className={auth?.user?.isFirstLogin ? "px-5 ms-[360px]" : "ms-[280px]"}

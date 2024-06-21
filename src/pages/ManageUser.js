@@ -276,7 +276,7 @@ const ManageUser = () => {
       render: () => (
         <Space size="middle">
           <Button
-            className="bg-tranparent border-none"
+            //className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
@@ -286,7 +286,7 @@ const ManageUser = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
-            className="bg-tranparent border-none"
+            //className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
@@ -309,13 +309,13 @@ const ManageUser = () => {
             <Select
               open={open}
               value={roleHolder}
-              suffixIcon={<FilterOutlined onClick={() => setOpen(!open)} />}
+              suffixIcon={<FilterOutlined onClick={() => setOpen((prev) => !prev)} />}
               className="w-[100px]"
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
               }}
-              onSelect={() => setOpen(!open)}
+              onDropdownVisibleChange={(isOpen => setOpen(isOpen))}
               options={roles}
             />
           </Space.Compact>
@@ -325,6 +325,7 @@ const ManageUser = () => {
                 className="w-[100%]"
                 value={searchQuery}
                 allowClear
+                placeholder="Enter text"
                 maxLength={100}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onSearch={() => {
@@ -348,7 +349,7 @@ const ManageUser = () => {
           </div>
         </div>
 
-        <div className="justify-center items-center mt-0">
+        <div className="justify-center items-center mt-0 h-[780px]">
           <Table
             locale={{
               emptyText: (
@@ -359,7 +360,7 @@ const ManageUser = () => {
               ),
             }}
             pagination={false}
-            className="mt-10"
+            className="mt-10 h-[730px]"
             columns={columns}
             dataSource={data}
             defaultPageSize={15}
