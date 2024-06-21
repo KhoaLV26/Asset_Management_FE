@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import SelectModal from "../components/SelectModal";
 import LayoutPage from "../layout/LayoutPage";
@@ -7,6 +7,7 @@ import moment from "moment";
 import axiosInstance from "../axios/axiosInstance";
 import dayjs from "dayjs";
 import { Spin, message, Button, Form, Input, DatePicker } from "antd";
+import { AuthContext } from "../contexts/AuthContext";
 
 const { TextArea, Search } = Input;
 
@@ -24,8 +25,12 @@ const CreateAssignment = () => {
   const [viewModalAsset, setViewModalAsset] = useState(false);
   const [today, setToday] = useState(moment().format("YYYY-MM-DD"));
   const [note, setNote] = useState("");
+  
 
-  const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
+  //const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
+  const { auth } = useContext(AuthContext);
+
+  const adminId = auth?.user?.id;  
   const navigate = useNavigate();
 
   useEffect(() => {
