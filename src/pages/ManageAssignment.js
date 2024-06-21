@@ -40,8 +40,6 @@ const stateConvert = (id) => {
 };
 
 const ManageAssignment = () => {
-    const [sortOrder, setSortOrder] = useState("asc");
-    const [sortPos, setSortPos] = useState(false);
     const [direction, setDirection] = useState(true);
     const [total, setTotal] = useState(1);
     const [data, setData] = useState([]);
@@ -61,33 +59,24 @@ const ManageAssignment = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [params, setParams] = useState({ pageNumber: 1 });
     const sorterLog = (name) => {
-        setSortPos(false)
-        setSortOrder("asc")
         if (params.sortBy === name) {
             if (direction === true) {
-                setParams((prev) => ({ ...prev, sortOrder: "asc" }));
-            } else {
                 setParams((prev) => ({ ...prev, sortOrder: "desc" }));
+            } else {
+                setParams((prev) => ({ ...prev, sortOrder: "asc" }));
             }
             setDirection(!direction);
         } else {
             setParams((prev) => ({ ...prev, sortBy: name }));
             setDirection(true);
-            setParams((prev) => ({ ...prev, sortOrder: "desc" }));
+            setParams((prev) => ({ ...prev, sortOrder: "asc" }));
         }
     };
     const columns = [
         {
             title: (
                 <span className="flex items-center justify-between">
-                    No{" "}
-                    {
-                        sortPos && sortOrder === "desc" ? (
-                            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
-                        ) : (
-                            <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
-                        )
-                    }
+                    No
                 </span>
             ),
             dataIndex: "index",
@@ -95,36 +84,21 @@ const ManageAssignment = () => {
             key: "index",
             render: (text, record, index) =>
                 <span>
-                    {sortOrder === "desc" && sortPos === true ? total - ((params?.pageNumber - 1) * 10) - index : index + 1 + ((params?.pageNumber - 1) * 10)}
+                    {index + 1 + ((params?.pageNumber - 1) * 10)}
                 </span>,
-            onHeaderCell: () => ({
-                onClick: () => {
-                    if (params.sortOrder === "asc") {
-                        setParams({ ...params, sortOrder: "desc" })
-                    }
-                    else if (params.sortOrder === "desc") {
-                        setParams({ ...params, sortOrder: "asc" })
-                    }
-                    else {
-                        setParams({ ...params, sortOrder: "desc" })
-                    }
-                    setSortOrder(sortOrder === "asc" ? "desc" : "asc")
-                    setSortPos(true)
-                },
-            }),
         },
         {
             title: (
                 <span className="flex items-center justify-between">
                     Asset Code{" "}
                     {params.sortBy === "AssetCode" ? (
-                        params.sortOrder === "desc" ? (
+                        params.sortOrder === "asc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
                             <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
                         )
                     ) : (
-                        <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+                        <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                     )}
                 </span>
             ),
@@ -143,13 +117,13 @@ const ManageAssignment = () => {
                 <span className="flex items-center justify-between">
                     Asset Name{" "}
                     {params.sortBy === "AssetName" ? (
-                        params.sortOrder === "desc" ? (
+                        params.sortOrder === "asc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
                             <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
                         )
                     ) : (
-                        <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+                        <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                     )}
                 </span>
             ),
@@ -168,13 +142,13 @@ const ManageAssignment = () => {
                 <span className="flex items-center justify-between">
                     Assigned To{" "}
                     {params.sortBy === "AssignedTo" ? (
-                        params.sortOrder === "desc" ? (
+                        params.sortOrder === "asc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
                             <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
                         )
                     ) : (
-                        <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+                        <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                     )}
                 </span>
             ),
@@ -193,13 +167,13 @@ const ManageAssignment = () => {
                 <span className="flex items-center justify-between">
                     Assigned By{" "}
                     {params.sortBy === "AssignedBy" ? (
-                        params.sortOrder === "desc" ? (
+                        params.sortOrder === "asc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
                             <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
                         )
                     ) : (
-                        <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+                        <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                     )}
                 </span>
             ),
@@ -218,13 +192,13 @@ const ManageAssignment = () => {
                 <span className="flex items-center justify-between">
                     Assigned Date{" "}
                     {params.sortBy === "AssignedDate" ? (
-                        params.sortOrder === "desc" ? (
+                        params.sortOrder === "asc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
                             <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
                         )
                     ) : (
-                        <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+                        <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                     )}
                 </span>
             ),
@@ -243,13 +217,13 @@ const ManageAssignment = () => {
                 <span className="flex items-center justify-between">
                     State{" "}
                     {params.sortBy === "State" ? (
-                        params.sortOrder === "desc" ? (
+                        params.sortOrder === "asc" ? (
                             <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                         ) : (
                             <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
                         )
                     ) : (
-                        <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+                        <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
                     )}
                 </span>
             ),
@@ -267,10 +241,9 @@ const ManageAssignment = () => {
             title: "",
             key: "action",
             width: "16%",
-            ellipsis: true,
             render: (_, record) => (
                 <Space size="middle">
-                    <Button size="small"
+                    <Button size="middle"
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -279,7 +252,7 @@ const ManageAssignment = () => {
                     >
                         <EditFilled className="text-sm mb-1" />
                     </Button>
-                    <Button size="small"
+                    <Button size="middle"
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -288,7 +261,7 @@ const ManageAssignment = () => {
                     >
                         <CloseCircleOutlined className="text-red-600 text-sm mb-1" />
                     </Button>
-                    <Button size="small"
+                    <Button size="middle"
                         disabled={record?.state === "Waiting for acceptance"}
                         onClick={(e) => {
                             e.stopPropagation();
@@ -350,12 +323,12 @@ const ManageAssignment = () => {
                         <Select
                             open={openStateDropdown}
                             defaultValue={"State"}
-                            suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
-                            className="w-[100%]"
+                            suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown((prev) => !prev)} />}
+                            className="w-[200px]"
                             onChange={(value) =>
                                 setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
                             }
-                            onSelect={() => setOpenStateDropdown(!openStateDropdown)}
+                            onDropdownVisibleChange={(isOpen => setOpenStateDropdown(isOpen))}
                             options={[
                                 {
                                     value: "All",
@@ -406,7 +379,7 @@ const ManageAssignment = () => {
                         </Button>
                     </div>
                 </div>
-                <div className="justify-center items-center mt-0">
+                <div className="justify-center items-center mt-0 h-[780px]">
                     {console.log(data)}
                     <Table
                         locale={{
@@ -418,7 +391,7 @@ const ManageAssignment = () => {
                             ),
                         }}
                         pagination={false}
-                        className="mt-10"
+                        className="mt-10 h-[730px]"
                         columns={columns}
                         dataSource={data}
                         defaultPageSize={10}

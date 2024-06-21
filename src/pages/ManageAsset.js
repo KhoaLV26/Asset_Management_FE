@@ -56,7 +56,7 @@ const ManageAsset = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState({ pageNumber: 1 });
+  const [params, setParams] = useState({ pageNumber: 1, sortOrder: "asc" });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -83,7 +83,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Code{" "}
           {params.sortBy === "AssetCode" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -109,7 +109,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Asset Name{" "}
           {params.sortBy === "AssetName" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -135,7 +135,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           Category{" "}
           {params.sortBy === "Category" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -161,7 +161,7 @@ const ManageAsset = () => {
         <span className="flex items-center justify-between">
           State{" "}
           {params.sortBy === "State" ? (
-            params.sortOrder === "desc" ? (
+            params.sortOrder === "asc" ? (
               <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
             ) : (
               <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
@@ -290,55 +290,57 @@ const ManageAsset = () => {
       <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">Asset List</h1>
         <div className="flex items-center justify-between mt-7 mb-2">
-          <div className="flex gap-10 w-[30%]">   
-              <Select
-                open={openStateDropdown}
-                defaultValue={"State"}
-                suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown(!openStateDropdown)} />}
-                className="w-[100%]"
-                onChange={(value) =>
-                  setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
+          <Space.Compact>
+            <Select
+              open={openStateDropdown}
+              defaultValue={"State"}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown((prev) => !prev)} />}
+              className="w-[250px]"
+              onChange={(value) =>
+                setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
+              }
+              onDropdownVisibleChange={(isOpen => setOpenStateDropdown(isOpen))}
+              options={[
+                {
+                  value: "All",
+                  label: "All",
+                },
+                {
+                  value: "1",
+                  label: "Not available",
+                },
+                {
+                  value: "2",
+                  label: "Available",
+                },
+                {
+                  value: "3",
+                  label: "Assigned",
+                },
+                {
+                  value: "4",
+                  label: "Waiting for recycling",
+                },
+                {
+                  value: "5",
+                  label: "Recycled",
                 }
-                onSelect={() => setOpenStateDropdown(!openStateDropdown)}
-                options={[
-                  {
-                    value: "All",
-                    label: "All",
-                  },
-                  {
-                    value: "1",
-                    label: "Not available",
-                  },
-                  {
-                    value: "2",
-                    label: "Available",
-                  },
-                  {
-                    value: "3",
-                    label: "Assigned",
-                  },
-                  {
-                    value: "4",
-                    label: "Waiting for recycling",
-                  },
-                  {
-                    value: "5",
-                    label: "Recycled",
-                  }
-                ]}
-              />
-              <Select
-                open={openCategoryDropdown}
-                defaultValue={"Category"}
-                suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown(!openCategoryDropdown)} />}
-                className="w-[100%]"
-                onChange={(value) =>
-                  setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
-                }
-                onSelect={() => setOpenCategoryDropdown(!openCategoryDropdown)}
-                options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
-              />
-          </div>
+              ]}
+            />
+          </Space.Compact>
+          <Space.Compact>
+            <Select
+              open={openCategoryDropdown}
+              defaultValue={"Category"}
+              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown((prev) => !prev)} />}
+              className="w-[250px]"
+              onChange={(value) =>
+                setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
+              }
+              onDropdownVisibleChange={(isOpen => setOpenCategoryDropdown(isOpen))}
+              options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
+            />
+          </Space.Compact>
           <div className="flex gap-10">
             <Space.Compact>
               <Search
@@ -366,19 +368,19 @@ const ManageAsset = () => {
             </Button>
           </div>
         </div>
-        <div className="justify-center items-center mt-0">
+        <div className="justify-center items-center mt-0 h-[780px]">
           {console.log(data)}
           <Table
             locale={{
               emptyText: (
                 <Empty
                   image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description="No Search Result"
+                  ascription="No Search Result"
                 />
               ),
             }}
             pagination={false}
-            className="mt-10"
+            className="mt-10 h-[730px]"
             columns={columns}
             dataSource={data}
             defaultPageSize={15}
