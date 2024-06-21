@@ -274,7 +274,7 @@ const ManageAssignment = () => {
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("manage-assignment/edit-assignment");
+                            navigate("edit-assignment");
                         }}
                     >
                         <EditFilled className="text-sm mb-1" />
@@ -283,7 +283,7 @@ const ManageAssignment = () => {
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("manage-assignment/delete-assignment");
+                            navigate("delete-assignment");
                         }}
                     >
                         <CloseCircleOutlined className="text-red-600 text-sm mb-1" />
@@ -399,7 +399,7 @@ const ManageAssignment = () => {
                             type="primary"
                             size="large"
                             onClick={() => {
-                                navigate("/manage-assignment/create-assignment");
+                                navigate("create-assignment");
                             }}
                         >
                             Create new assignment
