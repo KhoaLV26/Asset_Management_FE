@@ -186,7 +186,7 @@ const ManageAsset = () => {
       title: "",
       key: "action",
       width: "10%",
-      ellipsis: true,
+      
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -223,7 +223,7 @@ const ManageAsset = () => {
       }
       sessionStorage.setItem("isFirstTimeAsset", "false");
     } else {
-      setParams((prev) => ({ ...prev, newAssetCode: ""}));
+      setParams((prev) => ({ ...prev, newAssetCode: "" }));
     }
 
     return () => {
@@ -235,14 +235,14 @@ const ManageAsset = () => {
     axiosInstance
       .get("/Assets", { params })
       .then((res) => {
-        if (res.data.success) {      
-            setTotal(res.data.totalCount);
-            setData(res.data.data.map(asset => ({
-              ...asset,
-              state: stateConvert(asset.status),
-            })))
-          }
+        if (res.data.success) {
+          setTotal(res.data.totalCount);
+          setData(res.data.data.map(asset => ({
+            ...asset,
+            state: stateConvert(asset.status),
+          })))
         }
+      }
       )
       .catch((err) => {
         console.log(err);
@@ -344,7 +344,7 @@ const ManageAsset = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-                className="w-[300px]"
+                className="w-[100%]"
                 maxLength={100}
                 placeholder="Enter text"
                 value={searchQuery}
@@ -357,7 +357,7 @@ const ManageAsset = () => {
               />
             </Space.Compact>
             <Button
-              className="flex items-center w-[200px] h-[32px] bg-d6001c"
+              className="flex items-center h-[32px] bg-d6001c"
               type="primary"
               size="large"
               onClick={() => {

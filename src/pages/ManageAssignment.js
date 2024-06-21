@@ -247,7 +247,7 @@ const ManageAssignment = () => {
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("manage-assignment/edit-assignment");
+                            navigate("edit-assignment");
                         }}
                     >
                         <EditFilled className="text-sm mb-1" />
@@ -256,7 +256,7 @@ const ManageAssignment = () => {
                         disabled={record?.state === "Accepted"}
                         onClick={(e) => {
                             e.stopPropagation();
-                            navigate("manage-assignment/delete-assignment");
+                            navigate("delete-assignment");
                         }}
                     >
                         <CloseCircleOutlined className="text-red-600 text-sm mb-1" />
@@ -319,7 +319,7 @@ const ManageAssignment = () => {
             <div className="w-full mt-10">
                 <h1 className="font-bold text-d6001c text-2xl">Assignment List</h1>
                 <div className="flex items-center justify-between mt-7 mb-2">
-                    <Space.Compact>
+                    <div className="flex gap-10 w-[30%]">
                         <Select
                             open={openStateDropdown}
                             defaultValue={"State"}
@@ -348,12 +348,10 @@ const ManageAssignment = () => {
                                 },
                             ]}
                         />
-                    </Space.Compact>
-                    <Space.Compact>
                         <DatePicker inputReadOnly className="w-[100%]" format="YYYY-MM-DD" placeholder="Assigned Date" onChange={(value) =>
                             setParams((prev) => ({ ...prev, pageNumber: 1, assignedDate: value?.format("YYYY-MM-DD") }))
                         } />
-                    </Space.Compact>
+                    </div>
                     <div className="flex gap-10">
                         <Space.Compact>
                             <Search
@@ -370,11 +368,11 @@ const ManageAssignment = () => {
                             />
                         </Space.Compact>
                         <Button
-                            className="flex items-center w-[200px] h-[32px] bg-d6001c"
+                            className="flex items-center h-[32px] bg-d6001c"
                             type="primary"
                             size="large"
                             onClick={() => {
-                                navigate("/manage-assignment/create-assignment");
+                                navigate("create-assignment");
                             }}
                         >
                             Create new assignment
