@@ -44,7 +44,7 @@ const ManageUser = () => {
     sortBy: "StaffCode",
     sortOrder: "asc",
     pageNumber: 1,
-    newStaffCode: location?.state?.data?.staffCode || 0, 
+    newStaffCode: location?.state?.data?.staffCode || 0,
   });
 
   const sorterLog = (name) => {
@@ -78,17 +78,15 @@ const ManageUser = () => {
 
   useEffect(() => {
     axiosInstance
-      .get(
-        '/Users', {params}
-      )
+      .get("/Users", { params })
       .then((res) => {
         if (res.data.success) {
-            setData(
-              res.data.data.map((user) => ({
-                ...user,
-                fullName: `${user.firstName} ${user.lastName}`,
-              }))
-            );
+          setData(
+            res.data.data.map((user) => ({
+              ...user,
+              fullName: `${user.firstName} ${user.lastName}`,
+            }))
+          );
           setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
@@ -126,7 +124,10 @@ const ManageUser = () => {
     const isFirstTime = sessionStorage.getItem("isFirstTime") === null;
     if (isFirstTime) {
       if (location?.state?.data) {
-        setParams((prev) => ({ ...prev, newStaffCode: location.state.data.staffCode }));
+        setParams((prev) => ({
+          ...prev,
+          newStaffCode: location.state.data.staffCode,
+        }));
       }
       sessionStorage.setItem("isFirstTime", "false");
     } else {
@@ -309,13 +310,15 @@ const ManageUser = () => {
             <Select
               open={open}
               value={roleHolder}
-              suffixIcon={<FilterOutlined onClick={() => setOpen((prev) => !prev)} />}
+              suffixIcon={
+                <FilterOutlined onClick={() => setOpen((prev) => !prev)} />
+              }
               className="w-[100px]"
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
               }}
-              onDropdownVisibleChange={(isOpen => setOpen(isOpen))}
+              onDropdownVisibleChange={(isOpen) => setOpen(isOpen)}
               options={roles}
             />
           </Space.Compact>
