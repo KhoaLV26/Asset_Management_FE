@@ -51,7 +51,7 @@ const EditAsset = () => {
       .then((response) => {
         if (response.data.success === true) {
           message.success("An asset is updated!");
-          navigate("/manage-asset");
+          navigate("/manage-asset", { state: { data: response.data.data } });
         } else {
           message.error(response.data.message);
         }
