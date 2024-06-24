@@ -193,7 +193,7 @@ const ManageAsset = () => {
             disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
-              navigate("edit-asset");
+              navigate(`edit-asset/${record.id}`);
             }}
           >
             <EditFilled className="text-lg mb-1" />
