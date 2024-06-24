@@ -265,14 +265,16 @@ const Report = () => {
     <LayoutPage>
       <div className="w-full mt-10">
         <h1 className="font-bold text-d6001c text-2xl">Report</h1>
-        <Button
-          className="flex mt-7 h-[32px] bg-d6001c"
-          type="primary"
-          size="large"
-          onClick={handleExport}
-        >
-          Export
-        </Button>
+        <div className="flex justify-end">
+          <Button
+            className="flex mt-7 h-[32px] bg-d6001c"
+            type="primary"
+            size="large"
+            onClick={handleExport}
+          >
+            Export
+          </Button>
+        </div>
         <Spin spinning={loading}>
           <div className="justify-center items-center mt-0 h-[780px]">
             <Table
