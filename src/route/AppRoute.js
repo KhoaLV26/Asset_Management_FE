@@ -6,6 +6,7 @@ import EditAsset from "../pages/EditAsset";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import ManageAssignment from "../pages/ManageAssignment";
+import Report from "../pages/Report";
 
 const { useRoutes } = require("react-router-dom");
 const { default: ManageUser } = require("../pages/ManageUser");
@@ -82,6 +83,14 @@ const AppRoutes = () => {
     {
       path: "/manage-assignment/create-assignment",
       element: <CreateAssignment />,
+    },
+    {
+      path: "/report",
+      element: (
+        <RequireAdmin>
+          <Report />
+        </RequireAdmin>
+      ),
     },
     { path: "*", element: <NotFound /> },
   ]);
