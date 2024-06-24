@@ -39,6 +39,7 @@ const Navbar = () => {
               "https://thanhnien.mediacdn.vn/Uploaded/quochung.qc/2020_01_16/nashtech/nash_tech_primary_pos_srgb_OYCJ.png?width=500"
             }
             alt="Nash Tech logo"
+            className="hover:cursor-pointer"
             onClick={() => navigate("/")}
             width={150}
             height={150}
@@ -57,7 +58,9 @@ const Navbar = () => {
             {role === "Admin"
               ? navBar.map((item) => (
                   <Menu.Item key={item.key}>
-                    <Link to={item.link} className="hover-red">{item.label}</Link>
+                    <Link to={item.link} className="hover-red">
+                      {item.label}
+                    </Link>
                   </Menu.Item>
                 ))
               : role === "Staff"

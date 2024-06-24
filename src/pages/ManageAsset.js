@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Button, Input, Space, Table, Modal, Select, message, Empty } from "antd";
+import {
+  Button,
+  Input,
+  Space,
+  Table,
+  Modal,
+  Select,
+  message,
+  Empty,
+} from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
 import {
@@ -9,10 +18,12 @@ import {
   CaretUpOutlined,
   CaretDownOutlined,
 } from "@ant-design/icons";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
 import CustomPagination from "../components/CustomPagination";
+import ConfirmModal from "../components/ConfirmModal";
+
 const { Search } = Input;
 const stateConvert = (id) => {
   let stateName = "";
@@ -33,13 +44,15 @@ const stateConvert = (id) => {
       stateName = "Recycled";
       break;
   }
-  return stateName
+  return stateName;
 };
 
 const ManageAsset = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
+  const [toEdit, setToEdit] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
   const handleSearch = (value) => {
     setParams((prev) => ({ ...prev, pageNumber: 1, search: value }));
   };
@@ -54,6 +67,7 @@ const ManageAsset = () => {
     setSelectedAsset(data);
   };
   const [selectedAsset, setSelectedAsset] = useState(null);
+  const [currentId, setCurrentId] = useState(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [params, setParams] = useState({ pageNumber: 1, sortOrder: "asc" });
@@ -186,7 +200,7 @@ const ManageAsset = () => {
       title: "",
       key: "action",
       width: "10%",
-      
+
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -202,7 +216,10 @@ const ManageAsset = () => {
             disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
-              navigate("delete-asset");
+              setCurrentId(record.id);
+              setShowConfirm((prevShowConfirm) => {
+                return true;
+              });
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -211,15 +228,38 @@ const ManageAsset = () => {
       ),
     },
   ];
+
   const handleCancel = () => {
     setIsModalOpen(false);
+    setToEdit(false);
   };
 
+  const handleDelete = (currentId) => {
+    setShowConfirm(false);
+    axiosInstance
+      .delete(`/assets/${currentId}`)
+      .then((res) => {
+        if (res.data.success) {
+          message.success("Asset deleted");
+        } else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status === 409) {
+          setToEdit(true);
+        } else message.error(err.response.data.message);
+      });
+  };
   useEffect(() => {
-    const isFirstTimeAsset = sessionStorage.getItem("isFirstTimeAsset") === null;
+    const isFirstTimeAsset =
+      sessionStorage.getItem("isFirstTimeAsset") === null;
     if (isFirstTimeAsset) {
       if (location?.state?.data) {
-        setParams((prev) => ({ ...prev, newAssetCode: location.state.data.assetCode }));
+        setParams((prev) => ({
+          ...prev,
+          newAssetCode: location.state.data.assetCode,
+        }));
       }
       sessionStorage.setItem("isFirstTimeAsset", "false");
     } else {
@@ -237,18 +277,19 @@ const ManageAsset = () => {
       .then((res) => {
         if (res.data.success) {
           setTotal(res.data.totalCount);
-          setData(res.data.data.map(asset => ({
-            ...asset,
-            state: stateConvert(asset.status),
-          })))
+          setData(
+            res.data.data.map((asset) => ({
+              ...asset,
+              state: stateConvert(asset.status),
+            }))
+          );
         }
-      }
-      )
+      })
       .catch((err) => {
         console.log(err);
         if (err.response?.status === 409) {
-          setData([])
-          setTotal(0)
+          setData([]);
+          setTotal(0);
         } else message.error(err.message);
       });
   }, [params]);
@@ -294,12 +335,17 @@ const ManageAsset = () => {
             <Select
               open={openStateDropdown}
               defaultValue={"State"}
-              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenStateDropdown((prev) => !prev)} />}
+              suffixIcon={
+                <FilterOutlined
+                  style={{ fontSize: "16px" }}
+                  onClick={() => setOpenStateDropdown((prev) => !prev)}
+                />
+              }
               className="w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
               }
-              onDropdownVisibleChange={(isOpen => setOpenStateDropdown(isOpen))}
+              onDropdownVisibleChange={(isOpen) => setOpenStateDropdown(isOpen)}
               options={[
                 {
                   value: "All",
@@ -324,7 +370,7 @@ const ManageAsset = () => {
                 {
                   value: "5",
                   label: "Recycled",
-                }
+                },
               ]}
             />
           </Space.Compact>
@@ -332,13 +378,29 @@ const ManageAsset = () => {
             <Select
               open={openCategoryDropdown}
               defaultValue={"Category"}
-              suffixIcon={<FilterOutlined style={{ fontSize: "16px" }} onClick={() => setOpenCategoryDropdown((prev) => !prev)} />}
+              suffixIcon={
+                <FilterOutlined
+                  style={{ fontSize: "16px" }}
+                  onClick={() => setOpenCategoryDropdown((prev) => !prev)}
+                />
+              }
               className="w-[250px]"
               onChange={(value) =>
-                setParams((prev) => ({ ...prev, pageNumber: 1, category: value }))
+                setParams((prev) => ({
+                  ...prev,
+                  pageNumber: 1,
+                  category: value,
+                }))
               }
-              onDropdownVisibleChange={(isOpen => setOpenCategoryDropdown(isOpen))}
-              options={[{ value: "", label: "All" }, ...categories.map(c => { return { value: c.id, label: c.name } })]}
+              onDropdownVisibleChange={(isOpen) =>
+                setOpenCategoryDropdown(isOpen)
+              }
+              options={[
+                { value: "", label: "All" },
+                ...categories.map((c) => {
+                  return { value: c.id, label: c.name };
+                }),
+              ]}
             />
           </Space.Compact>
           <div className="flex gap-10">
@@ -436,11 +498,51 @@ const ManageAsset = () => {
                   <span> Assigned By: {item.by}</span>
                   <span> Assigned To: {item.to}</span>
                 </div>
-              )
-              )}
+              ))}
             </div>
           </div>
         </Modal>
+        <Modal
+          title={
+            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+              Cannot Delete Asset
+            </h3>
+          }
+          open={toEdit}
+          onCancel={handleCancel}
+          footer={null}
+          className="custom-modal"
+        >
+          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
+            <h1 className="text-lg">
+              Cannot delete the asset because it belongs to one or more
+              historical assignments.
+            </h1>
+            <h1 className="text-lg">
+              If the asset is not able to be used anymore, please update its
+              state in{" "}
+              <Link
+                to={`edit-asset/${currentId}`}
+                className="text-blue-400 underline"
+              >
+                Edit Asset page
+              </Link>
+            </h1>
+          </div>
+        </Modal>
+        <ConfirmModal
+          title={"Are you sure?"}
+          text={"Do you want to delete this asset?"}
+          textconfirm={"Delete"}
+          textcancel={"Cancel"}
+          onConfirm={() => handleDelete(currentId)}
+          onCancel={() => {
+            setShowConfirm(false);
+            setCurrentId("");
+          }}
+          isShowModal={showConfirm}
+          setisShowModal={setShowConfirm}
+        />
       </div>
     </LayoutPage>
   );
