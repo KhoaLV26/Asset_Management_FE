@@ -34,7 +34,8 @@ const Header = () => {
 
     return (
       <span key={index}>
-        {index > 0 && " > "}
+        {index > 0 && index < 2 && " > "}
+        {index < 2 &&
         <a
           href={path}
           onClick={(e) => {
@@ -44,6 +45,7 @@ const Header = () => {
         >
           {displayName}
         </a>
+        }
       </span>
     );
   });

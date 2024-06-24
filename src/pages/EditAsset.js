@@ -18,7 +18,6 @@ import "../styles/CreateAsset.css";
 import axiosInstance from "../axios/axiosInstance";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import { AuthContext } from "../contexts/AuthContext";
-import moment from "moment";
 import dayjs from "dayjs";
 
 const { TextArea } = Input;
@@ -44,7 +43,7 @@ const EditAsset = () => {
   const onFinish = (values) => {
     setIsLoading(true);
     values.installDate = values.installDate.format("YYYY-MM-DD");
-    var {categoryName,...rest} = values
+    var {categoryName,assetCode,...rest} = values
     console.log(rest);
     axiosInstance
       .put(`/assets/${params.id}`, rest)
@@ -114,6 +113,32 @@ const EditAsset = () => {
             form={form}
             onFieldsChange={onFieldsChange}
           >
+            <Form.Item
+              className="asset-name-form-item"
+              label="Asset Code"
+              name="assetCode"
+              disabled
+              rules={[
+                { required: true, message: "Please enter Asset Name!" },
+                {
+                  min: 2,
+                  max: 100,
+                  message:
+                    "The length of Asset Name should be 2-100 characters!",
+                },
+                // { validator: validateName },
+              ]}
+
+              validateTrigger="onBlur"
+            >
+              <Input
+                placeholder="Enter Asset name...."
+                value={assetName}
+                className="ms-[18px] w-96"
+                onBlur={handleBlur("assetName")}
+                disabled
+              />
+            </Form.Item>
             <Form.Item
               className="asset-name-form-item"
               label="Name"
