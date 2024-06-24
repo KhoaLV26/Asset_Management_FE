@@ -3,6 +3,7 @@ import RequireAdmin from "../components/RequireAdmin";
 import UnAuthor from "../components/UnAuthor";
 import CreateAsset from "../pages/CreateAsset";
 import EditAsset from "../pages/EditAsset";
+import EditUser from "../pages/EditUser";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import ManageAssignment from "../pages/ManageAssignment";
@@ -64,6 +65,14 @@ const AppRoutes = () => {
       element: (
         <RequireAdmin>
           <EditAsset />
+        </RequireAdmin>
+      ),
+    },
+    {
+      path: "/manage-user/edit-user/:id",
+      element: (
+        <RequireAdmin>
+          <EditUser />
         </RequireAdmin>
       ),
     },

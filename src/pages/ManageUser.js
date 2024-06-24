@@ -273,14 +273,14 @@ const ManageUser = () => {
       title: "",
       key: "action",
       width: "10%",
-      render: () => (
+      render: (_, record) => (
         <Space size="middle">
           <Button
             //className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
-              navigate("edit-user");
+              navigate(`edit-user/${record.id}`);
             }}
           >
             <EditFilled className="text-lg mb-1" />
