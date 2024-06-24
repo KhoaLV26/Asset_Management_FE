@@ -143,6 +143,7 @@ const EditAsset = () => {
               label="Category"
               name="categoryName"
               className="cate-form-item"
+              rules={[{ required: true, message: "Please choose a category!" }]}
             >
               <Select
                 className="ms-[30px]"
