@@ -61,7 +61,7 @@ const ManageUser = () => {
       .delete(`/users/${currentId}`)
       .then((res) => {
         if (res.data.success) {
-          message.success("user disabled");
+          message.success("User Disabled");
           setParams({ pageNumber: 1, sortOrder: "asc" })
         } else {
           message.error(res.data.message);
