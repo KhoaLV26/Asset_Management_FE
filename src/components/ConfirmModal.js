@@ -13,24 +13,34 @@ export const ConfirmModal = ({
 }) => {
   return (
     <Modal
-          title={
-            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold text-lg">
-              {title}
-            </h3>
-          }
-          open={isShowModal}
-          onCancel={() => setisShowModal(false)}
-          footer={null}
-          className="custom-modal"
-        >
-          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
-            <h1 className="text-lg mb-6 ml-5">{text}</h1>
-            <div className="flex ms-[18px] gap-10">
-                <Button className="bg-d6001c text-white w-[100px]" onClick={() => onConfirm()}>{textconfirm}</Button>
-                <Button className="bg-white text-d6001c w-[100px]" onClick={() => onCancel()}>{textcancel}</Button>
-            </div>
-          </div>
-        </Modal>
+      title={
+        <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold text-md">
+          {title}
+        </h3>
+      }
+      open={isShowModal}
+      onCancel={() => setisShowModal(false)}
+      footer={null}
+      className="custom-modal pt-[10%]"
+    >
+      <div className="px-[4.5%] py-[20px] pt-[15px] pb-[15px]">
+        <h1 className="text-[17px] mb-6 ml-5">{text}</h1>
+        <div className="flex ms-[18px] gap-10">
+          <Button
+            className="bg-d6001c text-white w-[100px] text-[17px]"
+            onClick={() => onConfirm()}
+          >
+            {textconfirm}
+          </Button>
+          <Button
+            className="bg-white text-d6001c w-[100px] text-[17px]"
+            onClick={() => onCancel()}
+          >
+            {textcancel}
+          </Button>
+        </div>
+      </div>
+    </Modal>
   );
 };
 

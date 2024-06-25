@@ -1,32 +1,358 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import LayoutPage from "../layout/LayoutPage";
 import { AuthContext } from "../contexts/AuthContext";
+import axiosInstance from "../axios/axiosInstance";
+import {
+  CheckOutlined,
+  CloseOutlined,
+  CaretUpOutlined,
+  CaretDownOutlined,
+  RedoOutlined,
+} from "@ant-design/icons";
+import {
+  Button,
+  Space,
+  Table,
+  Modal,
+  message,
+  Empty,
+} from "antd";
+import { useNavigate } from "react-router-dom";
+import CustomPagination from "../components/CustomPagination";
+//import ConfirmModal from "../components/ConfirmModal";
+import "../styles/Home.css";
+
+const formatDateTime = (input) => {
+  let date = new Date(input);
+  let datePart = date.toISOString().split("T")[0];
+  let timePart = date.toISOString().split("T")[1].split(".")[0];
+  let formattedDateTime = datePart + " " + timePart;
+  return formattedDateTime;
+};
+
+const stateConvert = (id) => {
+  let stateName = "";
+  switch (id) {
+    case 1:
+      stateName = "Accepted";
+      break;
+    case 2:
+      stateName = "Waiting for acceptance";
+      break;
+    default:
+      stateName = "Declined";
+      break;
+  }
+  return stateName;
+};
 
 const Home = () => {
   const { auth } = useContext(AuthContext);
   const role = auth?.user?.roleName;
+  const [direction, setDirection] = useState(true);
+  const [total, setTotal] = useState(1);
+  const [data, setData] = useState([]);
+  const navigate = useNavigate();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [params, setParams] = useState({ pageNumber: 1 });
+  const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const sorterLog = (name) => {
+    if (params.sortBy === name) {
+      if (direction === true) {
+        setParams((prev) => ({ ...prev, sortOrder: "desc" }));
+      } else {
+        setParams((prev) => ({ ...prev, sortOrder: "asc" }));
+      }
+      setDirection(!direction);
+    } else {
+      setParams((prev) => ({ ...prev, sortBy: name }));
+      setDirection(true);
+      setParams((prev) => ({ ...prev, sortOrder: "asc" }));
+    }
+  };
+
+  const handleClicked = (data) => {
+    setIsModalOpen(true);
+    setSelectedAssignment(data);
+  };
+
+  const columns = [
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Asset Code{" "}
+          {params.sortBy === "AssetCode" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "assetCode",
+      key: "name",
+      ellipsis: true,
+      width: "10%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssetCode");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Asset Name{" "}
+          {params.sortBy === "AssetName" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "assetName",
+      key: "name",
+      ellipsis: true,
+      width: "20%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssetName");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Assigned By{" "}
+          {params.sortBy === "AssignedBy" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      key: "assignedBy",
+      dataIndex: "by",
+      ellipsis: true,
+      width: "15%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssignedBy");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Assigned Date{" "}
+          {params.sortBy === "AssignedDate" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      key: "assignedDate",
+      dataIndex: "assignedDate",
+      ellipsis: true,
+      width: "15%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("AssignedDate");
+        },
+      }),
+      render: (text) => <span>{text.slice(0, 10)}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          State{" "}
+          {params.sortBy === "State" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      key: "state",
+      dataIndex: "state",
+      ellipsis: true,
+      width: "25%",
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("State");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: "",
+      key: "action",
+      width: "15%",
+      render: (_, record) => (
+        <Space size="middle">
+          <Button
+            size="middle"
+            disabled={record?.state === "Accepted"}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("edit-assignment");
+            }}
+          >
+            <CheckOutlined className="text-red-600 text-sm mb-1"/>
+          </Button>
+          <Button
+            size="middle"
+            disabled={record?.state === "Accepted"}
+            onClick={(e) => {
+              e.stopPropagation();
+            }}
+          >
+            <CloseOutlined className="text-sm mb-1" />
+          </Button>
+          <Button
+            size="middle"
+            disabled={record?.state === "Waiting for acceptance"}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("manage-assignment/return-assignment");
+            }}
+          >
+            <RedoOutlined className="text-blue-600 text-sm mb-1" />
+          </Button>
+        </Space>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    axiosInstance
+      .get("/Assignments/user", { params })
+      .then((res) => {
+        if (res.data.success) {
+          setTotal(res.data.totalCount);
+          setData(
+            res.data.data.map((asset, index) => ({
+              key: index,
+              ...asset,
+              state: stateConvert(asset.status),
+            }))
+          );
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        if (err.response?.status === 409) {
+          setData([]);
+          setTotal(0);
+        } else message.error(err.message);
+      });
+  }, [params]);
+
   return (
     <LayoutPage>
-      {role === "Admin" ? (
-        <div className="mx-auto my-[9rem] text-center">
-          <h1 className="text-[#d6001c] font-bold text-4xl">
-            Online Asset Management
-          </h1>
-          <span className="text-[#d6001c] font-bold text-2xl">
-            Welcome to Admin Page !
-          </span>
+      {role  ?  (
+        <div className="w-full mt-10">
+        <h1 className="font-bold text-d6001c text-2xl">My Assignment</h1>
+        <div className="justify-center items-center mt-[5.5%] h-[780px]">
+          <Table
+            locale={{
+              emptyText: (
+                <Empty
+                  image={Empty.PRESENTED_IMAGE_SIMPLE}
+                  description="No Search Result"
+                />
+              ),
+            }}
+            pagination={false}
+            className="usertable mt-10 h-[730px]"
+            columns={columns}
+            dataSource={data}
+            defaultPageSize={10}
+            onRow={(record) => {
+              return {
+                onDoubleClick: () => {
+                  record.state === "Accepted" && handleClicked(record);
+                },
+              };
+            }}
+            rowKey="key"
+            rowClassName={(record) => ` ant-table-row row-${record.state.replace(/ /g,'')}`}
+          />
+          <div className="w-full flex justify-end">
+            <CustomPagination
+              params={params}
+              setParams={setParams}
+              total={total}
+            />
+          </div>
+          <Modal
+          title={
+            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+              Detailed Assignment Information
+            </h3>
+          }
+          open={isModalOpen}
+          onCancel={() => setIsModalOpen(false)}
+          footer={null}
+          className="custom-modal mt-[10%]"
+        >
+          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Asset Code:</span>
+              <span>{selectedAssignment?.assetCode}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Asset Name:</span>
+              <span>{selectedAssignment?.assetName}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Time:</span>
+              <span>
+                {selectedAssignment &&
+                  formatDateTime(selectedAssignment?.assignedDate)}
+              </span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">State:</span>
+              <span>{stateConvert(selectedAssignment?.status)}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Assigned By: </span>
+              <span>{selectedAssignment?.by}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Note: </span>
+              <span>{selectedAssignment?.note}</span>
+            </div>
+          </div>
+        </Modal>
         </div>
-      ) : role === "Staff" ? (
-        <div className="mx-auto my-[9rem] text-center">
-          <h1 className="text-[#d6001c] font-bold text-4xl">
-            Online Asset Management
-          </h1>
-          <span className="text-[#d6001c] font-bold text-2xl">
-            Welcome to Staff Page !
-          </span>
         </div>
       ) : (
-        <div className="mx-auto my-[9rem] text-center">
+        <div className="mx-auto py-[9rem] text-center">
           <h1 className="text-[#d6001c] font-bold text-4xl">
             Online Asset Management
           </h1>

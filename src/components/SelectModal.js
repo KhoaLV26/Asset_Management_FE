@@ -278,9 +278,11 @@ export const SelectModal = ({
       const name =
         type === "Select User" ? data[0].fullName : data[0].assetName;
       const id = data[0].id;
-      chosenCode && setSelectedRowKeys([firstKey]);
-      chosenCode && setCurrentName(name);
-      chosenCode && setCurrentId(id);
+      if (params.pageNumber === 1 && params.search === "") {
+        chosenCode && setSelectedRowKeys([firstKey]);
+        chosenCode && setCurrentName(name);
+        chosenCode && setCurrentId(id);
+      }
     }
   }, [data]);
 
