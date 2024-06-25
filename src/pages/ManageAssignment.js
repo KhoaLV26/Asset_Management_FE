@@ -9,6 +9,7 @@ import {
   message,
   Empty,
   DatePicker,
+  Spin,
 } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
@@ -59,6 +60,7 @@ const ManageAssignment = () => {
   };
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const handleClicked = (data) => {
@@ -96,7 +98,7 @@ const ManageAssignment = () => {
       .then((res) => {
         if (res.data.success) {
           setIsDeleteSuccess(!isDeleteSuccess);
-          setParams({ pageNumber: 1, sortOrder: "asc" })
+          setParams({ pageNumber: 1, sortOrder: "asc" });
           setDeleteModalVisible(false);
           message.success("Delete assignment successfully");
         } else {
@@ -330,6 +332,7 @@ const ManageAssignment = () => {
   }, [location, isDeleteSuccess]);
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get("/Assignments", { params })
       .then((res) => {
@@ -350,6 +353,9 @@ const ManageAssignment = () => {
           setData([]);
           setTotal(0);
         } else message.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [params, isDeleteSuccess]);
 
@@ -433,39 +439,40 @@ const ManageAssignment = () => {
             </Button>
           </div>
         </div>
-        <div className="justify-center items-center mt-0 h-[780px]">
-          {console.log(data)}
-          <Table
-            locale={{
-              emptyText: (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description="No Search Result"
-                />
-              ),
-            }}
-            pagination={false}
-            className="mt-10 h-[730px]"
-            columns={columns}
-            dataSource={data}
-            defaultPageSize={10}
-            onRow={(record) => {
-              return {
-                onDoubleClick: () => {
-                  handleClicked(record);
-                },
-              };
-            }}
-            rowKey="key"
-          />
-          <div className="w-full flex justify-end">
-            <CustomPagination
-              params={params}
-              setParams={setParams}
-              total={total}
+        <Spin spinning={loading}>
+          <div className="justify-center items-center mt-0 h-[780px]">
+            <Table
+              locale={{
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description="No Search Result"
+                  />
+                ),
+              }}
+              pagination={false}
+              className="mt-10 h-[730px]"
+              columns={columns}
+              dataSource={data}
+              defaultPageSize={10}
+              onRow={(record) => {
+                return {
+                  onDoubleClick: () => {
+                    handleClicked(record);
+                  },
+                };
+              }}
+              rowKey="key"
             />
+            <div className="w-full flex justify-end">
+              <CustomPagination
+                params={params}
+                setParams={setParams}
+                total={total}
+              />
+            </div>
           </div>
-        </div>
+        </Spin>
 
         <Modal
           title={

@@ -9,6 +9,7 @@ import {
   Select,
   message,
   Empty,
+  Spin,
 } from "antd";
 import CustomPagination from "../components/CustomPagination";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
@@ -44,9 +45,9 @@ const ManageUser = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
   const [roleHolder, setRoleHolder] = useState("Type");
   const [params, setParams] = useState({
-    location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     search: searchQuery,
     role: "",
     sortBy: "StaffCode",
@@ -62,7 +63,7 @@ const ManageUser = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("User Disabled");
-          setParams({ pageNumber: 1, sortOrder: "asc" })
+          setParams({ pageNumber: 1, sortOrder: "asc" });
         } else {
           message.error(res.data.message);
         }
@@ -109,6 +110,7 @@ const ManageUser = () => {
   };
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get("/Users", { params })
       .then((res) => {
@@ -126,6 +128,9 @@ const ManageUser = () => {
       })
       .catch((err) => {
         message.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [params]);
 
@@ -362,12 +367,10 @@ const ManageUser = () => {
   }, [currentId]);
 
   useEffect(() => {
-    isDelete && 
-    userAssignments?.length > 0 && setToEdit(true)
-    isDelete && 
-    userAssignments?.length === 0 && setShowConfirm(true)
-    setIsDelete(false)
-  }, [isDelete])
+    isDelete && userAssignments?.length > 0 && setToEdit(true);
+    isDelete && userAssignments?.length === 0 && setShowConfirm(true);
+    setIsDelete(false);
+  }, [isDelete]);
 
   console.log(data);
   return (
@@ -420,39 +423,40 @@ const ManageUser = () => {
             </Button>
           </div>
         </div>
-
-        <div className="justify-center items-center mt-0 h-[780px]">
-          <Table
-            locale={{
-              emptyText: (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  description="No Search Result"
-                />
-              ),
-            }}
-            pagination={false}
-            className="mt-10 h-[730px]"
-            columns={columns}
-            dataSource={data}
-            defaultPageSize={15}
-            onRow={(record) => {
-              return {
-                onDoubleClick: () => {
-                  setModalData(record);
-                  setIsModalVisible(true);
-                },
-              };
-            }}
-          />
-          <div className="w-full flex justify-end">
-            <CustomPagination
-              params={params}
-              setParams={setParams}
-              total={total}
+        <Spin spinning={loading}>
+          <div className="justify-center items-center mt-0 h-[780px]">
+            <Table
+              locale={{
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    description="No Search Result"
+                  />
+                ),
+              }}
+              pagination={false}
+              className="mt-10 h-[730px]"
+              columns={columns}
+              dataSource={data}
+              defaultPageSize={15}
+              onRow={(record) => {
+                return {
+                  onDoubleClick: () => {
+                    setModalData(record);
+                    setIsModalVisible(true);
+                  },
+                };
+              }}
             />
+            <div className="w-full flex justify-end">
+              <CustomPagination
+                params={params}
+                setParams={setParams}
+                total={total}
+              />
+            </div>
           </div>
-        </div>
+        </Spin>
         <Modal
           title={
             <h3 className="w-full border-b-2 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
@@ -512,8 +516,8 @@ const ManageUser = () => {
         >
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <h1 className="text-lg">
-              There are valid assignments belonging to this user.
-              Please close all assignments before disabling user.
+              There are valid assignments belonging to this user. Please close
+              all assignments before disabling user.
             </h1>
           </div>
         </Modal>

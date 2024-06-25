@@ -26,7 +26,7 @@ const CreateAsset = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [form] = Form.useForm();
-  const [categoryForm] = Form.useForm(); // Form for category modal
+  const [categoryForm] = Form.useForm();
   const [assetName, setAssetName] = useState("");
   const [specification, setSpecification] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
@@ -35,7 +35,7 @@ const CreateAsset = () => {
   const [newCategoryPrefix, setNewCategoryPrefix] = useState("");
   const [isDropdownClicked, setIsDropdownClicked] = useState(false);
   const [isAddCategoryButtonDisabled, setIsAddCategoryButtonDisabled] =
-    useState(true); // New state for category button
+    useState(true);
   const { auth } = useContext(AuthContext);
 
   const adminId = auth?.user?.id;
@@ -45,8 +45,8 @@ const CreateAsset = () => {
     setIsCategoryModalVisible(false);
     setNewCategoryName("");
     setNewCategoryPrefix("");
-    setIsAddCategoryButtonDisabled(true); // Disable button on cancel
-    categoryForm.resetFields(); // Reset form fields when the modal is closed
+    setIsAddCategoryButtonDisabled(true);
+    categoryForm.resetFields();
   };
 
   const handleConfirm = () => {
@@ -96,13 +96,12 @@ const CreateAsset = () => {
   }, []);
 
   const validateName = (_, value) => {
-    const trimmedValue = value.trim(); // Trim whitespace from the input
+    const trimmedValue = value.trim(); 
     const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
     if (htmlTagPattern.test(trimmedValue)) {
       return Promise.reject(new Error("Name must not contain HTML tags."));
     }
 
-    // Check for common SQL injection patterns
     const sqlInjectionPattern =
       /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|AND|OR|--|\||\*|;|--|\/\*|\*\/|@@|@|\bTABLE\b|\bDATABASE\b)\b)/i;
     if (sqlInjectionPattern.test(trimmedValue)) {
@@ -206,8 +205,8 @@ const CreateAsset = () => {
     setIsCategoryModalVisible(true);
     setNewCategoryName("");
     setNewCategoryPrefix("");
-    setIsAddCategoryButtonDisabled(true); // Reset button state on modal open
-    categoryForm.resetFields(); // Reset form fields when the modal is opened
+    setIsAddCategoryButtonDisabled(true); 
+    categoryForm.resetFields(); 
   };
 
   const handleAddCategory = () => {
@@ -239,7 +238,7 @@ const CreateAsset = () => {
       setIsCategoryModalVisible(false);
       setNewCategoryName("");
       setNewCategoryPrefix("");
-      categoryForm.resetFields(); // Reset form fields after submission
+      categoryForm.resetFields(); 
     });
   };
 
