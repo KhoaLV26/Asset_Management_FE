@@ -28,6 +28,9 @@ const { Search } = Input;
 
 const ManageUser = () => {
   const [data, setData] = useState([]);
+  const [userAssignments, setUserAssignments] = useState({});
+  const [isDelete, setIsDelete] = useState(false);
+  const [selectedUser, setSelectedUser] = useState({});
   const [toEdit, setToEdit] = useState(false);
   const [roles, setRoles] = useState([]);
   const [total, setTotal] = useState(1);
@@ -320,10 +323,11 @@ const ManageUser = () => {
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
+              setSelectedUser(record);
               setCurrentId(record.id);
-              setShowConfirm((prevShowConfirm) => {
-                return true;
-              });
+              // setShowConfirm((prevShowConfirm) => {
+              //   return true;
+              // });
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -332,6 +336,38 @@ const ManageUser = () => {
       ),
     },
   ];
+
+  useEffect(() => {
+    if (currentId) {
+      axiosInstance
+        .get(`/Assignments/User/${selectedUser?.id}`)
+        .then((res) => {
+          if (res.data.success) {
+            setUserAssignments(res.data.data);
+            currentId && setIsDelete(true);
+            setCurrentId(null);
+          } else {
+            message.error(res.data.message);
+            setCurrentId(null);
+          }
+        })
+        .catch((err) => {
+          if (err.response?.status === 409) {
+            setUserAssignments([]);
+            currentId && setIsDelete(true);
+            setCurrentId(null);
+          } else message.error(err.response.data.message);
+        });
+    }
+  }, [currentId]);
+
+  useEffect(() => {
+    isDelete && 
+    userAssignments?.length > 0 && setToEdit(true)
+    isDelete && 
+    userAssignments?.length === 0 && setShowConfirm(true)
+    setIsDelete(false)
+  }, [isDelete])
 
   console.log(data);
   return (
@@ -466,7 +502,7 @@ const ManageUser = () => {
         <Modal
           title={
             <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
-              Cannot Delete Asset
+              Cannot Disable User
             </h3>
           }
           open={toEdit}
@@ -484,9 +520,9 @@ const ManageUser = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to disable this user?"}
-          textconfirm={"User"}
+          textconfirm={"Disable"}
           textcancel={"Cancel"}
-          onConfirm={() => handleDelete(currentId)}
+          onConfirm={() => handleDelete(selectedUser.id)}
           onCancel={() => {
             setShowConfirm(false);
             setCurrentId("");
