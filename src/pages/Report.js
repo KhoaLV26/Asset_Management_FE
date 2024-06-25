@@ -4,8 +4,6 @@ import { Button, Space, Spin, Table, message } from "antd";
 import CustomPagination from "../components/CustomPagination";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import axiosInstance from "../axios/axiosInstance";
-import * as XLSX from "xlsx";
-import { saveAs } from "file-saver";
 
 const Report = () => {
   const [data, setData] = useState([]);
@@ -51,29 +49,25 @@ const Report = () => {
   }, [params]);
 
   const handleExport = () => {
-    const headers = columns.map((col) => col.title.props.children[0]);
-
-    const formattedData = data.map((item) => {
-      const formattedItem = {};
-      columns.forEach((col) => {
-        formattedItem[col.title.props.children[0]] = item[col.dataIndex];
+    axiosInstance({
+      url: "/assets/export-to-excel",
+      method: "GET",
+      responseType: "blob",
+    })
+      .then((res) => {
+        const url = window.URL.createObjectURL(new Blob([res.data]));
+        const link = document.createElement("a");
+        link.href = url;
+        link.setAttribute("download", "AssetReport.xlsx");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link); // Clean up
+      })
+      .catch((err) => {
+        message.error(
+          err.response?.data?.message || "Failed to download the file"
+        );
       });
-      return formattedItem;
-    });
-
-    const worksheet = XLSX.utils.json_to_sheet(formattedData, {
-      header: headers,
-    });
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Report");
-    const excelBuffer = XLSX.write(workbook, {
-      bookType: "xlsx",
-      type: "array",
-    });
-    const dataBlob = new Blob([excelBuffer], {
-      type: "application/octet-stream",
-    });
-    saveAs(dataBlob, "report.xlsx");
   };
 
   const columns = [
