@@ -473,7 +473,7 @@ const ManageAsset = () => {
           open={isModalOpen}
           onCancel={handleCancel}
           footer={null}
-          className="custom-modal"
+          className="custom-modal mt-[10%]"
         >
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
@@ -512,14 +512,14 @@ const ManageAsset = () => {
           open={toEdit}
           onCancel={handleCancel}
           footer={null}
-          className="custom-modal"
+          className="custom-modal mt-[10%]"
         >
-          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
-            <h1 className="text-lg">
+          <div className="px-[40px] py-[20px] pt-[15px] pb-[15px] text-[15px]">
+            <h1 className="text-[17px]">
               Cannot delete the asset because it belongs to one or more
               historical assignments.
             </h1>
-            <h1 className="text-lg">
+            <h1 className="text-[17px]">
               If the asset is not able to be used anymore, please update its
               state in{" "}
               <Link

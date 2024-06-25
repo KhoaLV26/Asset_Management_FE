@@ -9,7 +9,6 @@ import {
   message,
   Empty,
   DatePicker,
-  Form,
 } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
@@ -25,6 +24,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
 import CustomPagination from "../components/CustomPagination";
+import ConfirmModal from "../components/ConfirmModal";
 
 const { Search } = Input;
 const formatDateTime = (input) => {
@@ -96,6 +96,7 @@ const ManageAssignment = () => {
       .then((res) => {
         if (res.data.success) {
           setIsDeleteSuccess(!isDeleteSuccess);
+          setParams({ pageNumber: 1, sortOrder: "asc" })
           setDeleteModalVisible(false);
           message.success("Delete assignment successfully");
         } else {
@@ -475,7 +476,7 @@ const ManageAssignment = () => {
           open={isModalOpen}
           onCancel={handleCancel}
           footer={null}
-          className="custom-modal"
+          className="custom-modal mt-[10%]"
         >
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
@@ -511,34 +512,16 @@ const ManageAssignment = () => {
             </div>
           </div>
         </Modal>
-        <Modal
-          className="mt-[200px]"
-          title={<span className="change-password-title">Are you sure?</span>}
-          open={isDeleteModalVisible}
-          footer={null}
-          closable={false}
-        >
-          <Form>
-            <Form.Item className="px-5 pt-2">
-              <p>Do you want to delete this assignment?</p>
-            </Form.Item>
-            <Form.Item className="ms-[18px]">
-              <Button
-                className="bg-red-600 text-white border-1"
-                onClick={deleteAssignment}
-              >
-                Delete
-              </Button>
-
-              <Button
-                onClick={() => setDeleteModalVisible(false)}
-                className="ms-[10px]"
-              >
-                Cancel
-              </Button>
-            </Form.Item>
-          </Form>
-        </Modal>
+        <ConfirmModal
+          title={"Are you sure?"}
+          text={"Do you want to delete this assignment?"}
+          textconfirm={"Delete"}
+          textcancel={"Cancel"}
+          onConfirm={() => deleteAssignment()}
+          onCancel={() => setDeleteModalVisible(false)}
+          isShowModal={isDeleteModalVisible}
+          setisShowModal={setDeleteModalVisible}
+        />
       </div>
     </LayoutPage>
   );

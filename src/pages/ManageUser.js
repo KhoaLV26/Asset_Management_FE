@@ -393,7 +393,7 @@ const ManageUser = () => {
           open={isModalVisible}
           onCancel={handleModalClose}
           footer={null}
-          className="custom-modal"
+          className="custom-modal mt-[10%]"
         >
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">

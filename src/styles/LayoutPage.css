@@ -10,7 +10,9 @@
   height: 60px;
 }
 
-
+.ant-modal-title {
+  font-size: 20px !important;
+}
 
 .ant-menu-dark .ant-menu-item-selected {
   background-color: #d6001c !important;

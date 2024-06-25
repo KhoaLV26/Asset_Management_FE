@@ -1,0 +1,7 @@
+.usertable
+  .ant-table-tbody
+  .ant-table-row.row-Waitingforacceptance
+  > .ant-table-cell-row-hover {
+  background: transparent !important;
+  cursor: not-allowed !important;
+}
