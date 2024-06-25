@@ -9,7 +9,7 @@ import {
   CaretDownOutlined,
   RedoOutlined,
 } from "@ant-design/icons";
-import { Button, Space, Table, Modal, message, Empty } from "antd";
+import { Button, Space, Table, Modal, message, Empty, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import CustomPagination from "../components/CustomPagination";
 import ConfirmModal from "../components/ConfirmModal";
@@ -46,6 +46,7 @@ const Home = () => {
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userResponse, setUserResponse] = useState(false);
   const [changedState, setChangedState] = useState(1);
@@ -67,8 +68,7 @@ const Home = () => {
     }
   };
   const handleAssignment = (record, state) => {
-    console.log(record);
-    console.log(state);
+    setLoading(true)
     axiosInstance
       .put(`/assignments/${record?.id}`, {
         assignedTo: record.assignedTo,
@@ -94,8 +94,12 @@ const Home = () => {
           message.error(error.response.data.message);
         } else {
           setUserResponse(false);
-        message.error(error.response.data.message);
-  }});
+          message.error(error.response.data.message);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
+      });
   };
   const handleClicked = (data) => {
     setIsModalOpen(true);
@@ -279,6 +283,7 @@ const Home = () => {
   ];
 
   useEffect(() => {
+    setLoading(true)
     axiosInstance
       .get("/Assignments/user", { params })
       .then((res) => {
@@ -299,6 +304,9 @@ const Home = () => {
           setData([]);
           setTotal(0);
         } else message.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [params]);
 
@@ -307,98 +315,102 @@ const Home = () => {
       {role ? (
         <div className="w-full mt-10">
           <h1 className="font-bold text-d6001c text-2xl">My Assignment</h1>
-          <div className="justify-center items-center mt-[5.5%] h-[780px]">
-            <Table
-              locale={{
-                emptyText: (
-                  <Empty
-                    image={Empty.PRESENTED_IMAGE_SIMPLE}
-                    description="No Search Result"
-                  />
-                ),
-              }}
-              pagination={false}
-              className="usertable mt-10 h-[730px]"
-              columns={columns}
-              dataSource={data}
-              defaultPageSize={10}
-              onRow={(record) => {
-                return {
-                  onDoubleClick: () => {
-                    record.state === "Accepted" && handleClicked(record);
-                  },
-                };
-              }}
-              rowKey="key"
-              rowClassName={(record) =>
-                ` ant-table-row row-${record.state.replace(/ /g, "")}`
-              }
-            />
-            <div className="w-full flex justify-end">
-              <CustomPagination
-                params={params}
-                setParams={setParams}
-                total={total}
+          <Spin spinning={loading}>
+            <div className="justify-center items-center mt-[5.5%] h-[780px]">
+              <Table
+                locale={{
+                  emptyText: (
+                    <Empty
+                      image={Empty.PRESENTED_IMAGE_SIMPLE}
+                      description="No Search Result"
+                    />
+                  ),
+                }}
+                pagination={false}
+                className="usertable mt-10 h-[730px]"
+                columns={columns}
+                dataSource={data}
+                defaultPageSize={10}
+                onRow={(record) => {
+                  return {
+                    onDoubleClick: () => {
+                      record.state === "Accepted" && handleClicked(record);
+                    },
+                  };
+                }}
+                rowKey="key"
+                rowClassName={(record) =>
+                  ` ant-table-row row-${record.state.replace(/ /g, "")}`
+                }
+              />
+
+              <div className="w-full flex justify-end">
+                <CustomPagination
+                  params={params}
+                  setParams={setParams}
+                  total={total}
+                />
+              </div>
+
+              <Modal
+                title={
+                  <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+                    Detailed Assignment Information
+                  </h3>
+                }
+                open={isModalOpen}
+                onCancel={() => setIsModalOpen(false)}
+                footer={null}
+                className="custom-modal mt-[10%]"
+              >
+                <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">Asset Code:</span>
+                    <span>{selectedAssignment?.assetCode}</span>
+                  </div>
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">Asset Name:</span>
+                    <span>{selectedAssignment?.assetName}</span>
+                  </div>
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">Time:</span>
+                    <span>
+                      {selectedAssignment &&
+                        formatDateTime(selectedAssignment?.assignedDate)}
+                    </span>
+                  </div>
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">State:</span>
+                    <span>{stateConvert(selectedAssignment?.status)}</span>
+                  </div>
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">Assigned By: </span>
+                    <span>{selectedAssignment?.by}</span>
+                  </div>
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">Note: </span>
+                    <span>{selectedAssignment?.note}</span>
+                  </div>
+                </div>
+              </Modal>
+              <ConfirmModal
+                title={"Are you sure?"}
+                text={
+                  changedState === 1
+                    ? "Do you want to accept this assignment?"
+                    : "Do you want to decline this assignment?"
+                }
+                textconfirm={changedState === 1 ? "Accept" : "Decline"}
+                textcancel={"Cancel"}
+                onConfirm={() =>
+                  handleAssignment(currentAssignment, changedState)
+                }
+                onCancel={() => setUserResponse(false)}
+                isShowModal={userResponse}
+                setisShowModal={setUserResponse}
               />
             </div>
-            <Modal
-              title={
-                <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
-                  Detailed Assignment Information
-                </h3>
-              }
-              open={isModalOpen}
-              onCancel={() => setIsModalOpen(false)}
-              footer={null}
-              className="custom-modal mt-[10%]"
-            >
-              <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
-                <div className="flex mb-[10px]">
-                  <span className="font-bold w-[150px]">Asset Code:</span>
-                  <span>{selectedAssignment?.assetCode}</span>
-                </div>
-                <div className="flex mb-[10px]">
-                  <span className="font-bold w-[150px]">Asset Name:</span>
-                  <span>{selectedAssignment?.assetName}</span>
-                </div>
-                <div className="flex mb-[10px]">
-                  <span className="font-bold w-[150px]">Time:</span>
-                  <span>
-                    {selectedAssignment &&
-                      formatDateTime(selectedAssignment?.assignedDate)}
-                  </span>
-                </div>
-                <div className="flex mb-[10px]">
-                  <span className="font-bold w-[150px]">State:</span>
-                  <span>{stateConvert(selectedAssignment?.status)}</span>
-                </div>
-                <div className="flex mb-[10px]">
-                  <span className="font-bold w-[150px]">Assigned By: </span>
-                  <span>{selectedAssignment?.by}</span>
-                </div>
-                <div className="flex mb-[10px]">
-                  <span className="font-bold w-[150px]">Note: </span>
-                  <span>{selectedAssignment?.note}</span>
-                </div>
-              </div>
-            </Modal>
-            <ConfirmModal
-              title={"Are you sure?"}
-              text={
-                changedState === 1
-                  ? "Do you want to accept this assignment?"
-                  : "Do you want to decline this assignment?"
-              }
-              textconfirm={changedState === 1 ? "Accept" : "Decline"}
-              textcancel={"Cancel"}
-              onConfirm={() =>
-                handleAssignment(currentAssignment, changedState)
-              }
-              onCancel={() => setUserResponse(false)}
-              isShowModal={userResponse}
-              setisShowModal={setUserResponse}
-            />
-          </div>
+          </Spin>
         </div>
       ) : (
         <div className="mx-auto py-[9rem] text-center">

@@ -8,6 +8,7 @@ import {
   Select,
   message,
   Empty,
+  Spin,
 } from "antd";
 import LayoutPage from "../layout/LayoutPage";
 import { removeExtraWhitespace } from "../HandleString";
@@ -52,6 +53,7 @@ const ManageAsset = () => {
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
   const [toEdit, setToEdit] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const handleSearch = (value) => {
@@ -219,7 +221,7 @@ const ManageAsset = () => {
               e.stopPropagation();
               setSelectedAsset(record);
               setCurrentId(record?.id);
-              setIsDelete(true)
+              setIsDelete(true);
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -241,7 +243,7 @@ const ManageAsset = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("Asset deleted");
-          setParams({ pageNumber: 1, sortOrder: "asc" })
+          setParams({ pageNumber: 1, sortOrder: "asc" });
         } else {
           message.error(res.data.message);
         }
@@ -273,6 +275,7 @@ const ManageAsset = () => {
   }, [location]);
 
   useEffect(() => {
+    setLoading(true);
     axiosInstance
       .get("/Assets", { params })
       .then((res) => {
@@ -292,6 +295,9 @@ const ManageAsset = () => {
           setData([]);
           setTotal(0);
         } else message.error(err.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   }, [params]);
 
@@ -331,12 +337,14 @@ const ManageAsset = () => {
   }, [isModalOpen, currentId]);
 
   useEffect(() => {
-    isDelete && 
-    selectedAsset?.assignmentResponses?.length > 0 && setToEdit(true)
-    isDelete && 
-    selectedAsset?.assignmentResponses?.length === 0 && setShowConfirm(true)
-    setIsDelete(false)
-  }, [isDelete])
+    isDelete &&
+      selectedAsset?.assignmentResponses?.length > 0 &&
+      setToEdit(true);
+    isDelete &&
+      selectedAsset?.assignmentResponses?.length === 0 &&
+      setShowConfirm(true);
+    setIsDelete(false);
+  }, [isDelete]);
 
   return (
     <LayoutPage>
@@ -442,37 +450,39 @@ const ManageAsset = () => {
             </Button>
           </div>
         </div>
-        <div className="justify-center items-center mt-0 h-[780px]">
-          <Table
-            locale={{
-              emptyText: (
-                <Empty
-                  image={Empty.PRESENTED_IMAGE_SIMPLE}
-                  ascription="No Search Result"
-                />
-              ),
-            }}
-            pagination={false}
-            className="mt-10 h-[730px]"
-            columns={columns}
-            dataSource={data}
-            defaultPageSize={15}
-            onRow={(record) => {
-              return {
-                onDoubleClick: () => {
-                  handleClicked(record);
-                },
-              };
-            }}
-          />
-          <div className="w-full flex justify-end">
-            <CustomPagination
-              params={params}
-              setParams={setParams}
-              total={total}
+        <Spin spinning={loading}>
+          <div className="justify-center items-center mt-0 h-[780px]">
+            <Table
+              locale={{
+                emptyText: (
+                  <Empty
+                    image={Empty.PRESENTED_IMAGE_SIMPLE}
+                    ascription="No Search Result"
+                  />
+                ),
+              }}
+              pagination={false}
+              className="mt-10 h-[730px]"
+              columns={columns}
+              dataSource={data}
+              defaultPageSize={15}
+              onRow={(record) => {
+                return {
+                  onDoubleClick: () => {
+                    handleClicked(record);
+                  },
+                };
+              }}
             />
+            <div className="w-full flex justify-end">
+              <CustomPagination
+                params={params}
+                setParams={setParams}
+                total={total}
+              />
+            </div>
           </div>
-        </div>
+        </Spin>
         {console.log(selectedAsset)}
         <Modal
           title={
