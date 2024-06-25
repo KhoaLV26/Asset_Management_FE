@@ -53,6 +53,7 @@ const ManageAsset = () => {
   const [data, setData] = useState([]);
   const [toEdit, setToEdit] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const handleSearch = (value) => {
     setParams((prev) => ({ ...prev, pageNumber: 1, search: value }));
   };
@@ -216,10 +217,9 @@ const ManageAsset = () => {
             disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
-              setCurrentId(record.id);
-              setShowConfirm((prevShowConfirm) => {
-                return true;
-              });
+              setSelectedAsset(record);
+              setCurrentId(record?.id);
+              setIsDelete(true)
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -311,21 +311,32 @@ const ManageAsset = () => {
   }, []);
 
   useEffect(() => {
-    if (isModalOpen) {
+    if (isModalOpen || currentId) {
       axiosInstance
-        .get(`/Assets/${selectedAsset.id}`)
+        .get(`/Assets/${selectedAsset?.id}`)
         .then((res) => {
           if (res.data.success) {
             setSelectedAsset(res.data.data);
+            currentId && setIsDelete(true);
+            setCurrentId(null);
           } else {
             message.error(res.data.message);
+            setCurrentId(null);
           }
         })
         .catch((err) => {
           message.error(err.message);
         });
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, currentId]);
+
+  useEffect(() => {
+    isDelete && 
+    selectedAsset?.assignmentResponses?.length > 0 && setToEdit(true)
+    isDelete && 
+    selectedAsset?.assignmentResponses?.length === 0 && setShowConfirm(true)
+    setIsDelete(false)
+  }, [isDelete])
 
   return (
     <LayoutPage>
@@ -432,7 +443,6 @@ const ManageAsset = () => {
           </div>
         </div>
         <div className="justify-center items-center mt-0 h-[780px]">
-          {console.log(data)}
           <Table
             locale={{
               emptyText: (
@@ -536,10 +546,10 @@ const ManageAsset = () => {
           text={"Do you want to delete this asset?"}
           textconfirm={"Delete"}
           textcancel={"Cancel"}
-          onConfirm={() => handleDelete(currentId)}
+          onConfirm={() => handleDelete(selectedAsset.id)}
           onCancel={() => {
             setShowConfirm(false);
-            setCurrentId("");
+            setCurrentId(null);
           }}
           isShowModal={showConfirm}
           setisShowModal={setShowConfirm}
