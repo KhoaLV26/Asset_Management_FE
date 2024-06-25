@@ -523,7 +523,7 @@ const ManageAsset = () => {
               If the asset is not able to be used anymore, please update its
               state in{" "}
               <Link
-                to={`edit-asset/${currentId}`}
+                to={`edit-asset/${selectedAsset?.id}`}
                 className="text-blue-400 underline"
               >
                 Edit Asset page
