@@ -22,11 +22,13 @@ import {
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/ManageUser.css";
 import { useNavigate, useLocation } from "react-router-dom";
+import ConfirmModal from "../components/ConfirmModal";
 
 const { Search } = Input;
 
 const ManageUser = () => {
   const [data, setData] = useState([]);
+  const [toEdit, setToEdit] = useState(false);
   const [roles, setRoles] = useState([]);
   const [total, setTotal] = useState(1);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -35,6 +37,8 @@ const ManageUser = () => {
   const [modalData, setModalData] = useState({});
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
+  const [currentId, setCurrentId] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
   const [params, setParams] = useState({
@@ -46,6 +50,25 @@ const ManageUser = () => {
     pageNumber: 1,
     newStaffCode: location?.state?.data?.staffCode || 0,
   });
+
+  const handleDelete = (currentId) => {
+    setShowConfirm(false);
+    axiosInstance
+      .delete(`/users/${currentId}`)
+      .then((res) => {
+        if (res.data.success) {
+          message.success("user disabled");
+          setParams({ pageNumber: 1, sortOrder: "asc" })
+        } else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        if (err.response?.status === 409) {
+          setToEdit(true);
+        } else message.error(err.response.data.message);
+      });
+  };
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -291,6 +314,10 @@ const ManageUser = () => {
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
+              setCurrentId(record.id);
+              setShowConfirm((prevShowConfirm) => {
+                return true;
+              });
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -430,6 +457,19 @@ const ManageUser = () => {
             </div>
           </div>
         </Modal>
+        <ConfirmModal
+          title={"Are you sure?"}
+          text={"Do you want to disable this user?"}
+          textconfirm={"User"}
+          textcancel={"Cancel"}
+          onConfirm={() => handleDelete(currentId)}
+          onCancel={() => {
+            setShowConfirm(false);
+            setCurrentId("");
+          }}
+          isShowModal={showConfirm}
+          setisShowModal={setShowConfirm}
+        />
       </div>
     </LayoutPage>
   );
