@@ -27,9 +27,13 @@ const EditUser = () => {
     const [lastName, setLastName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
     const { auth } = useContext(AuthContext);
-
     const adminId = auth?.user?.id;
     const navigate = useNavigate();
+    const onValuesChange = (changedValues, allValues) => {
+        if (changedValues.dateOfBirth || changedValues.dateJoined) {
+          form.validateFields(['dateJoined']);
+        }
+      };
 
     useEffect(() => {
         setIsLoading(true);
@@ -131,23 +135,18 @@ const EditUser = () => {
                         form={form}
                         onFieldsChange={onFieldsChange}
                         initialValues={{ createBy: "defaultUser" }}
+                        onValuesChange={onValuesChange}
                     >
                         <Form.Item
                             className="name-form-item"
                             label="First Name"
                             name="firstName"
                             rules={[
-                                { required: true, message: "Please input your first name!" },
-                                {
-                                    min: 2,
-                                    max: 50,
-                                    message: "First name must be between 2 and 50 characters!",
-                                },
-                                { validator: validateName },
+                                { required: true, message: "Please input your last name!" },
                             ]}
-                            validateTrigger="onBlur"
                         >
                             <Input
+                                disabled
                                 placeholder="Enter your first name...."
                                 value={firstName}
                                 className="ms-3 w-96"
@@ -161,16 +160,10 @@ const EditUser = () => {
                             name="lastName"
                             rules={[
                                 { required: true, message: "Please input your last name!" },
-                                {
-                                    min: 2,
-                                    max: 50,
-                                    message: "Last name must be between 2 and 50 characters!",
-                                },
-                                { validator: validateName },
                             ]}
-                            validateTrigger="onBlur"
                         >
                             <Input
+                                disabled
                                 placeholder="Enter your last name...."
                                 value={lastName}
                                 className="ms-3 w-96"
