@@ -38,6 +38,7 @@ const ManageUser = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const [currentId, setCurrentId] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const location = useLocation();
   const [roleHolder, setRoleHolder] = useState("Type");
@@ -68,6 +69,11 @@ const ManageUser = () => {
           setToEdit(true);
         } else message.error(err.response.data.message);
       });
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setToEdit(false);
   };
 
   const sorterLog = (name) => {
@@ -455,6 +461,24 @@ const ManageUser = () => {
               <span className="font-bold w-[150px]">Location:</span>
               <span className="w-full">{modalData?.locationName}</span>
             </div>
+          </div>
+        </Modal>
+        <Modal
+          title={
+            <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
+              Cannot Delete Asset
+            </h3>
+          }
+          open={toEdit}
+          onCancel={handleCancel}
+          footer={null}
+          className="custom-modal"
+        >
+          <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
+            <h1 className="text-lg">
+              There are valid assignments belonging to this user.
+              Please close all assignments before disabling user.
+            </h1>
           </div>
         </Modal>
         <ConfirmModal
