@@ -466,7 +466,7 @@ const ManageUser = () => {
         <Modal
           title={
             <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
-              Cannot Delete Asset
+              Cannot Disable User
             </h3>
           }
           open={toEdit}
@@ -484,7 +484,7 @@ const ManageUser = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to disable this user?"}
-          textconfirm={"User"}
+          textconfirm={"Disable"}
           textcancel={"Cancel"}
           onConfirm={() => handleDelete(currentId)}
           onCancel={() => {
