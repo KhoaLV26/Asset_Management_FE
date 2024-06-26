@@ -21,6 +21,7 @@ import { capitalizeWords } from "../utils/helpers/HandleString";
 import { AuthContext } from "../contexts/AuthContext";
 import "../styles/Header.css";
 import axiosInstance from "../axios/axiosInstance";
+import Cookies from "js-cookie";
 
 const Header = () => {
   const { isAuthen, auth, logout } = useContext(AuthContext);
@@ -35,17 +36,17 @@ const Header = () => {
     return (
       <span key={index}>
         {index > 0 && index < 2 && " > "}
-        {index < 2 &&
-        <a
-          href={path}
-          onClick={(e) => {
-            e.preventDefault();
-            window.location.href = path;
-          }}
-        >
-          {displayName}
-        </a>
-        }
+        {index < 2 && (
+          <a
+            href={path}
+            onClick={(e) => {
+              e.preventDefault();
+              window.location.href = path;
+            }}
+          >
+            {displayName}
+          </a>
+        )}
       </span>
     );
   });
@@ -261,6 +262,12 @@ const ChangePasswordForm = ({
       } else {
         await axiosInstance.post("/auths/reset-password", values);
         setAuth({ ...auth, user: { ...auth.user, isFirstLogin: false } });
+        Cookies.remove("user");
+        Cookies.set(
+          "user",
+          JSON.stringify({ ...auth.user, isFirstLogin: false }),
+          { expires: 7 }
+        );
       }
       setChangePasswordSuccess(true);
     } catch (error) {
