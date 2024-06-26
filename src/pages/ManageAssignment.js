@@ -278,7 +278,7 @@ const ManageAssignment = () => {
         <Space size="middle">
           <Button
             size="middle"
-            disabled={record?.state === "Accepted"}
+            disabled={record?.state === "Accepted" || record?.state === "Declined"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("edit-assignment");
@@ -288,7 +288,7 @@ const ManageAssignment = () => {
           </Button>
           <Button
             size="middle"
-            disabled={record?.state === "Accepted"}
+            disabled={record?.state === "Accepted" || record?.state === "Declined"}
             onClick={(e) => {
               e.stopPropagation();
               openFormConfirmDelete(record?.id);
@@ -298,7 +298,7 @@ const ManageAssignment = () => {
           </Button>
           <Button
             size="middle"
-            disabled={record?.state === "Waiting for acceptance"}
+            disabled={record?.state === "Waiting for acceptance" || record?.state === "Declined"}
             onClick={(e) => {
               e.stopPropagation();
               navigate("manage-assignment/return-assignment");

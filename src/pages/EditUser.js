@@ -130,7 +130,7 @@ const EditUser = () => {
                 <div className="mt-[70px]">
                     <h1 className="font-bold text-d6001c text-2xl">Edit User</h1>
                     <Form
-                        className="mt-10"
+                        className="mt-10 max-w-[500px]"
                         onFinish={onFinish}
                         form={form}
                         onFieldsChange={onFieldsChange}
@@ -268,7 +268,7 @@ const EditUser = () => {
                                         if (dob && value.isBefore(dob.clone().add(18, "years"))) {
                                             return Promise.reject(
                                                 new Error(
-                                                    "Joined date must be at least 18 years after the Date of Birth. Please select a different date."
+                                                    "Joined date must be at least 18 years after birthdate."
                                                 )
                                             );
                                         }

@@ -56,6 +56,12 @@ const CreateUser = () => {
     return Promise.resolve();
   };
 
+  const onValuesChange = (changedValues, allValues) => {
+    if (changedValues.dateOfBirth || changedValues.dateJoined) {
+      form.validateFields(['dateJoined']);
+    }
+  };
+
   const onFinish = (values) => {
     setIsLoading(true);
     values.createBy = adminId;
@@ -117,6 +123,7 @@ const CreateUser = () => {
             form={form}
             onFieldsChange={onFieldsChange}
             initialValues={{ createBy: "defaultUser" }}
+            onValuesChange={onValuesChange}
           >
             <Form.Item
               className="name-form-item"
@@ -261,7 +268,7 @@ const CreateUser = () => {
                     if (dob && value.isBefore(dob.clone().add(18, "years"))) {
                       return Promise.reject(
                         new Error(
-                          "Joined date must be at least 18 years after the Date of Birth. Please select a different date."
+                          "Joined date must be at least 18 years after birthdate."
                         )
                       );
                     }
