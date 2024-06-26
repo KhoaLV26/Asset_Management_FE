@@ -268,7 +268,7 @@ const CreateUser = () => {
                     if (dob && value.isBefore(dob.clone().add(18, "years"))) {
                       return Promise.reject(
                         new Error(
-                          "Joined date must be at least 18 years after birthdate."
+                          "Joined date must be at least 18 years after the Date of Birth.\nPlease select a different date."
                         )
                       );
                     }

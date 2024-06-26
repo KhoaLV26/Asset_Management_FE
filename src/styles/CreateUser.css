@@ -21,3 +21,6 @@
     display: flex;
     justify-content: center;
 }
+.ant-form-item-explain-error {
+    white-space: pre-line;
+}
