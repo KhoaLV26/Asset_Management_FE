@@ -530,11 +530,11 @@ const ManageAsset = () => {
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Asset Code:</span>
-              <span>{selectedAsset?.assetCode}</span>
+              <span className="max-w-[290px]">{selectedAsset?.assetCode}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Asset Name:</span>
-              <span>{selectedAsset?.assetName}</span>
+              <span className="max-w-[290px]">{selectedAsset?.assetName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Category:</span>
@@ -546,7 +546,7 @@ const ManageAsset = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
-              <span>{stateConvert(selectedAsset?.status)}</span>
+              <span className="max-w-[290px]">{stateConvert(selectedAsset?.status)}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">History Assignment:</span>
