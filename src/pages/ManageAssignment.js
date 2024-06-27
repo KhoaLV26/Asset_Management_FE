@@ -281,11 +281,12 @@ const ManageAssignment = () => {
             disabled={record?.state === "Accepted" || record?.state === "Declined"}
             onClick={(e) => {
               e.stopPropagation();
-              navigate("edit-assignment");
+              navigate(`edit-assignment/${record.id}`);
             }}
           >
             <EditFilled className="text-sm mb-1" />
           </Button>
+
           <Button
             size="middle"
             disabled={record?.state === "Accepted" || record?.state === "Declined"}
