@@ -277,6 +277,7 @@ const ManageAssignment = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Accepted"}
             onClick={(e) => {
@@ -287,6 +288,7 @@ const ManageAssignment = () => {
             <EditFilled className="text-sm mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Accepted"}
             onClick={(e) => {
@@ -297,6 +299,7 @@ const ManageAssignment = () => {
             <CloseCircleOutlined className="text-red-600 text-sm mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Waiting for acceptance"}
             onClick={(e) => {

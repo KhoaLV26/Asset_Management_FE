@@ -314,7 +314,7 @@ const ManageUser = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
-            //className="bg-tranparent border-none"
+            className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
@@ -324,7 +324,7 @@ const ManageUser = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
-            //className="bg-tranparent border-none"
+            className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
               setIsModalVisible(false);
@@ -372,7 +372,6 @@ const ManageUser = () => {
     setIsDelete(false);
   }, [isDelete]);
 
-  console.log(data);
   return (
     <LayoutPage>
       <div className="w-full mt-10">

@@ -207,6 +207,7 @@ const ManageAsset = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
+            className="bg-tranparent border-none"
             disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
@@ -216,6 +217,7 @@ const ManageAsset = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
@@ -483,7 +485,6 @@ const ManageAsset = () => {
             </div>
           </div>
         </Spin>
-        {console.log(selectedAsset)}
         <Modal
           title={
             <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
