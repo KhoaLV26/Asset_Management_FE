@@ -48,6 +48,37 @@ const stateConvert = (id) => {
   return stateName;
 };
 
+const AssignmentTable = ({ selectedAsset }) => {
+  const columns = [
+    {
+      title: 'Time',
+      dataIndex: 'assignedDate',
+      key: 'assignedDate',
+      render: text => <span>{text.slice(0, 10)}</span>,
+    },
+    {
+      title: 'Assigned By',
+      dataIndex: 'by',
+      key: 'by',
+    },
+    {
+      title: 'Assigned To',
+      dataIndex: 'to',
+      key: 'to',
+    },
+  ];
+
+  const data = selectedAsset?.assignmentResponses?.map((item, index) => ({
+    key: index,
+    assignedDate: item.assignedDate,
+    by: item.by,
+    to: item.to,
+  })) || [];
+
+  return <Table scroll={{ y: 100 }} columns={columns} dataSource={data} pagination={false} />;
+};
+
+
 const ManageAsset = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
@@ -505,6 +536,14 @@ const ManageAsset = () => {
               <span>{selectedAsset?.assetName}</span>
             </div>
             <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Category:</span>
+              <span>{selectedAsset?.categoryName}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Install Date:</span>
+              <span>{selectedAsset?.installDate}</span>
+            </div>
+            <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
               <span>{stateConvert(selectedAsset?.status)}</span>
             </div>
@@ -512,14 +551,7 @@ const ManageAsset = () => {
               <span className="font-bold w-[150px]">History Assignment:</span>
             </div>
             <div className="mb-[10px]">
-              {selectedAsset?.assignmentResponses?.map((item) => (
-                <div>
-                  <span> Time: {item.assignedDate.slice(0, 10)} </span>
-                  <span> | </span>
-                  <span> Assigned By: {item.by}</span>
-                  <span> Assigned To: {item.to}</span>
-                </div>
-              ))}
+              <AssignmentTable selectedAsset={selectedAsset} />
             </div>
           </div>
         </Modal>
