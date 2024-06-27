@@ -69,11 +69,9 @@ const Home = () => {
   };
   const handleAssignment = (record, state) => {
     setLoading(true)
-    const accepted = (state===3) ? false : true
+    const accepted = (state===3) ? "fasle" : "true"
     axiosInstance
-      .put(`/assignments/response/${record?.id}`, {
-        accepted: accepted
-      })
+      .put(`/assignments/response/${record?.id}?accepted=${accepted}`)
       .then((response) => {
         if (response.data.success === true) {
           message.success("Response to assignment successfully!");
