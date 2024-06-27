@@ -48,6 +48,37 @@ const stateConvert = (id) => {
   return stateName;
 };
 
+const AssignmentTable = ({ selectedAsset }) => {
+  const columns = [
+    {
+      title: 'Time',
+      dataIndex: 'assignedDate',
+      key: 'assignedDate',
+      render: text => <span>{text.slice(0, 10)}</span>,
+    },
+    {
+      title: 'Assigned By',
+      dataIndex: 'by',
+      key: 'by',
+    },
+    {
+      title: 'Assigned To',
+      dataIndex: 'to',
+      key: 'to',
+    },
+  ];
+
+  const data = selectedAsset?.assignmentResponses?.map((item, index) => ({
+    key: index,
+    assignedDate: item.assignedDate,
+    by: item.by,
+    to: item.to,
+  })) || [];
+
+  return <Table scroll={{ y: 100 }} columns={columns} dataSource={data} pagination={false} />;
+};
+
+
 const ManageAsset = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
@@ -207,6 +238,7 @@ const ManageAsset = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
+            className="bg-tranparent border-none"
             disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
@@ -216,6 +248,7 @@ const ManageAsset = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             disabled={record?.state === "Assigned"}
             onClick={(e) => {
               e.stopPropagation();
@@ -483,7 +516,6 @@ const ManageAsset = () => {
             </div>
           </div>
         </Spin>
-        {console.log(selectedAsset)}
         <Modal
           title={
             <h3 className="w-full border-b-4 px-10 pb-4 pt-4 rounded-md bg-[#F1F1F1] text-d6001c font-bold">
@@ -498,28 +530,29 @@ const ManageAsset = () => {
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Asset Code:</span>
-              <span>{selectedAsset?.assetCode}</span>
+              <span className="max-w-[290px]">{selectedAsset?.assetCode}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Asset Name:</span>
-              <span>{selectedAsset?.assetName}</span>
+              <span className="max-w-[290px]">{selectedAsset?.assetName}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Category:</span>
+              <span>{selectedAsset?.categoryName}</span>
+            </div>
+            <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Install Date:</span>
+              <span>{selectedAsset?.installDate}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
-              <span>{stateConvert(selectedAsset?.status)}</span>
+              <span className="max-w-[290px]">{stateConvert(selectedAsset?.status)}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">History Assignment:</span>
             </div>
             <div className="mb-[10px]">
-              {selectedAsset?.assignmentResponses?.map((item) => (
-                <div>
-                  <span> Time: {item.assignedDate.slice(0, 10)} </span>
-                  <span> | </span>
-                  <span> Assigned By: {item.by}</span>
-                  <span> Assigned To: {item.to}</span>
-                </div>
-              ))}
+              <AssignmentTable selectedAsset={selectedAsset} />
             </div>
           </div>
         </Modal>

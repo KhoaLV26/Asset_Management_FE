@@ -277,6 +277,7 @@ const ManageAssignment = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Accepted" || record?.state === "Declined"}
             onClick={(e) => {
@@ -288,6 +289,7 @@ const ManageAssignment = () => {
           </Button>
 
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Accepted" || record?.state === "Declined"}
             onClick={(e) => {
@@ -298,6 +300,7 @@ const ManageAssignment = () => {
             <CloseCircleOutlined className="text-red-600 text-sm mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Waiting for acceptance" || record?.state === "Declined"}
             onClick={(e) => {
@@ -489,34 +492,34 @@ const ManageAssignment = () => {
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Asset Code:</span>
-              <span>{selectedAssignment?.assetCode}</span>
+              <span className="max-w-[290px]">{selectedAssignment?.assetCode}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Asset Name:</span>
-              <span>{selectedAssignment?.assetName}</span>
+              <span className="max-w-[290px]">{selectedAssignment?.assetName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Time:</span>
-              <span>
+              <span className="max-w-[290px]">
                 {selectedAssignment &&
                   formatDateTime(selectedAssignment?.assignedDate)}
               </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
-              <span>{stateConvert(selectedAssignment?.status)}</span>
+              <span className="max-w-[290px]">{stateConvert(selectedAssignment?.status)}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Assigned By: </span>
-              <span>{selectedAssignment?.by}</span>
+              <span className="max-w-[290px]">{selectedAssignment?.by}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Assigned To: </span>
-              <span>{selectedAssignment?.to}</span>
+              <span className="max-w-[290px]">{selectedAssignment?.to}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Note: </span>
-              <span>{selectedAssignment?.note}</span>
+              <span className="max-w-[290px]">{selectedAssignment?.note}</span>
             </div>
           </div>
         </Modal>
