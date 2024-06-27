@@ -470,35 +470,35 @@ const ManageUser = () => {
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Staff Code:</span>
-              <span className="w-full">{modalData?.staffCode}</span>
+              <span className="w-full max-w-[290px]">{modalData?.staffCode}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Full Name:</span>
-              <span className="w-full">{modalData?.fullName}</span>
+              <span className="w-full max-w-[290px]">{modalData?.fullName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Username:</span>
-              <span className="w-full">{modalData?.username}</span>
+              <span className="w-full max-w-[290px]">{modalData?.username}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Date of Birth:</span>
-              <span className="w-full">{modalData?.dateOfBirth}</span>
+              <span className="w-full max-w-[290px]">{modalData?.dateOfBirth}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Gender:</span>
               {modalData?.Gender === 1 ? (
-                <span className="w-full">Female</span>
+                <span className="w-full max-w-[290px]">Female</span>
               ) : (
-                <span className="w-full">Male</span>
+                <span className="w-full max-w-[290px]">Male</span>
               )}
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Type:</span>
-              <span className="w-full">{modalData?.roleName}</span>
+              <span className="w-full max-w-[290px]">{modalData?.roleName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Location:</span>
-              <span className="w-full">{modalData?.locationName}</span>
+              <span className="w-full max-w-[290px]">{modalData?.locationName}</span>
             </div>
           </div>
         </Modal>

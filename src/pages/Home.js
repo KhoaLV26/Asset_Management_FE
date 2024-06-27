@@ -50,7 +50,11 @@ const Home = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userResponse, setUserResponse] = useState(false);
   const [changedState, setChangedState] = useState(1);
-  const [params, setParams] = useState({ pageNumber: 1 });
+  const [params, setParams] = useState({
+    pageNumber: 1,
+    sortBy: "AssignedDate",
+    sortOrder: "desc",
+  });
   const [currentAssignment, setCurrentAssignment] = useState({});
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const sorterLog = (name) => {
@@ -68,16 +72,15 @@ const Home = () => {
     }
   };
   const handleAssignment = (record, state) => {
-    setLoading(true)
-    const accepted = (state===3) ? "fasle" : "true"
+    setLoading(true);
+    const accepted = state === 3 ? "fasle" : "true";
     axiosInstance
       .put(`/assignments/response/${record?.id}?accepted=${accepted}`)
       .then((response) => {
         if (response.data.success === true) {
           message.success("Response to assignment successfully!");
-          if (state===3){
-            axiosInstance
-            .put(`/assets/response/${record?.assetId}`)
+          if (state === 3) {
+            axiosInstance.put(`/assets/response/${record?.assetId}`);
           }
           setUserResponse(false);
           setParams((prev) => ({ ...prev, pageNumber: 1 }));
@@ -281,7 +284,7 @@ const Home = () => {
   ];
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     axiosInstance
       .get("/Assignments/user", { params })
       .then((res) => {
@@ -364,30 +367,34 @@ const Home = () => {
                 <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Asset Code:</span>
-                    <span>{selectedAssignment?.assetCode}</span>
+                    <span className="max-w-[290px]">{selectedAssignment?.assetCode}</span>
                   </div>
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Asset Name:</span>
-                    <span>{selectedAssignment?.assetName}</span>
+                    <span className="max-w-[290px]">{selectedAssignment?.assetName}</span>
                   </div>
                   <div className="flex mb-[10px]">
-                    <span className="font-bold w-[150px]">Time:</span>
-                    <span>
+                    <span className="font-bold w-[150px]">Specification:</span>
+                    <span className="max-w-[290px]">{selectedAssignment?.specification}</span>
+                  </div>
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">Assigned By: </span>
+                    <span className="max-w-[290px]">{selectedAssignment?.by}</span>
+                  </div>
+                  <div className="flex mb-[10px]">
+                    <span className="font-bold w-[150px]">Assigned Date:</span>
+                    <span className="max-w-[290px]">
                       {selectedAssignment &&
                         formatDateTime(selectedAssignment?.assignedDate)}
                     </span>
                   </div>
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">State:</span>
-                    <span>{stateConvert(selectedAssignment?.status)}</span>
-                  </div>
-                  <div className="flex mb-[10px]">
-                    <span className="font-bold w-[150px]">Assigned By: </span>
-                    <span>{selectedAssignment?.by}</span>
-                  </div>
+                    <span className="max-w-[290px]">{stateConvert(selectedAssignment?.status)}</span>
+                  </div>          
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Note: </span>
-                    <span>{selectedAssignment?.note}</span>
+                    <span className="max-w-[290px]">{selectedAssignment?.note}</span>
                   </div>
                 </div>
               </Modal>
