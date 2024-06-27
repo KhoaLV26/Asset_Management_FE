@@ -512,7 +512,7 @@ const ManageUser = () => {
           open={toEdit}
           onCancel={handleCancel}
           footer={null}
-          className="custom-modal"
+          className="custom-modal mt-[10%]"
         >
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <h1 className="text-lg">
