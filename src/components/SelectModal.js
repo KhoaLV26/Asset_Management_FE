@@ -4,6 +4,8 @@ import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import CustomPagination from "./CustomPagination";
 import axiosInstance from "../axios/axiosInstance";
+import dayjs from "dayjs";
+import moment from "moment";
 
 const { Search } = Input;
 export const SelectModal = ({
@@ -13,19 +15,21 @@ export const SelectModal = ({
   setId,
   chosenCode,
   setCode,
+  date,
+  setDate,
 }) => {
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [direction, setDirection] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [currentName, setCurrentName] = useState("");
   const [currentId, setCurrentId] = useState("");
+  const [currentDate, setCurrentDate] = useState(date);
   const [currentCode, setCurrentCode] = useState("");
   const [data, setData] = useState([]);
   const [total, setTotal] = useState(0);
   const [columns, setColumns] = useState([]);
   const [fetched, setFetched] = useState(true);
   const [params, setParams] = useState({
-    location: "cde5153d-3e0d-4d8c-9984-dfe6a9b8c2b1",
     search: searchQuery,
     sortBy: type === "Select User" ? "StaffCode" : "AssetCode",
     sortOrder: "asc",
@@ -347,11 +351,23 @@ export const SelectModal = ({
               selectedRowKeys,
               onChange: (selectedRowKeys, selectedRow) => {
                 setSelectedRowKeys(selectedRowKeys);
-                console.log(selectedRow[0]);
                 if (type === "Select User") {
                   setCurrentName(selectedRow[0].fullName);
                   setCurrentId(selectedRow[0].id);
                   setCurrentCode(selectedRow[0].staffCode);
+                  if (
+                    dayjs(selectedRow[0].dateJoined, "YYYY-MM-DD").format(
+                      "YYYY-MM-DD"
+                    ) > date
+                  ) {
+                    setCurrentDate(
+                      dayjs(selectedRow[0].dateJoined, "YYYY-MM-DD").format(
+                        "YYYY-MM-DD"
+                      )
+                    );
+                  } else {
+                    setCurrentDate(date)
+                  }
                 }
                 if (type === "Select Asset") {
                   setCurrentName(selectedRow[0].assetName);
@@ -381,6 +397,9 @@ export const SelectModal = ({
               setName(currentName);
               setId(currentId);
               setCode(currentCode);
+              try {
+                setDate(currentDate);
+              } catch {}
               setisShowModal(false);
             }}
           >

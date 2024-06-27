@@ -69,18 +69,18 @@ const Home = () => {
   };
   const handleAssignment = (record, state) => {
     setLoading(true)
+    const accepted = (state===3) ? false : true
     axiosInstance
-      .put(`/assignments/${record?.id}`, {
-        assignedTo: record.assignedTo,
-        assignedBy: record.assignedBy,
-        assignedDate: record.assignedDate,
-        assetId: record.assetId,
-        note: record.note,
-        status: state,
+      .put(`/assignments/response/${record?.id}`, {
+        accepted: accepted
       })
       .then((response) => {
         if (response.data.success === true) {
           message.success("Response to assignment successfully!");
+          if (state===3){
+            axiosInstance
+            .put(`/assets/response/${record?.assetId}`)
+          }
           setUserResponse(false);
           setParams((prev) => ({ ...prev, pageNumber: 1 }));
         } else {
@@ -316,7 +316,7 @@ const Home = () => {
         <div className="w-full mt-10">
           <h1 className="font-bold text-d6001c text-2xl">My Assignment</h1>
           <Spin spinning={loading}>
-            <div className="justify-center items-center mt-[5.5%] h-[780px]">
+            <div className="justify-center items-center mt-[70px] h-[780px]">
               <Table
                 locale={{
                   emptyText: (

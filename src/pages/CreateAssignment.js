@@ -25,24 +25,20 @@ const CreateAssignment = () => {
   const [viewModalAsset, setViewModalAsset] = useState(false);
   const [today, setToday] = useState(moment().format("YYYY-MM-DD"));
   const [note, setNote] = useState("");
-  
-
-  //const adminId = "CFF14216-AC4D-4D5D-9222-C951287E51C6";
+  const [joinedDate, setJoinedDate] = useState(moment().format("YYYY-MM-DD"));
   const { auth } = useContext(AuthContext);
 
-  const adminId = auth?.user?.id;  
+  const adminId = auth?.user?.id;
   const navigate = useNavigate();
 
   useEffect(() => {
     form.setFieldsValue({
       user: userName,
       asset: assetName,
+      assignedDate: dayjs(today, "YYYY-MM-DD"),
     });
+    form.validateFields(["assignedDate"]);
   }, [userName, assetName, form]);
-
-  useEffect(() => {
-    setIsButtonDisabled(userName === "" || assetName === "");
-  }, [userName, assetName]);
 
   const onFinish = (values) => {
     setIsLoading(true);
@@ -58,6 +54,10 @@ const CreateAssignment = () => {
       .then((response) => {
         if (response.data.success === true) {
           message.success("An assignment is created!");
+          axiosInstance.put(`/assets/${assetId}`, {
+            status: 3,
+          });
+
           navigate("/manage-assignment", {
             state: { data: response.data.data },
           });
@@ -74,6 +74,14 @@ const CreateAssignment = () => {
     setIsLoading(false);
   };
 
+  const onFieldsChange = () => {
+    const fieldsError = form
+      .getFieldsError()
+      .filter(({ errors }) => errors.length).length;
+
+    setIsButtonDisabled(fieldsError > 0 || userName === "" || assetName === "");
+  };
+
   return (
     <LayoutPage>
       <Spin spinning={isLoading} className="w-full">
@@ -85,6 +93,7 @@ const CreateAssignment = () => {
             className="mt-10"
             onFinish={onFinish}
             form={form}
+            onFieldsChange={onFieldsChange}
             initialValues={{ assignedDate: dayjs(today, "YYYY-MM-DD") }}
           >
             <Form.Item
@@ -132,6 +141,7 @@ const CreateAssignment = () => {
               className="choose-assigned-date-form-item"
               label="Assigned Date"
               name="assignedDate"
+              required
               rules={[
                 ({ getFieldValue }) => ({
                   validator(_, value) {
@@ -149,6 +159,15 @@ const CreateAssignment = () => {
                         )
                       );
                     }
+
+                    if (value.isBefore(joinedDate)) {
+                      return Promise.reject(
+                        new Error(
+                          "Assigned date is not later than user's joined date."
+                        )
+                      );
+                    }
+
                     return Promise.resolve();
                   },
                 }),
@@ -204,6 +223,11 @@ const CreateAssignment = () => {
               setId={setUserId}
               chosenCode={staffCode}
               setCode={setStaffCode}
+              date={moment().format("YYYY-MM-DD")}
+              setDate={(date) => {
+                setToday(date);
+                setJoinedDate(date);
+              }}
             />
           )}
           {viewModalAsset && (
