@@ -85,9 +85,9 @@ const AppRoutes = () => {
     {
       path: "/manage-assignment",
       element: (
-        // <RequireAdmin>
+        <RequireAdmin>
           <ManageAssignment />
-        // </RequireAdmin>
+        </RequireAdmin>
       ),
     },
     {
