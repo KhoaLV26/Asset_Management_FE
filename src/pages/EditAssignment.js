@@ -45,13 +45,13 @@ const EditAssignment = () => {
   useEffect(() => {
     setIsButtonDisabled(userName === "" || assetName === "");
   }, [userName, assetName]);
-console.log(assetId)
-console.log(userId)
+  console.log(assetId);
+  console.log(userId);
   const onFinish = (values) => {
     setIsLoading(true);
     // values.installDate = values.installDate.format("YYYY-MM-DD");
     // var { assignedTo, assetId, ...rest } = values;
-    
+
     axiosInstance
       .put(`/assignments/${params.id}`, {
         assignedTo: userId,
@@ -85,16 +85,16 @@ console.log(userId)
         if (response.data.success === true) {
           setData(response.data.data);
           setAssetCode(response.data.data.assetCode);
-          setAssetId (response.data.data.assetId)
+          setAssetId(response.data.data.assetId);
           setUserId(response.data.data.assignedTo);
           setAssetName(response.data.data.assetName);
           setToday(response.data.data.assignedDate);
           setUserName(response.data.data.to);
           setStaffCode(response.data.data.staffCode);
-    
+
           form.setFieldsValue({
             ...response.data.data,
-            user: response.data.data.to,
+            user: response.data.data.fullName,
             asset: response.data.data.assetName,
             assignedDate: response.data.data.assignedDate
               ? dayjs(response.data.data.assignedDate, "YYYY-MM-DD")
@@ -108,7 +108,7 @@ console.log(userId)
       })
       .catch((error) => {
         message.error(error.message);
-      });   
+      });
   }, [params.id]);
 
   const onFieldsChange = () => {
@@ -119,14 +119,11 @@ console.log(userId)
     setIsButtonDisabled(fieldsError > 0 || userName === "" || assetName === "");
   };
 
-
   return (
     <LayoutPage>
       <Spin spinning={isLoading} className="w-full">
         <div className="mt-[70px] w-full  justify-center items-center m-[34%]">
-          <h1 className="font-bold text-d6001c text-2xl">
-            Edit Assignment
-          </h1>
+          <h1 className="font-bold text-d6001c text-2xl">Edit Assignment</h1>
           <Form
             className="mt-10"
             onFinish={onFinish}
@@ -155,6 +152,7 @@ console.log(userId)
                 }}
               />
             </Form.Item>
+
             <Form.Item
               className="choose-asset-form-item"
               label="Asset"
@@ -259,7 +257,7 @@ console.log(userId)
               type={"Select Asset"}
               setName={setAssetName}
               setId={setAssetId}
-              chosenCode={assetCode}
+              //chosenCode={assetCode}
               setCode={setAssetCode}
             />
           )}
