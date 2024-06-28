@@ -275,7 +275,7 @@ const EditAssignment = () => {
               setName={setAssetName}
               setId={setAssetId}
               chosenCode={assetCode}
-              setCode={setAssetCode}
+              setCode={() => {}}
             />
           )}
         </div>
