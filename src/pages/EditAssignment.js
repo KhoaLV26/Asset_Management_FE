@@ -26,6 +26,7 @@ const EditAssignment = () => {
   const [viewModalUser, setViewModalUser] = useState(false);
   const [viewModalAsset, setViewModalAsset] = useState(false);
   const [today, setToday] = useState(moment().format("YYYY-MM-DD"));
+  const [joinedDate, setJoinedDate] = useState(moment().format("YYYY-MM-DD"));
   const [note, setNote] = useState("");
   const [data, setData] = useState([]);
 
@@ -41,13 +42,13 @@ const EditAssignment = () => {
       assignedDate: dayjs(today, "YYYY-MM-DD"),
     });
     form.validateFields(["assignedDate"]);
-  }, [fullName, assetName, form]);
+  }, [fullName, assetName, today, form]);
 
   useEffect(() => {
     setIsButtonDisabled(userName === "" || assetName === "");
   }, [userName, assetName]);
-  console.log(assetId);
-  console.log(userId);
+
+  console.log(dayjs(today, "YYYY-MM-DD"))
   const onFinish = (values) => {
     setIsLoading(true);
     // values.installDate = values.installDate.format("YYYY-MM-DD");
@@ -196,10 +197,19 @@ const EditAssignment = () => {
                         )
                       );
                     }
+                    if (value.isBefore(joinedDate)) {
+                      return Promise.reject(
+                        new Error(
+                          "Assigned date is not later than user's joined date."
+                        )
+                      );
+                    }
                     return Promise.resolve();
                   },
                 }),
               ]}
+
+              
               validateTrigger={["onBlur", "onChange"]}
             >
               <DatePicker
@@ -251,6 +261,11 @@ const EditAssignment = () => {
               setId={setUserId}
               chosenCode={staffCode}
               setCode={setStaffCode}
+              date={moment().format("YYYY-MM-DD")}
+              setDate={(date) => {
+                setToday(date);
+                setJoinedDate(date);
+              }}
             />
           )}
           {viewModalAsset && (
