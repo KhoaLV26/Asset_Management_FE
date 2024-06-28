@@ -98,7 +98,7 @@ const ManageAssignment = () => {
       .then((res) => {
         if (res.data.success) {
           setIsDeleteSuccess(!isDeleteSuccess);
-          setParams({ pageNumber: 1, sortOrder: "asc" });
+          setParams((prev) => ({...prev, pageNumber: 1 }));
           setDeleteModalVisible(false);
           message.success("Delete assignment successfully");
         } else {

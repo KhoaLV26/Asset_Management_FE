@@ -278,7 +278,7 @@ const ManageAsset = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("Asset deleted");
-          setParams({ pageNumber: 1, sortOrder: "asc" });
+          setParams((prev) => ({...prev, pageNumber: 1 }));
         } else {
           message.error(res.data.message);
         }

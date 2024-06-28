@@ -67,7 +67,7 @@ const ManageUser = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("User Disabled");
-          setParams({ pageNumber: 1, sortOrder: "asc" });
+          setParams((prev) => ({...prev, pageNumber: 1 }));
         } else {
           message.error(res.data.message);
         }
