@@ -63,7 +63,7 @@ const EditAssignment = () => {
         if (response.data.success === true) {
           message.success("An assignment is updated!");
           navigate("/manage-assignment", {
-            state: { data: response.data.data },
+            state: { data: params},
           });
         } else {
           message.error(response.data.message);
