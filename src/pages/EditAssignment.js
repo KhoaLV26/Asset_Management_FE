@@ -274,7 +274,7 @@ const EditAssignment = () => {
               type={"Select Asset"}
               setName={setAssetName}
               setId={setAssetId}
-              //chosenCode={assetCode}
+              chosenCode={assetCode}
               setCode={setAssetCode}
             />
           )}
