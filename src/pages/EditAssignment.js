@@ -87,7 +87,7 @@ const EditAssignment = () => {
         }
       })
       .catch((error) => {
-        message.error("Get categories error occurred. Please try again.");
+        message.error(error.message);
       });   
   }, []);
 
