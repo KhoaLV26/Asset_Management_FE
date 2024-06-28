@@ -3,6 +3,7 @@ import RequireAdmin from "../components/RequireAdmin";
 import UnAuthor from "../components/UnAuthor";
 import CreateAsset from "../pages/CreateAsset";
 import EditAsset from "../pages/EditAsset";
+import EditAssignment from "../pages/EditAssignment";
 import EditUser from "../pages/EditUser";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
@@ -92,6 +93,18 @@ const AppRoutes = () => {
     {
       path: "/manage-assignment/create-assignment",
       element: <CreateAssignment />,
+    },
+    {
+      path: "/report",
+      element: (
+        <RequireAdmin>
+          <Report />
+        </RequireAdmin>
+      ),
+    },
+    {
+      path: "/manage-assignment/edit-assignment/:id",
+      element: <EditAssignment />,
     },
     {
       path: "/report",

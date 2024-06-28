@@ -70,7 +70,9 @@ const EditAsset = () => {
       .then((response) => {
         if (response.data.success === true) {
           setData(response.data.data)
-          form.setFieldsValue({ ...response.data.data, installDate: response.data.data.installDate ? dayjs(response.data.data.installDate, "YYYY-MM-DD") : null, })
+          form.setFieldsValue({ 
+            ...response.data.data, 
+            installDate: response.data.data.installDate ? dayjs(response.data.data.installDate, "YYYY-MM-DD") : null, })
           setIsLoading(false);
         } else {
           message.error(response.data.message);
@@ -111,7 +113,7 @@ const EditAsset = () => {
             className="mt-10 create-asset"
             onFinish={onFinish}
             form={form}
-            onFieldsChange={onFieldsChange}
+            onFieldsChange={onFieldsChange} 
           >
             <Form.Item
               className="asset-name-form-item"
