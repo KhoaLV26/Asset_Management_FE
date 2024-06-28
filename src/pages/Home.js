@@ -323,7 +323,7 @@ const Home = () => {
                   emptyText: (
                     <Empty
                       image={Empty.PRESENTED_IMAGE_SIMPLE}
-                      description="No Search Result"
+                      description="You don't have any Assignment"
                     />
                   ),
                 }}

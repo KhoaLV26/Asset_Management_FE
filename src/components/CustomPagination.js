@@ -40,7 +40,7 @@ const CustomPagination = ({ params, setParams, total, setFetch }) => {
 
   return (
     <Pagination
-      className="text-center text-d6001c"
+      className="text-center text-d6001c pb-5"
       current={params.pageNumber}
       defaultCurrent={params.pageNumber}
       showSizeChanger={false}

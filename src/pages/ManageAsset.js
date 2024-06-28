@@ -75,7 +75,9 @@ const AssignmentTable = ({ selectedAsset }) => {
     to: item.to,
   })) || [];
 
-  return <Table scroll={{ y: 100 }} columns={columns} dataSource={data} pagination={false} />;
+  return <Table scroll={{ y: 100 }} locale={{
+    emptyText: "No Data",
+  }} columns={columns} dataSource={data} pagination={false} />;
 };
 
 
@@ -525,7 +527,7 @@ const ManageAsset = () => {
           open={isModalOpen}
           onCancel={handleCancel}
           footer={null}
-          className="custom-modal mt-[10%]"
+          className="custom-modal m-auto"
         >
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
