@@ -37,19 +37,28 @@ const EditAssignment = () => {
     form.setFieldsValue({
       user: userName,
       asset: assetName,
+      assignedDate: dayjs(today, "YYYY-MM-DD"),
     });
+    form.validateFields(["assignedDate"]);
   }, [userName, assetName, form]);
 
   useEffect(() => {
     setIsButtonDisabled(userName === "" || assetName === "");
   }, [userName, assetName]);
-
+console.log(assetId)
+console.log(userId)
   const onFinish = (values) => {
     setIsLoading(true);
-    values.installDate = values.installDate.format("YYYY-MM-DD");
-    var { assignedTo, assetId, ...rest } = values;
+    // values.installDate = values.installDate.format("YYYY-MM-DD");
+    // var { assignedTo, assetId, ...rest } = values;
+    
     axiosInstance
-      .put(`/assignments/${params.id}`, rest)
+      .put(`/assignments/${params.id}`, {
+        assignedTo: userId,
+        assignedDate: today,
+        assetId: assetId,
+        note: note.trim(),
+      })
       .then((response) => {
         if (response.data.success === true) {
           message.success("An assignment is updated!");
@@ -75,11 +84,22 @@ const EditAssignment = () => {
       .then((response) => {
         if (response.data.success === true) {
           setData(response.data.data);
+          setAssetCode(response.data.data.assetCode);
+          setAssetId (response.data.data.assetId)
+          setUserId(response.data.data.assignedTo);
+          setAssetName(response.data.data.assetName);
+          setToday(response.data.data.assignedDate);
+          setUserName(response.data.data.to);
+          setStaffCode(response.data.data.staffCode);
+    
           form.setFieldsValue({
             ...response.data.data,
+            user: response.data.data.to,
+            asset: response.data.data.assetName,
             assignedDate: response.data.data.assignedDate
               ? dayjs(response.data.data.assignedDate, "YYYY-MM-DD")
               : null,
+            note: response.data.data.note,
           });
           setIsLoading(false);
         } else {
@@ -89,14 +109,16 @@ const EditAssignment = () => {
       .catch((error) => {
         message.error(error.message);
       });   
-  }, []);
+  }, [params.id]);
 
   const onFieldsChange = () => {
     const fieldsError = form
       .getFieldsError()
       .filter(({ errors }) => errors.length).length;
-    setIsButtonDisabled(fieldsError > 0);
+
+    setIsButtonDisabled(fieldsError > 0 || userName === "" || assetName === "");
   };
+
 
   return (
     <LayoutPage>
@@ -108,6 +130,7 @@ const EditAssignment = () => {
           <Form
             className="mt-10"
             onFinish={onFinish}
+            onFieldsChange={onFieldsChange}
             form={form}
             initialValues={{ assignedDate: dayjs(today, "YYYY-MM-DD") }}
           >
@@ -165,7 +188,6 @@ const EditAssignment = () => {
                         new Error("Please input the assigned date!")
                       );
                     }
-
                     const today = moment().startOf("day");
                     if (value.isBefore(today)) {
                       return Promise.reject(
