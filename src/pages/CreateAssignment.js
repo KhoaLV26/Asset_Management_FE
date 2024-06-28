@@ -176,7 +176,7 @@ const CreateAssignment = () => {
             >
               <DatePicker
                 defaultValue={dayjs(today, "YYYY-MM-DD")}
-                className="w-[400px] ml-[27px]"
+                className="w-[400px] ml-[18px]"
                 inputReadOnly
                 minDate={dayjs(moment().format("YYYY-MM-DD"), "YYYY-MM-DD")}
                 onChange={(date, dateString) => setToday(dateString)}
