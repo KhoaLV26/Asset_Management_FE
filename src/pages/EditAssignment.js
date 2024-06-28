@@ -18,6 +18,7 @@ const EditAssignment = () => {
   const [userId, setUserId] = useState("");
   const [assetId, setAssetId] = useState("");
   const [userName, setUserName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [assetName, setAssetName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [form] = Form.useForm();
@@ -35,12 +36,12 @@ const EditAssignment = () => {
 
   useEffect(() => {
     form.setFieldsValue({
-      user: userName,
+      user: fullName,
       asset: assetName,
       assignedDate: dayjs(today, "YYYY-MM-DD"),
     });
     form.validateFields(["assignedDate"]);
-  }, [userName, assetName, form]);
+  }, [fullName, assetName, form]);
 
   useEffect(() => {
     setIsButtonDisabled(userName === "" || assetName === "");
@@ -63,7 +64,7 @@ const EditAssignment = () => {
         if (response.data.success === true) {
           message.success("An assignment is updated!");
           navigate("/manage-assignment", {
-            state: { data: response.data.data },
+            state: { data: params},
           });
         } else {
           message.error(response.data.message);
@@ -91,10 +92,11 @@ const EditAssignment = () => {
           setToday(response.data.data.assignedDate);
           setUserName(response.data.data.to);
           setStaffCode(response.data.data.staffCode);
+          setFullName(response.data.data.fullName);
 
           form.setFieldsValue({
             ...response.data.data,
-            user: response.data.data.fullName,
+            user: response.data.data.FullName,
             asset: response.data.data.assetName,
             assignedDate: response.data.data.assignedDate
               ? dayjs(response.data.data.assignedDate, "YYYY-MM-DD")
@@ -245,7 +247,7 @@ const EditAssignment = () => {
             <SelectModal
               setisShowModal={setViewModalUser}
               type={"Select User"}
-              setName={setUserName}
+              setName={setFullName}
               setId={setUserId}
               chosenCode={staffCode}
               setCode={setStaffCode}

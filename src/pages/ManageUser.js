@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import axiosInstance from "../axios/axiosInstance";
 import {
   Button,
@@ -24,6 +24,7 @@ import LayoutPage from "../layout/LayoutPage";
 import "../styles/ManageUser.css";
 import { useNavigate, useLocation } from "react-router-dom";
 import ConfirmModal from "../components/ConfirmModal";
+import { AuthContext } from "../contexts/AuthContext";
 
 const { Search } = Input;
 
@@ -55,6 +56,9 @@ const ManageUser = () => {
     pageNumber: 1,
     newStaffCode: location?.state?.data?.staffCode || 0,
   });
+  const { auth } = useContext(AuthContext);
+
+  const adminId = auth?.user?.id;
 
   const handleDelete = (currentId) => {
     setShowConfirm(false);
@@ -324,6 +328,7 @@ const ManageUser = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
+          disabled={record.id === adminId}
             className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
