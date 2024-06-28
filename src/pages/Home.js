@@ -82,6 +82,9 @@ const Home = () => {
           if (state === 3) {
             axiosInstance.put(`/assets/response/${record?.assetId}`);
           }
+          if (state === 1) {
+            setParams((prev) => ({ ...prev, newAssignmentId: record.id }));
+          }
           setUserResponse(false);
           setParams((prev) => ({ ...prev, pageNumber: 1 }));
         } else {
@@ -106,6 +109,17 @@ const Home = () => {
     setIsModalOpen(true);
     setSelectedAssignment(data);
   };
+
+  // useEffect(() => {
+  //   const isFirstTimeAssignment =
+  //     sessionStorage.getItem("isFirstTimeAssignment") === null;
+  //   if (isFirstTimeAssignment) {
+  //     sessionStorage.setItem("isFirstTimeAssignment", "false");
+  //   }
+  //   return () => {
+  //     sessionStorage.removeItem("isFirstTimeAssignment");
+  //   };
+  // }, [params?.newAssignmentId]);
 
   const columns = [
     {
@@ -245,6 +259,7 @@ const Home = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Accepted"}
             onClick={(e) => {
@@ -257,6 +272,7 @@ const Home = () => {
             <CheckOutlined className="text-red-600 text-sm mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Accepted"}
             onClick={(e) => {
@@ -269,6 +285,7 @@ const Home = () => {
             <CloseOutlined className="text-sm mb-1" />
           </Button>
           <Button
+            className="bg-tranparent border-none"
             size="middle"
             disabled={record?.state === "Waiting for acceptance"}
             onClick={(e) => {
@@ -367,19 +384,27 @@ const Home = () => {
                 <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Asset Code:</span>
-                    <span className="max-w-[290px]">{selectedAssignment?.assetCode}</span>
+                    <span className="max-w-[290px]">
+                      {selectedAssignment?.assetCode}
+                    </span>
                   </div>
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Asset Name:</span>
-                    <span className="max-w-[290px]">{selectedAssignment?.assetName}</span>
+                    <span className="max-w-[290px]">
+                      {selectedAssignment?.assetName}
+                    </span>
                   </div>
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Specification:</span>
-                    <span className="max-w-[290px]">{selectedAssignment?.specification}</span>
+                    <span className="max-w-[290px]">
+                      {selectedAssignment?.specification}
+                    </span>
                   </div>
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Assigned By: </span>
-                    <span className="max-w-[290px]">{selectedAssignment?.by}</span>
+                    <span className="max-w-[290px]">
+                      {selectedAssignment?.by}
+                    </span>
                   </div>
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Assigned Date:</span>
@@ -389,12 +414,10 @@ const Home = () => {
                     </span>
                   </div>
                   <div className="flex mb-[10px]">
-                    <span className="font-bold w-[150px]">State:</span>
-                    <span className="max-w-[290px]">{stateConvert(selectedAssignment?.status)}</span>
-                  </div>          
-                  <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Note: </span>
-                    <span className="max-w-[290px]">{selectedAssignment?.note}</span>
+                    <span className="max-w-[290px]">
+                      {selectedAssignment?.note}
+                    </span>
                   </div>
                 </div>
               </Modal>
