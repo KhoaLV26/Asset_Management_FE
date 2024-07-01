@@ -91,7 +91,7 @@ const EditAssignment = () => {
           setUserId(response.data.data.assignedTo);
           setAssetName(response.data.data.assetName);
           setToday(response.data.data.assignedDate);
-          setUserName(response.data.data.to);
+          setUserName(response.data.data.assignedToName);
           setStaffCode(response.data.data.staffCode);
           setFullName(response.data.data.fullName);
 

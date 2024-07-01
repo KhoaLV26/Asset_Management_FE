@@ -185,7 +185,7 @@ const ManageAssignment = () => {
           )}
         </span>
       ),
-      dataIndex: "to",
+      dataIndex: "assignedToName",
       key: "assignedTo",
       ellipsis: true,
       onHeaderCell: () => ({
@@ -211,7 +211,7 @@ const ManageAssignment = () => {
         </span>
       ),
       key: "assignedBy",
-      dataIndex: "by",
+      dataIndex: "assignedByName",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -512,11 +512,11 @@ const ManageAssignment = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Assigned By: </span>
-              <span className="max-w-[290px]">{selectedAssignment?.by}</span>
+              <span className="max-w-[290px]">{selectedAssignment?.assignedByName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Assigned To: </span>
-              <span className="max-w-[290px]">{selectedAssignment?.to}</span>
+              <span className="max-w-[290px]">{selectedAssignment?.assignedToName}</span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Time:</span>

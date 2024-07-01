@@ -190,7 +190,7 @@ const Home = () => {
         </span>
       ),
       key: "assignedBy",
-      dataIndex: "by",
+      dataIndex: "assignedByName",
       ellipsis: true,
       width: "15%",
       onHeaderCell: () => ({
@@ -403,7 +403,7 @@ const Home = () => {
                   <div className="flex mb-[10px]">
                     <span className="font-bold w-[150px]">Assigned By: </span>
                     <span className="max-w-[290px]">
-                      {selectedAssignment?.by}
+                      {selectedAssignment?.assignedByName}
                     </span>
                   </div>
                   <div className="flex mb-[10px]">
