@@ -260,7 +260,8 @@ const EditAssignment = () => {
               setName={setFullName}
               setId={setUserId}
               chosenCode={staffCode}
-              setCode={setStaffCode}
+              setCode={() => {}}
+              //setCode={setStaffCode}
               date={moment().format("YYYY-MM-DD")}
               setDate={(date) => {
                 setToday(date);
