@@ -24,6 +24,7 @@ import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
 import CustomPagination from "../components/CustomPagination";
+import ConfirmModal from "../components/ConfirmModal";
 
 const { Search } = Input;
 const stateConvert = (id) => {
@@ -50,7 +51,8 @@ const ManageRequestReturn = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
-
+  const [currentId, setCurrentId] = useState(null);
+  const [showConfirm, setShowConfirm] = useState(false);
   const [params, setParams] = useState({ pageNumber: 1 });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -66,7 +68,20 @@ const ManageRequestReturn = () => {
       setParams((prev) => ({ ...prev, sortOrder: "asc" }));
     }
   };
-
+  const handleCompleteRequest = (currentId) => {
+    setShowConfirm(false);
+    axiosInstance
+      .put(`/request-for-returning/CompleteRequest/${currentId}`)
+      .then((res) => {
+        if (res.data.success) {
+          message.success("Assignment completed");
+          setParams((prev) => ({...prev, pageNumber: 1 }));
+        } 
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+      });
+  };
   const columns = [
     {
       title: <span className="flex items-center justify-between">No</span>,
@@ -259,6 +274,11 @@ const ManageRequestReturn = () => {
             className="bg-tranparent border-none"
             size="middle"
             disabled={record?.returnStatus === "Completed"}
+            onClick={(e) => {
+              e.stopPropagation();
+              setCurrentId(record?.id);
+              setShowConfirm(true)
+            }}
           >
             <CheckOutlined className="text-red-600 text-sm mb-1" />
           </Button>
@@ -401,6 +421,19 @@ const ManageRequestReturn = () => {
             </div>
           </div>
         </Spin>
+        <ConfirmModal
+          title={"Are you sure?"}
+          text={"Do you want to mark this returning request as 'Completed'?"}
+          textconfirm={"Yes"}
+          textcancel={"No"}
+          onConfirm={() => handleCompleteRequest(currentId)}
+          onCancel={() => {
+            setShowConfirm(false);
+            setCurrentId(null);
+          }}
+          isShowModal={showConfirm}
+          setisShowModal={setShowConfirm}
+        />
       </div>
     </LayoutPage>
   );
