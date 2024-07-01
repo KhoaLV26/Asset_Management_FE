@@ -123,6 +123,15 @@ const Home = () => {
 
   const columns = [
     {
+      title: <span className="flex items-center justify-between">No</span>,
+      dataIndex: "index",
+      width: "6%",
+      key: "index",
+      render: (text, record, index) => (
+        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+      ),
+    },
+    {
       title: (
         <span className="flex items-center justify-between">
           Asset Code{" "}

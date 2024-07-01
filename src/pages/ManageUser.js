@@ -67,7 +67,7 @@ const ManageUser = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("User Disabled");
-          setParams((prev) => ({...prev, pageNumber: 1 }));
+          setParams((prev) => ({ ...prev, pageNumber: 1 }));
         } else {
           message.error(res.data.message);
         }
@@ -181,6 +181,15 @@ const ManageUser = () => {
   }, [location]);
 
   const columns = [
+    {
+      title: <span className="flex items-center justify-between">No</span>,
+      dataIndex: "index",
+      width: "6%",
+      key: "index",
+      render: (text, record, index) => (
+        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+      ),
+    },
     {
       title: (
         <span className="flex items-center justify-between">
@@ -328,7 +337,7 @@ const ManageUser = () => {
             <EditFilled className="text-lg mb-1" />
           </Button>
           <Button
-          disabled={record.id === adminId}
+            disabled={record.id === adminId}
             className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
@@ -408,7 +417,7 @@ const ManageUser = () => {
                 maxLength={100}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onSearch={(value, event, input) => {
-                  if (input.source !== 'clear') {
+                  if (input.source !== "clear") {
                     setSearchQuery(searchQuery.trim());
                     handleSearch(searchQuery);
                     setRoleHolder("Type");
@@ -477,19 +486,27 @@ const ManageUser = () => {
           <div className="px-[40px] py-[20px] pt-[20px] pb-[20px]">
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Staff Code:</span>
-              <span className="w-full max-w-[290px]">{modalData?.staffCode}</span>
+              <span className="w-full max-w-[290px]">
+                {modalData?.staffCode}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Full Name:</span>
-              <span className="w-full max-w-[290px]">{modalData?.fullName}</span>
+              <span className="w-full max-w-[290px]">
+                {modalData?.fullName}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Username:</span>
-              <span className="w-full max-w-[290px]">{modalData?.username}</span>
+              <span className="w-full max-w-[290px]">
+                {modalData?.username}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Date of Birth:</span>
-              <span className="w-full max-w-[290px]">{modalData?.dateOfBirth}</span>
+              <span className="w-full max-w-[290px]">
+                {modalData?.dateOfBirth}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Gender:</span>
@@ -501,11 +518,15 @@ const ManageUser = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Type:</span>
-              <span className="w-full max-w-[290px]">{modalData?.roleName}</span>
+              <span className="w-full max-w-[290px]">
+                {modalData?.roleName}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Location:</span>
-              <span className="w-full max-w-[290px]">{modalData?.locationName}</span>
+              <span className="w-full max-w-[290px]">
+                {modalData?.locationName}
+              </span>
             </div>
           </div>
         </Modal>

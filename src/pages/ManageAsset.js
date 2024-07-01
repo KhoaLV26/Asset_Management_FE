@@ -51,35 +51,43 @@ const stateConvert = (id) => {
 const AssignmentTable = ({ selectedAsset }) => {
   const columns = [
     {
-      title: 'Time',
-      dataIndex: 'assignedDate',
-      key: 'assignedDate',
-      render: text => <span>{text.slice(0, 10)}</span>,
+      title: "Time",
+      dataIndex: "assignedDate",
+      key: "assignedDate",
+      render: (text) => <span>{text.slice(0, 10)}</span>,
     },
     {
-      title: 'Assigned By',
-      dataIndex: 'assignedByName',
-      key: 'assignedByName',
+      title: "Assigned By",
+      dataIndex: "assignedByName",
+      key: "assignedByName",
     },
     {
-      title: 'Assigned To',
-      dataIndex: 'assignedToName',
-      key: 'assignedToName',
+      title: "Assigned To",
+      dataIndex: "assignedToName",
+      key: "assignedToName",
     },
   ];
 
-  const data = selectedAsset?.assignmentResponses?.map((item, index) => ({
-    key: index,
-    assignedDate: item.assignedDate,
-    assignedByName: item.assignedByName,
-    assignedToName: item.assignedToName,
-  })) || [];
+  const data =
+    selectedAsset?.assignmentResponses?.map((item, index) => ({
+      key: index,
+      assignedDate: item.assignedDate,
+      assignedByName: item.assignedByName,
+      assignedToName: item.assignedToName,
+    })) || [];
 
-  return <Table scroll={{ y: 100 }} locale={{
-    emptyText: "No Data",
-  }} columns={columns} dataSource={data} pagination={false} />;
+  return (
+    <Table
+      scroll={{ y: 100 }}
+      locale={{
+        emptyText: "No Data",
+      }}
+      columns={columns}
+      dataSource={data}
+      pagination={false}
+    />
+  );
 };
-
 
 const ManageAsset = () => {
   const [direction, setDirection] = useState(true);
@@ -122,6 +130,15 @@ const ManageAsset = () => {
     }
   };
   const columns = [
+    {
+      title: <span className="flex items-center justify-between">No</span>,
+      dataIndex: "index",
+      width: "6%",
+      key: "index",
+      render: (text, record, index) => (
+        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+      ),
+    },
     {
       title: "Id",
       dataIndex: "id",
@@ -278,7 +295,7 @@ const ManageAsset = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("Asset deleted");
-          setParams((prev) => ({...prev, pageNumber: 1 }));
+          setParams((prev) => ({ ...prev, pageNumber: 1 }));
         } else {
           message.error(res.data.message);
         }
@@ -468,7 +485,7 @@ const ManageAsset = () => {
                 allowClear
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onSearch={(value, event, input) => {
-                  if (input.source !== 'clear') {
+                  if (input.source !== "clear") {
                     setSearchQuery(searchQuery.trim());
                     handleSearch(removeExtraWhitespace(searchQuery));
                   }
@@ -550,7 +567,9 @@ const ManageAsset = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
-              <span className="max-w-[290px]">{stateConvert(selectedAsset?.status)}</span>
+              <span className="max-w-[290px]">
+                {stateConvert(selectedAsset?.status)}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">History Assignment:</span>
