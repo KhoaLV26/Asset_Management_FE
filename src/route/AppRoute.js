@@ -8,6 +8,7 @@ import EditUser from "../pages/EditUser";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import ManageAssignment from "../pages/ManageAssignment";
+import ManageRequestReturn from "../pages/ManageRequestReturn";
 import Report from "../pages/Report";
 
 const { useRoutes } = require("react-router-dom");
@@ -111,6 +112,14 @@ const AppRoutes = () => {
       element: (
         <RequireAdmin>
           <Report />
+        </RequireAdmin>
+      ),
+    },
+    {
+      path: "/request-for-returning",
+      element: (
+        <RequireAdmin>
+          <ManageRequestReturn />
         </RequireAdmin>
       ),
     },
