@@ -58,21 +58,21 @@ const AssignmentTable = ({ selectedAsset }) => {
     },
     {
       title: 'Assigned By',
-      dataIndex: 'by',
-      key: 'by',
+      dataIndex: 'assignedByName',
+      key: 'assignedByName',
     },
     {
       title: 'Assigned To',
-      dataIndex: 'to',
-      key: 'to',
+      dataIndex: 'assignedToName',
+      key: 'assignedToName',
     },
   ];
 
   const data = selectedAsset?.assignmentResponses?.map((item, index) => ({
     key: index,
     assignedDate: item.assignedDate,
-    by: item.by,
-    to: item.to,
+    assignedByName: item.assignedByName,
+    assignedToName: item.assignedToName,
   })) || [];
 
   return <Table scroll={{ y: 100 }} locale={{
