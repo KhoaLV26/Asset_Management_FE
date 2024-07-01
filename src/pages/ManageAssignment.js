@@ -425,9 +425,11 @@ const ManageAssignment = () => {
                 value={searchQuery}
                 allowClear
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onSearch={() => {
-                  setSearchQuery(searchQuery.trim());
-                  handleSearch(removeExtraWhitespace(searchQuery));
+                onSearch={(value, event, input) => {
+                  if (input.source !== 'clear') {
+                    setSearchQuery(searchQuery.trim());
+                    handleSearch(removeExtraWhitespace(searchQuery));
+                  }
                 }}
               />
             </Space.Compact>
