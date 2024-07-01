@@ -324,9 +324,11 @@ export const SelectModal = ({
             allowClear
             maxLength={100}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onSearch={() => {
-              setSearchQuery(searchQuery.trim());
-              handleSearch(searchQuery);
+            onSearch={(value, event, input) => {
+              if (input.source !== 'clear') {
+                setSearchQuery(searchQuery.trim());
+                handleSearch(searchQuery);
+              }
             }}
           />
         </div>

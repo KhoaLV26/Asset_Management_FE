@@ -407,11 +407,13 @@ const ManageUser = () => {
                 placeholder="Enter text"
                 maxLength={100}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                onSearch={() => {
-                  setSearchQuery(searchQuery.trim());
-                  handleSearch(searchQuery);
-                  setRoleHolder("Type");
-                  setParams((prev) => ({ ...prev, role: "" }));
+                onSearch={(value, event, input) => {
+                  if (input.source !== 'clear') {
+                    setSearchQuery(searchQuery.trim());
+                    handleSearch(searchQuery);
+                    setRoleHolder("Type");
+                    setParams((prev) => ({ ...prev, role: "" }));
+                  }
                 }}
               />
             </Space.Compact>
