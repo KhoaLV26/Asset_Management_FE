@@ -184,7 +184,7 @@ const ManageUser = () => {
     {
       title: <span className="flex items-center justify-between">No</span>,
       dataIndex: "index",
-      width: "6%",
+      width: "5%",
       key: "index",
       render: (text, record, index) => (
         <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
@@ -207,7 +207,7 @@ const ManageUser = () => {
       ),
       dataIndex: "staffCode",
       key: "staffcode",
-      width: "18%",
+      width: "10%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -233,7 +233,7 @@ const ManageUser = () => {
       ),
       dataIndex: "fullName",
       key: "name",
-      width: "18%",
+      width: "25%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -259,7 +259,7 @@ const ManageUser = () => {
       ),
       dataIndex: "username",
       key: "username",
-      width: "18%",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -285,7 +285,7 @@ const ManageUser = () => {
       ),
       dataIndex: "dateJoined",
       key: "dateJoined",
-      width: "18%",
+      width: "20%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -311,7 +311,7 @@ const ManageUser = () => {
       ),
       key: "roleName",
       dataIndex: "roleName",
-      width: "18%",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {

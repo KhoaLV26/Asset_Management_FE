@@ -133,7 +133,7 @@ const ManageAsset = () => {
     {
       title: <span className="flex items-center justify-between">No</span>,
       dataIndex: "index",
-      width: "6%",
+      width: "5%",
       key: "index",
       render: (text, record, index) => (
         <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
@@ -162,7 +162,7 @@ const ManageAsset = () => {
       ),
       dataIndex: "assetCode",
       key: "name",
-      width: "18%",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -188,7 +188,7 @@ const ManageAsset = () => {
       ),
       dataIndex: "assetName",
       key: "name",
-      width: "18%",
+      width: "30%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -214,7 +214,7 @@ const ManageAsset = () => {
       ),
       dataIndex: "categoryName",
       key: "category",
-      width: "18%",
+      width: "20%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -240,7 +240,7 @@ const ManageAsset = () => {
       ),
       key: "state",
       dataIndex: "state",
-      width: "18%",
+      width: "20%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
