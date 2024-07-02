@@ -103,7 +103,7 @@ const ManageRequestReturn = () => {
     {
       title: <span className="flex items-center justify-between">No</span>,
       dataIndex: "index",
-      width: "6%",
+      width: "5%",
       key: "index",
       render: (text, record, index) => (
         <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
@@ -126,6 +126,7 @@ const ManageRequestReturn = () => {
       ),
       dataIndex: "assetCode",
       key: "name",
+      width: "10%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -151,6 +152,7 @@ const ManageRequestReturn = () => {
       ),
       dataIndex: "assetName",
       key: "name",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -176,6 +178,7 @@ const ManageRequestReturn = () => {
       ),
       dataIndex: "requestedByName",
       key: "requestedByName",
+      width: "11%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -201,6 +204,7 @@ const ManageRequestReturn = () => {
       ),
       key: "assignedDate",
       dataIndex: "assignedDate",
+      width: "11%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -225,6 +229,7 @@ const ManageRequestReturn = () => {
       ),
       key: "acceptanceByName",
       dataIndex: "acceptanceByName",
+      width: "11%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -250,6 +255,7 @@ const ManageRequestReturn = () => {
       ),
       key: "returnDate",
       dataIndex: "returnDate",
+      width: "11%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -274,6 +280,7 @@ const ManageRequestReturn = () => {
       ),
       key: "returnStatus",
       dataIndex: "returnStatus",
+      width: "16%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -285,6 +292,7 @@ const ManageRequestReturn = () => {
     {
       title: "",
       key: "action",
+      width: "10%",
       render: (_, record) => (
         <Space size="middle">
           <Button

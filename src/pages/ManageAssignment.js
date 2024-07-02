@@ -71,9 +71,11 @@ const ManageAssignment = () => {
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [idSelected, setIdSelected] = useState(null);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
+  const [createRequestModal, setCreateRequestModal] = useState(false);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [params, setParams] = useState({ pageNumber: 1 });
+
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -88,10 +90,12 @@ const ManageAssignment = () => {
       setParams((prev) => ({ ...prev, sortOrder: "asc" }));
     }
   };
+
   const openFormConfirmDelete = (id) => {
     setDeleteModalVisible(true);
     setIdSelected(id);
   };
+
   const deleteAssignment = () => {
     axiosInstance
       .delete(`/Assignments/${idSelected}`)
@@ -110,11 +114,34 @@ const ManageAssignment = () => {
       });
   };
 
+  const openCreateReturningRequest = (id) => {
+    setCreateRequestModal(true);
+    setIdSelected(id);
+  };
+
+  const createReturningRequest = () => {
+    axiosInstance
+      .post(`/request-for-returning/${idSelected}`)
+      .then((res) => {
+        if (res.data.success) {
+          setIsDeleteSuccess(!isDeleteSuccess);
+          setParams((prev) => ({...prev, pageNumber: 1 }));
+          setCreateRequestModal(false);
+          message.success("Create returning request for this asset successfully");
+        } else {
+          message.error("Create returning request for this asset failed");
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  };
+
   const columns = [
     {
       title: <span className="flex items-center justify-between">No</span>,
       dataIndex: "index",
-      width: "6%",
+      width: "5%",
       key: "index",
       render: (text, record, index) => (
         <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
@@ -137,6 +164,7 @@ const ManageAssignment = () => {
       ),
       dataIndex: "assetCode",
       key: "name",
+      width: "10%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -162,6 +190,7 @@ const ManageAssignment = () => {
       ),
       dataIndex: "assetName",
       key: "name",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -187,6 +216,7 @@ const ManageAssignment = () => {
       ),
       dataIndex: "assignedToName",
       key: "assignedTo",
+      width: "13%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -212,6 +242,7 @@ const ManageAssignment = () => {
       ),
       key: "assignedBy",
       dataIndex: "assignedByName",
+      width: "13%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -237,6 +268,7 @@ const ManageAssignment = () => {
       ),
       key: "assignedDate",
       dataIndex: "assignedDate",
+      width: "13%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -262,6 +294,7 @@ const ManageAssignment = () => {
       ),
       key: "state",
       dataIndex: "state",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -302,10 +335,10 @@ const ManageAssignment = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Waiting for acceptance" || record?.state === "Declined"}
+            disabled={record?.state === "Waiting for acceptance" || record?.state === "Declined" || record?.returnRequests != null}
             onClick={(e) => {
               e.stopPropagation();
-              navigate("manage-assignment/return-assignment");
+              openCreateReturningRequest(record?.id);
             }}
           >
             <RedoOutlined className="text-blue-600 text-sm mb-1" />
@@ -546,6 +579,16 @@ const ManageAssignment = () => {
           onCancel={() => setDeleteModalVisible(false)}
           isShowModal={isDeleteModalVisible}
           setisShowModal={setDeleteModalVisible}
+        />
+        <ConfirmModal
+          title={"Are you sure?"}
+          text={"Do you want to create a returning request for this asset?"}
+          textconfirm={"Yes"}
+          textcancel={"No"}
+          onConfirm={() => createReturningRequest()}
+          onCancel={() => setCreateRequestModal(false)}
+          isShowModal={createRequestModal}
+          setisShowModal={setCreateRequestModal}
         />
       </div>
     </LayoutPage>
