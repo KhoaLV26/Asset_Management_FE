@@ -10,7 +10,6 @@ import {
   RedoOutlined,
 } from "@ant-design/icons";
 import { Button, Space, Table, Modal, message, Empty, Spin } from "antd";
-import { useNavigate } from "react-router-dom";
 import CustomPagination from "../components/CustomPagination";
 import ConfirmModal from "../components/ConfirmModal";
 import "../styles/Home.css";
@@ -45,11 +44,12 @@ const Home = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [userResponse, setUserResponse] = useState(false);
+  const [createRequestModal, setCreateRequestModal] = useState(false);
   const [changedState, setChangedState] = useState(1);
+  const [reload, setReload] = useState(false);
   const [params, setParams] = useState({
     pageNumber: 1,
     sortBy: "AssignedDate",
@@ -57,6 +57,7 @@ const Home = () => {
   });
   const [currentAssignment, setCurrentAssignment] = useState({});
   const [selectedAssignment, setSelectedAssignment] = useState(null);
+  const [idSelected, setIdSelected] = useState(null);
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -71,6 +72,32 @@ const Home = () => {
       setParams((prev) => ({ ...prev, sortOrder: "asc" }));
     }
   };
+
+  const openCreateReturningRequest = (id) => {
+    setCreateRequestModal(true);
+    setIdSelected(id);
+  };
+
+  const createReturningRequest = () => {
+    axiosInstance
+      .post(`/request-for-returning/`, { assignmentId: idSelected})
+      .then((res) => {
+        if (res.data.success) {
+          setReload(!reload);
+          setParams((prev) => ({ ...prev, pageNumber: 1 }));
+          setCreateRequestModal(false);
+          message.success(
+            "Create returning request for this asset successfully"
+          );
+        } else {
+          message.error("Create returning request for this asset failed");
+        }
+      })
+      .catch((err) => {
+        message.error(err.message);
+      });
+  };
+
   const handleAssignment = (record, state) => {
     setLoading(true);
     const accepted = state === 3 ? "fasle" : "true";
@@ -109,17 +136,6 @@ const Home = () => {
     setIsModalOpen(true);
     setSelectedAssignment(data);
   };
-
-  // useEffect(() => {
-  //   const isFirstTimeAssignment =
-  //     sessionStorage.getItem("isFirstTimeAssignment") === null;
-  //   if (isFirstTimeAssignment) {
-  //     sessionStorage.setItem("isFirstTimeAssignment", "false");
-  //   }
-  //   return () => {
-  //     sessionStorage.removeItem("isFirstTimeAssignment");
-  //   };
-  // }, [params?.newAssignmentId]);
 
   const columns = [
     {
@@ -296,10 +312,10 @@ const Home = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Waiting for acceptance"}
+            disabled={record?.state === "Waiting for acceptance" || record?.returnRequests != null}
             onClick={(e) => {
               e.stopPropagation();
-              navigate("manage-assignment/return-assignment");
+              openCreateReturningRequest(record?.id);
             }}
           >
             <RedoOutlined className="text-blue-600 text-sm mb-1" />
@@ -335,7 +351,7 @@ const Home = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [params]);
+  }, [params, reload]);
 
   return (
     <LayoutPage>
@@ -446,6 +462,16 @@ const Home = () => {
                 isShowModal={userResponse}
                 setisShowModal={setUserResponse}
               />
+              <ConfirmModal
+          title={"Are you sure?"}
+          text={"Do you want to create a returning request for this asset?"}
+          textconfirm={"Yes"}
+          textcancel={"No"}
+          onConfirm={() => createReturningRequest()}
+          onCancel={() => setCreateRequestModal(false)}
+          isShowModal={createRequestModal}
+          setisShowModal={setCreateRequestModal}
+        />
             </div>
           </Spin>
         </div>

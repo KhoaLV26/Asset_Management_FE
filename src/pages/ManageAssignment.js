@@ -102,7 +102,7 @@ const ManageAssignment = () => {
       .then((res) => {
         if (res.data.success) {
           setIsDeleteSuccess(!isDeleteSuccess);
-          setParams((prev) => ({...prev, pageNumber: 1 }));
+          setParams((prev) => ({ ...prev, pageNumber: 1 }));
           setDeleteModalVisible(false);
           message.success("Delete assignment successfully");
         } else {
@@ -125,9 +125,11 @@ const ManageAssignment = () => {
       .then((res) => {
         if (res.data.success) {
           setIsDeleteSuccess(!isDeleteSuccess);
-          setParams((prev) => ({...prev, pageNumber: 1 }));
+          setParams((prev) => ({ ...prev, pageNumber: 1 }));
           setCreateRequestModal(false);
-          message.success("Create returning request for this asset successfully");
+          message.success(
+            "Create returning request for this asset successfully"
+          );
         } else {
           message.error("Create returning request for this asset failed");
         }
@@ -312,7 +314,9 @@ const ManageAssignment = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Accepted" || record?.state === "Declined"}
+            disabled={
+              record?.state === "Accepted" || record?.state === "Declined"
+            }
             onClick={(e) => {
               e.stopPropagation();
               navigate(`edit-assignment/${record.id}`);
@@ -324,7 +328,9 @@ const ManageAssignment = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Accepted" || record?.state === "Declined"}
+            disabled={
+              record?.state === "Accepted" || record?.state === "Declined"
+            }
             onClick={(e) => {
               e.stopPropagation();
               openFormConfirmDelete(record?.id);
@@ -335,7 +341,11 @@ const ManageAssignment = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Waiting for acceptance" || record?.state === "Declined" || record?.returnRequests != null}
+            disabled={
+              record?.state === "Waiting for acceptance" ||
+              record?.state === "Declined" ||
+              record?.returnRequests != null
+            }
             onClick={(e) => {
               e.stopPropagation();
               openCreateReturningRequest(record?.id);
@@ -459,7 +469,7 @@ const ManageAssignment = () => {
                 allowClear
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onSearch={(value, event, input) => {
-                  if (input.source !== 'clear') {
+                  if (input.source !== "clear") {
                     setSearchQuery(searchQuery.trim());
                     handleSearch(removeExtraWhitespace(searchQuery));
                   }
@@ -545,11 +555,15 @@ const ManageAssignment = () => {
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Assigned By: </span>
-              <span className="max-w-[290px]">{selectedAssignment?.assignedByName}</span>
+              <span className="max-w-[290px]">
+                {selectedAssignment?.assignedByName}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Assigned To: </span>
-              <span className="max-w-[290px]">{selectedAssignment?.assignedToName}</span>
+              <span className="max-w-[290px]">
+                {selectedAssignment?.assignedToName}
+              </span>
             </div>
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Time:</span>
