@@ -32,7 +32,7 @@ const stateConvert = (id) => {
       stateName = "Waiting for acceptance";
       break;
     default:
-      stateName = "Declined";
+      stateName = "Waiting for returning";
       break;
   }
   return stateName;
@@ -80,7 +80,7 @@ const Home = () => {
 
   const createReturningRequest = () => {
     axiosInstance
-      .post(`/request-for-returning/`, { assignmentId: idSelected})
+      .post(`/request-for-returning?assignmentId=${idSelected}`)
       .then((res) => {
         if (res.data.success) {
           setReload(!reload);
@@ -312,7 +312,10 @@ const Home = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Waiting for acceptance" || record?.returnRequests != null}
+            disabled={
+              record?.state === "Waiting for acceptance" ||
+              record?.returnRequests != null
+            }
             onClick={(e) => {
               e.stopPropagation();
               openCreateReturningRequest(record?.id);
@@ -333,11 +336,17 @@ const Home = () => {
         if (res.data.success) {
           setTotal(res.data.totalCount);
           setData(
-            res.data.data.map((asset, index) => ({
-              key: index,
-              ...asset,
-              state: stateConvert(asset.status),
-            }))
+            res.data.data.map((asset, index) => {
+              if (asset.returnRequests !== null) {
+                asset.status = 0;
+              }
+
+              return {
+                key: index,
+                ...asset,
+                state: stateConvert(asset.status),
+              };
+            })
           );
         }
       })
@@ -463,15 +472,17 @@ const Home = () => {
                 setisShowModal={setUserResponse}
               />
               <ConfirmModal
-          title={"Are you sure?"}
-          text={"Do you want to create a returning request for this asset?"}
-          textconfirm={"Yes"}
-          textcancel={"No"}
-          onConfirm={() => createReturningRequest()}
-          onCancel={() => setCreateRequestModal(false)}
-          isShowModal={createRequestModal}
-          setisShowModal={setCreateRequestModal}
-        />
+                title={"Are you sure?"}
+                text={
+                  "Do you want to create a returning request for this asset?"
+                }
+                textconfirm={"Yes"}
+                textcancel={"No"}
+                onConfirm={() => createReturningRequest()}
+                onCancel={() => setCreateRequestModal(false)}
+                isShowModal={createRequestModal}
+                setisShowModal={setCreateRequestModal}
+              />
             </div>
           </Spin>
         </div>
