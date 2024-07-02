@@ -286,7 +286,10 @@ const Home = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Accepted"}
+            disabled={
+              record?.state === "Accepted" ||
+              record?.state === "Waiting for returning"
+            }
             onClick={(e) => {
               e.stopPropagation();
               setChangedState(1);
@@ -299,7 +302,10 @@ const Home = () => {
           <Button
             className="bg-tranparent border-none"
             size="middle"
-            disabled={record?.state === "Accepted"}
+            disabled={
+              record?.state === "Accepted" ||
+              record?.state === "Waiting for returning"
+            }
             onClick={(e) => {
               e.stopPropagation();
               setChangedState(3);
@@ -386,7 +392,8 @@ const Home = () => {
                 onRow={(record) => {
                   return {
                     onDoubleClick: () => {
-                      record.state === "Accepted" && handleClicked(record);
+                      record.state !== "Waiting for acceptance" &&
+                        handleClicked(record);
                     },
                   };
                 }}
