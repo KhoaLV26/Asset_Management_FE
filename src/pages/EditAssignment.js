@@ -100,10 +100,12 @@ const EditAssignment = () => {
           setIsLoading(false);
         } else {
           message.error(response.data.message);
+          setIsLoading(false);
         }
       })
       .catch((error) => {
         message.error(error.message);
+        setIsLoading(false);
       });
   }, [params.id]);
 

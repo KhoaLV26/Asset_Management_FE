@@ -65,7 +65,20 @@ const ManageAssignment = () => {
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const handleClicked = (data) => {
     setIsModalOpen(true);
-    setSelectedAssignment(data);
+    axiosInstance
+      .get(`assignments/${data.id}`)
+      .then(res => {
+        if (res.data.success) {
+          setSelectedAssignment(res.data.data);
+        }
+        else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+      });
+    
   };
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);

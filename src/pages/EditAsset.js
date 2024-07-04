@@ -74,6 +74,7 @@ const EditAsset = () => {
         message.error(
           "Get Asset information error occurred. Please try again."
         );
+        setIsLoading(false);
       });
   }, []);
 
