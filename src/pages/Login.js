@@ -17,6 +17,7 @@ const Login = () => {
     const trimmedValue = removeAllWhitespace(e.target.value);
     setUsername(trimmedValue);
     form.setFieldsValue({ username: trimmedValue });
+    form.validateFields(["username"]);
   };
 
   const validateName = (_, value) => {
@@ -26,6 +27,7 @@ const Login = () => {
     }
     return Promise.resolve();
   };
+
   const onFieldsChange = () => {
     const fieldsError = form
       .getFieldsError()
