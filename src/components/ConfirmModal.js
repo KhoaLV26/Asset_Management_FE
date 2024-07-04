@@ -4,8 +4,8 @@ import { Button, Modal } from "antd";
 export const ConfirmModal = ({
   title,
   text,
-  textconfirm,
-  textcancel,
+  textConfirm,
+  textCancel,
   onConfirm,
   onCancel,
   isShowModal,
@@ -30,13 +30,13 @@ export const ConfirmModal = ({
             className="bg-d6001c text-white w-[100px] text-[17px]"
             onClick={() => onConfirm()}
           >
-            {textconfirm}
+            {textConfirm}
           </Button>
           <Button
             className="bg-white text-d6001c w-[100px] text-[17px]"
             onClick={() => onCancel()}
           >
-            {textcancel}
+            {textCancel}
           </Button>
         </div>
       </div>

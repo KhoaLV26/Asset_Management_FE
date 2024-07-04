@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import LayoutPage from "../layout/LayoutPage";
 import {
     Button,
@@ -14,7 +14,6 @@ import "../styles/CreateUser.css";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import axiosInstance from "../axios/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
-import { AuthContext } from "../contexts/AuthContext";
 import dayjs from "dayjs";
 const { Option } = Select;
 
@@ -26,8 +25,6 @@ const EditUser = () => {
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    const { auth } = useContext(AuthContext);
-    const adminId = auth?.user?.id;
     const navigate = useNavigate();
     const onValuesChange = (changedValues, allValues) => {
         if (changedValues.dateOfBirth || changedValues.dateJoined) {
@@ -70,7 +67,7 @@ const EditUser = () => {
     }, []);
 
     const validateName = (_, value) => {
-        const trimmedValue = value.trim(); // Trim whitespace from the input
+        const trimmedValue = value.trim();
         if (/[^a-zA-Z\s]/.test(trimmedValue)) {
             return Promise.reject(
                 new Error("Name must not contain symbols or numbers.")
@@ -112,12 +109,12 @@ const EditUser = () => {
         const trimmedValue = removeExtraWhitespace(e.target.value);
         if (name === "firstName") {
             setFirstName(trimmedValue);
-            form.setFieldsValue({ firstName: trimmedValue }); // Update form field value
+            form.setFieldsValue({ firstName: trimmedValue });
         } else if (name === "lastName") {
             setLastName(trimmedValue);
-            form.setFieldsValue({ lastName: trimmedValue }); // Update form field value
+            form.setFieldsValue({ lastName: trimmedValue });
         }
-        form.validateFields([name]); // Trigger validation on blur
+        form.validateFields([name]);
     };
 
     const handleConfirm = () => {

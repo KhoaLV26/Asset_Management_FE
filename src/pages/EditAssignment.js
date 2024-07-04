@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import SelectModal from "../components/SelectModal";
 import LayoutPage from "../layout/LayoutPage";
@@ -7,7 +7,6 @@ import moment from "moment";
 import axiosInstance from "../axios/axiosInstance";
 import dayjs from "dayjs";
 import { Spin, message, Button, Form, Input, DatePicker } from "antd";
-import { AuthContext } from "../contexts/AuthContext";
 
 const { TextArea, Search } = Input;
 
@@ -30,9 +29,6 @@ const EditAssignment = () => {
   const [note, setNote] = useState("");
   const [data, setData] = useState([]);
 
-  const { auth } = useContext(AuthContext);
-
-  const adminId = auth?.user?.id;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,12 +44,8 @@ const EditAssignment = () => {
     setIsButtonDisabled(userName === "" || assetName === "");
   }, [userName, assetName]);
 
-  console.log(dayjs(today, "YYYY-MM-DD"))
   const onFinish = (values) => {
     setIsLoading(true);
-    // values.installDate = values.installDate.format("YYYY-MM-DD");
-    // var { assignedTo, assetId, ...rest } = values;
-
     axiosInstance
       .put(`/assignments/${params.id}`, {
         assignedTo: userId,
@@ -74,7 +66,7 @@ const EditAssignment = () => {
       .catch((error) => {
         if (error.response.status === 409) {
           message.error(error.response.data.message);
-        } else message.error("Create asset error occurred. Please try again.");
+        } else message.error("Create assignment error occurred. Please try again.");
       });
     setIsLoading(false);
   };
@@ -261,7 +253,6 @@ const EditAssignment = () => {
               setId={setUserId}
               chosenCode={staffCode}
               setCode={() => {}}
-              //setCode={setStaffCode}
               date={moment().format("YYYY-MM-DD")}
               setDate={(date) => {
                 setToday(date);

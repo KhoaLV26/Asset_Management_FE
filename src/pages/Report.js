@@ -61,7 +61,7 @@ const Report = () => {
         link.setAttribute("download", "AssetReport.xlsx");
         document.body.appendChild(link);
         link.click();
-        document.body.removeChild(link); // Clean up
+        document.body.removeChild(link);
       })
       .catch((err) => {
         message.error(

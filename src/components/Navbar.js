@@ -32,7 +32,7 @@ const Navbar = () => {
   };
   return (
     <Sider className="Sider ml-4 container h-screen text-lg bg-white w-2/5 flex">
-      <div className="ant-layout-sider-children bg-white w-full h-full">
+      <div className="ant-layout-sider-children bg-white w-full h-full min-w-[250px]">
         <div className="flex items-center bg-white">
           <img
             src={

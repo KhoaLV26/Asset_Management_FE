@@ -47,7 +47,7 @@ const CreateUser = () => {
   }, []);
 
   const validateName = (_, value) => {
-    const trimmedValue = value.trim(); // Trim whitespace from the input
+    const trimmedValue = value.trim();
     if (/[^a-zA-Z\s]/.test(trimmedValue)) {
       return Promise.reject(
         new Error("Name must not contain symbols or numbers.")
@@ -98,15 +98,13 @@ const CreateUser = () => {
     const trimmedValue = removeExtraWhitespace(e.target.value);
     if (name === "firstName") {
       setFirstName(trimmedValue);
-      form.setFieldsValue({ firstName: trimmedValue }); // Update form field value
+      form.setFieldsValue({ firstName: trimmedValue }); 
     } else if (name === "lastName") {
       setLastName(trimmedValue);
-      form.setFieldsValue({ lastName: trimmedValue }); // Update form field value
+      form.setFieldsValue({ lastName: trimmedValue });
     }
-    form.validateFields([name]); // Trigger validation on blur
+    form.validateFields([name]); 
   };
-
-  const handleCancel = () => {};
 
   const handleConfirm = () => {
     navigate("/manage-user");

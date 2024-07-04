@@ -135,7 +135,7 @@ const ManageRequestReturn = () => {
       ),
       dataIndex: "assetName",
       key: "name",
-      width: "15%",
+      width: "14%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -263,7 +263,7 @@ const ManageRequestReturn = () => {
       ),
       key: "returnStatus",
       dataIndex: "returnStatus",
-      width: "16%",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -275,7 +275,7 @@ const ManageRequestReturn = () => {
     {
       title: "",
       key: "action",
-      width: "10%",
+      width: "12%",
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -432,8 +432,8 @@ const ManageRequestReturn = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to mark this returning request as 'Completed'?"}
-          textconfirm={"Yes"}
-          textcancel={"No"}
+          textConfirm={"Yes"}
+          textCancel={"No"}
           onConfirm={() => handleCompleteRequest(currentId)}
           onCancel={() => {
             setShowConfirm(false);
