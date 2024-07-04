@@ -43,7 +43,6 @@ const ManageUser = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
   const [currentId, setCurrentId] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const location = useLocation();
   const [loading, setLoading] = useState(false);
@@ -80,7 +79,6 @@ const ManageUser = () => {
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
     setToEdit(false);
   };
 
@@ -327,6 +325,7 @@ const ManageUser = () => {
       render: (_, record) => (
         <Space size="middle">
           <Button
+            disabled={record.id === adminId}
             className="bg-tranparent border-none"
             onClick={(e) => {
               e.stopPropagation();
@@ -355,6 +354,7 @@ const ManageUser = () => {
 
   useEffect(() => {
     if (currentId) {
+      setLoading(true);
       axiosInstance
         .get(`/Assignments/User/${selectedUser?.id}`)
         .then((res) => {
@@ -373,6 +373,9 @@ const ManageUser = () => {
             currentId && setIsDelete(true);
             setCurrentId(null);
           } else message.error(err.response.data.message);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [currentId]);

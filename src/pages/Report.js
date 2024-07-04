@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import LayoutPage from "../layout/LayoutPage";
-import { Button, Space, Spin, Table, message } from "antd";
+import { Button, Spin, Table, message } from "antd";
 import CustomPagination from "../components/CustomPagination";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import axiosInstance from "../axios/axiosInstance";
+import "../styles/Home.css";
 
 const Report = () => {
   const [data, setData] = useState([]);
@@ -282,7 +283,7 @@ const Report = () => {
           <div className="justify-center items-center mt-0 h-[780px]">
             <Table
               pagination={false}
-              className="mt-10 h-[730px]"
+              className="viewtable mt-10 h-[730px]"
               columns={columns}
               dataSource={data}
               defaultPageSize={15}

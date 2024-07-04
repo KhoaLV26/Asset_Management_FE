@@ -90,7 +90,7 @@ const EditAssignment = () => {
 
           form.setFieldsValue({
             ...response.data.data,
-            user: response.data.data.FullName,
+            user: response.data.data.fullName,
             asset: response.data.data.assetName,
             assignedDate: response.data.data.assignedDate
               ? dayjs(response.data.data.assignedDate, "YYYY-MM-DD")
