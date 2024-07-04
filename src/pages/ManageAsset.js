@@ -345,7 +345,7 @@ const ManageAsset = () => {
         if (err.response?.status === 409) {
           setData([]);
           setTotal(0);
-        } else message.error(err.message);
+        } else message.error(err.response.data.message);
       })
       .finally(() => {
         setLoading(false);
@@ -363,7 +363,7 @@ const ManageAsset = () => {
         }
       })
       .catch((err) => {
-        message.error(err.message);
+        message.error(err.response.data.message);
       });
   }, []);
 
@@ -383,7 +383,7 @@ const ManageAsset = () => {
           }
         })
         .catch((err) => {
-          message.error(err.message);
+          message.error(err.response.data.message);
         })
         .finally(() => {
           setLoading(false);
@@ -392,6 +392,9 @@ const ManageAsset = () => {
   }, [isModalOpen, currentId]);
 
   useEffect(() => {
+    isDelete &&
+      selectedAsset === null &&
+      message.error("Asset no longer exist")
     isDelete &&
       selectedAsset?.assignmentResponses?.length > 0 &&
       setToEdit(true);

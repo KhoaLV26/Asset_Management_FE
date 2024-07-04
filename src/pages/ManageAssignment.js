@@ -135,7 +135,7 @@ const ManageAssignment = () => {
         }
       })
       .catch((err) => {
-        message.error(err.message);
+        message.error(err.response.data.message);
       });
   };
 
@@ -399,7 +399,8 @@ const ManageAssignment = () => {
         if (err.response?.status === 409) {
           setData([]);
           setTotal(0);
-        } else message.error(err.message);
+        } else message.error(err.response.data.message);
+        ;
       })
       .finally(() => {
         setLoading(false);
