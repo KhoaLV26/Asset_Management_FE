@@ -73,7 +73,11 @@ const ManageUser = () => {
       })
       .catch((err) => {
         if (err.response?.status === 409) {
-          setToEdit(true);
+          if (err.response.data.message === "User not found.") {
+            message.error(err.response.data.message);
+          } else {
+            setToEdit(true);
+          }
         } else message.error(err.response.data.message);
       });
   };

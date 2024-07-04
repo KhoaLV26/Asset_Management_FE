@@ -135,12 +135,8 @@ const ManageAssignment = () => {
           message.error("Create returning request for this asset failed");
         }
       })
-      .catch((error) => {
-        if (error.response.status === 409) {
-          message.error(error.response.data.message);
-        } else {
-          message.error(error.response.data.message);
-        }
+      .catch((err) => {
+        message.error(err.response.data.message);
       })
       .finally(() => {
         setLoading(false);
@@ -407,7 +403,8 @@ const ManageAssignment = () => {
         if (err.response?.status === 409) {
           setData([]);
           setTotal(0);
-        } else message.error(err.message);
+        } else message.error(err.response.data.message);
+        ;
       })
       .finally(() => {
         setLoading(false);
