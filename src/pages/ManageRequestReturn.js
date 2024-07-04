@@ -76,8 +76,8 @@ const ManageRequestReturn = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("Assignment completed");
-          setParams((prev) => ({...prev, pageNumber: 1 }));
-        } 
+          setParams((prev) => ({ ...prev, pageNumber: 1 }));
+        }
       })
       .catch((err) => {
         message.error(err.response.data.message);
@@ -152,7 +152,7 @@ const ManageRequestReturn = () => {
       ),
       dataIndex: "assetName",
       key: "name",
-      width: "15%",
+      width: "14%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -280,7 +280,7 @@ const ManageRequestReturn = () => {
       ),
       key: "returnStatus",
       dataIndex: "returnStatus",
-      width: "16%",
+      width: "15%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -292,7 +292,7 @@ const ManageRequestReturn = () => {
     {
       title: "",
       key: "action",
-      width: "10%",
+      width: "12%",
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -413,7 +413,7 @@ const ManageRequestReturn = () => {
                 allowClear
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onSearch={(value, event, input) => {
-                  if (input.source !== 'clear') {
+                  if (input.source !== "clear") {
                     setSearchQuery(searchQuery.trim());
                     handleSearch(removeExtraWhitespace(searchQuery));
                   }
@@ -452,8 +452,8 @@ const ManageRequestReturn = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to mark this returning request as 'Completed'?"}
-          textconfirm={"Yes"}
-          textcancel={"No"}
+          textConfirm={"Yes"}
+          textCancel={"No"}
           onConfirm={() => handleCompleteRequest(currentId)}
           onCancel={() => {
             setShowCompleteConfirm(false);

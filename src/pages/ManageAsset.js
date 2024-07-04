@@ -240,7 +240,7 @@ const ManageAsset = () => {
       ),
       key: "state",
       dataIndex: "state",
-      width: "20%",
+      width: "18%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -252,7 +252,7 @@ const ManageAsset = () => {
     {
       title: "",
       key: "action",
-      width: "10%",
+      width: "12%",
 
       render: (_, record) => (
         <Space size="middle">
@@ -610,8 +610,8 @@ const ManageAsset = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to delete this asset?"}
-          textconfirm={"Delete"}
-          textcancel={"Cancel"}
+          textConfirm={"Delete"}
+          textCancel={"Cancel"}
           onConfirm={() => handleDelete(selectedAsset.id)}
           onCancel={() => {
             setShowConfirm(false);

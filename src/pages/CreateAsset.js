@@ -5,7 +5,6 @@ import {
   Button,
   DatePicker,
   Input,
-  Popconfirm,
   Radio,
   Select,
   Spin,
@@ -33,7 +32,6 @@ const CreateAsset = () => {
   const [isCategoryModalVisible, setIsCategoryModalVisible] = useState(false);
   const [newCategoryName, setNewCategoryName] = useState("");
   const [newCategoryPrefix, setNewCategoryPrefix] = useState("");
-  const [isDropdownClicked, setIsDropdownClicked] = useState(false);
   const [isAddCategoryButtonDisabled, setIsAddCategoryButtonDisabled] =
     useState(true);
   const { auth } = useContext(AuthContext);
@@ -96,7 +94,7 @@ const CreateAsset = () => {
   }, []);
 
   const validateName = (_, value) => {
-    const trimmedValue = value.trim(); 
+    const trimmedValue = value.trim();
     const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
     if (htmlTagPattern.test(trimmedValue)) {
       return Promise.reject(new Error("Name must not contain HTML tags."));
@@ -205,8 +203,8 @@ const CreateAsset = () => {
     setIsCategoryModalVisible(true);
     setNewCategoryName("");
     setNewCategoryPrefix("");
-    setIsAddCategoryButtonDisabled(true); 
-    categoryForm.resetFields(); 
+    setIsAddCategoryButtonDisabled(true);
+    categoryForm.resetFields();
   };
 
   const handleAddCategory = () => {
@@ -238,7 +236,7 @@ const CreateAsset = () => {
       setIsCategoryModalVisible(false);
       setNewCategoryName("");
       setNewCategoryPrefix("");
-      categoryForm.resetFields(); 
+      categoryForm.resetFields();
     });
   };
 
@@ -275,7 +273,6 @@ const CreateAsset = () => {
                   message:
                     "The length of Asset Name should be 2-100 characters!",
                 },
-                // { validator: validateName },
               ]}
               validateTrigger="onBlur"
             >
@@ -295,9 +292,9 @@ const CreateAsset = () => {
               className="cate-form-item"
             >
               <Select
+                placeholder="Select category"
                 className="ms-[30px]"
                 style={{ width: `384px` }}
-                onClick={() => setIsDropdownClicked(true)}
                 dropdownRender={(menu) => (
                   <>
                     {menu}
@@ -331,7 +328,6 @@ const CreateAsset = () => {
                   message:
                     "The length of Specification should be 2-255 characters!",
                 },
-                // { validator: validateName },
               ]}
               validateTrigger="onBlur"
             >
@@ -401,7 +397,7 @@ const CreateAsset = () => {
         </div>
         <Modal
           title="Add New Category"
-          visible={isCategoryModalVisible}
+          open={isCategoryModalVisible}
           closable={false}
           footer={[
             <>

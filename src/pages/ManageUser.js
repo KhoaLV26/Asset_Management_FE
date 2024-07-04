@@ -311,7 +311,7 @@ const ManageUser = () => {
       ),
       key: "roleName",
       dataIndex: "roleName",
-      width: "15%",
+      width: "13%",
       ellipsis: true,
       onHeaderCell: () => ({
         onClick: () => {
@@ -323,7 +323,7 @@ const ManageUser = () => {
     {
       title: "",
       key: "action",
-      width: "10%",
+      width: "12%",
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -344,9 +344,6 @@ const ManageUser = () => {
               setIsModalVisible(false);
               setSelectedUser(record);
               setCurrentId(record.id);
-              // setShowConfirm((prevShowConfirm) => {
-              //   return true;
-              // });
             }}
           >
             <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
@@ -551,8 +548,8 @@ const ManageUser = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to disable this user?"}
-          textconfirm={"Disable"}
-          textcancel={"Cancel"}
+          textConfirm={"Disable"}
+          textCancel={"Cancel"}
           onConfirm={() => handleDelete(selectedUser.id)}
           onCancel={() => {
             setShowConfirm(false);

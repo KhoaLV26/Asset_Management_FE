@@ -5,7 +5,6 @@ import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import CustomPagination from "./CustomPagination";
 import axiosInstance from "../axios/axiosInstance";
 import dayjs from "dayjs";
-import moment from "moment";
 
 const { Search } = Input;
 export const SelectModal = ({
@@ -162,10 +161,36 @@ export const SelectModal = ({
       ),
       dataIndex: "fullName",
       key: "name",
-      width: "70%",
+      width: "55%",
       onHeaderCell: () => ({
         onClick: () => {
           sorterLog("default");
+        },
+      }),
+      render: (text) => <span>{text}</span>,
+    },
+    {
+      title: (
+        <span className="flex items-center justify-between">
+          Username{" "}
+          {params.sortBy === "Username" ? (
+            params.sortOrder === "asc" ? (
+              <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+            ) : (
+              <CaretUpOutlined className="w-[20px] text-lg h-[20px]" />
+            )
+          ) : (
+            <CaretDownOutlined className="w-[20px] text-lg h-[20px]" />
+          )}
+        </span>
+      ),
+      dataIndex: "username",
+      key: "username",
+      width: "15%",
+      ellipsis: true,
+      onHeaderCell: () => ({
+        onClick: () => {
+          sorterLog("Username");
         },
       }),
       render: (text) => <span>{text}</span>,
@@ -282,7 +307,7 @@ export const SelectModal = ({
       const name =
         type === "Select User" ? data[0].fullName : data[0].assetName;
       const id = data[0].id;
-      if (params.pageNumber === 1 && params.search === "") {
+      if (params.pageNumber === 1) {
         chosenCode && setSelectedRowKeys([firstKey]);
         chosenCode && setCurrentName(name);
         chosenCode && setCurrentId(id);
@@ -325,7 +350,7 @@ export const SelectModal = ({
             maxLength={100}
             onChange={(e) => setSearchQuery(e.target.value)}
             onSearch={(value, event, input) => {
-              if (input.source !== 'clear') {
+              if (input.source !== "clear") {
                 setSearchQuery(searchQuery.trim());
                 handleSearch(searchQuery);
               }
@@ -368,7 +393,7 @@ export const SelectModal = ({
                       )
                     );
                   } else {
-                    setCurrentDate(date)
+                    setCurrentDate(date);
                   }
                 }
                 if (type === "Select Asset") {
@@ -378,6 +403,15 @@ export const SelectModal = ({
                 }
               },
             }}
+            onRow={(record) => ({
+              onClick: () => {
+                const selectedKey =
+                  type === "Select User"
+                    ? record?.staffCode
+                    : record?.assetCode;
+                setSelectedRowKeys([selectedKey]);
+              },
+            })}
             scroll={{ y: 400 }}
             pagination={false}
           />

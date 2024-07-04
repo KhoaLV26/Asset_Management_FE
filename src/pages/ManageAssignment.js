@@ -587,8 +587,8 @@ const ManageAssignment = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to delete this assignment?"}
-          textconfirm={"Delete"}
-          textcancel={"Cancel"}
+          textConfirm={"Delete"}
+          textCancel={"Cancel"}
           onConfirm={() => deleteAssignment()}
           onCancel={() => setDeleteModalVisible(false)}
           isShowModal={isDeleteModalVisible}
@@ -597,8 +597,8 @@ const ManageAssignment = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to create a returning request for this asset?"}
-          textconfirm={"Yes"}
-          textcancel={"No"}
+          textConfirm={"Yes"}
+          textCancel={"No"}
           onConfirm={() => createReturningRequest()}
           onCancel={() => setCreateRequestModal(false)}
           isShowModal={createRequestModal}

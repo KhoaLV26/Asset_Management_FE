@@ -469,8 +469,8 @@ const Home = () => {
                     ? "Do you want to accept this assignment?"
                     : "Do you want to decline this assignment?"
                 }
-                textconfirm={changedState === 1 ? "Accept" : "Decline"}
-                textcancel={"Cancel"}
+                textConfirm={changedState === 1 ? "Accept" : "Decline"}
+                textCancel={"Cancel"}
                 onConfirm={() =>
                   handleAssignment(currentAssignment, changedState)
                 }
@@ -483,8 +483,8 @@ const Home = () => {
                 text={
                   "Do you want to create a returning request for this asset?"
                 }
-                textconfirm={"Yes"}
-                textcancel={"No"}
+                textConfirm={"Yes"}
+                textCancel={"No"}
                 onConfirm={() => createReturningRequest()}
                 onCancel={() => setCreateRequestModal(false)}
                 isShowModal={createRequestModal}

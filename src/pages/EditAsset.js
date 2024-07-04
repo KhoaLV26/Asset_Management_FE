@@ -1,40 +1,31 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import LayoutPage from "../layout/LayoutPage";
 import {
   Button,
   DatePicker,
   Input,
-  Popconfirm,
   Radio,
   Select,
   Spin,
   message,
   Form,
-  Modal,
 } from "antd";
-import { CheckOutlined, CloseOutlined } from "@ant-design/icons";
 import "../styles/CreateAsset.css";
 import axiosInstance from "../axios/axiosInstance";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
-import { AuthContext } from "../contexts/AuthContext";
 import dayjs from "dayjs";
 
 const { TextArea } = Input;
-const { Option } = Select;
 
 const EditAsset = () => {
-  const params = useParams()
+  const params = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [form] = Form.useForm();
-  const [categoryForm] = Form.useForm(); // Form for category modal
   const [assetName, setAssetName] = useState("");
   const [specification, setSpecification] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [data, setData] = useState([]);
-  const { auth } = useContext(AuthContext);
 
-  const adminId = auth?.user?.id;
   const navigate = useNavigate();
   const handleConfirm = () => {
     navigate("/manage-asset");
@@ -43,8 +34,7 @@ const EditAsset = () => {
   const onFinish = (values) => {
     setIsLoading(true);
     values.installDate = values.installDate.format("YYYY-MM-DD");
-    var {categoryName,assetCode,...rest} = values
-    console.log(rest);
+    var { categoryName, assetCode, ...rest } = values;
     axiosInstance
       .put(`/assets/${params.id}`, rest)
       .then((response) => {
@@ -69,25 +59,28 @@ const EditAsset = () => {
       .get(`/assets/${params.id}`)
       .then((response) => {
         if (response.data.success === true) {
-          setData(response.data.data)
-          form.setFieldsValue({ 
-            ...response.data.data, 
-            installDate: response.data.data.installDate ? dayjs(response.data.data.installDate, "YYYY-MM-DD") : null, })
+          form.setFieldsValue({
+            ...response.data.data,
+            installDate: response.data.data.installDate
+              ? dayjs(response.data.data.installDate, "YYYY-MM-DD")
+              : null,
+          });
           setIsLoading(false);
         } else {
           message.error(response.data.message);
         }
       })
       .catch((error) => {
-        message.error("Get categories error occurred. Please try again.");
+        message.error(
+          "Get Asset information error occurred. Please try again."
+        );
       });
   }, []);
-  
+
   const onFieldsChange = () => {
     const fieldsError = form
       .getFieldsError()
       .filter(({ errors }) => errors.length).length;
-    // const allFieldsTouched = form.isFieldsTouched(true);
 
     setIsButtonDisabled(fieldsError > 0);
   };
@@ -113,7 +106,7 @@ const EditAsset = () => {
             className="mt-10 create-asset"
             onFinish={onFinish}
             form={form}
-            onFieldsChange={onFieldsChange} 
+            onFieldsChange={onFieldsChange}
           >
             <Form.Item
               className="asset-name-form-item"
@@ -128,16 +121,14 @@ const EditAsset = () => {
                   message:
                     "The length of Asset Name should be 2-100 characters!",
                 },
-                // { validator: validateName },
               ]}
-
               validateTrigger="onBlur"
             >
               <Input
-                placeholder="Enter Asset name...."
-                value={assetName}
+                placeholder="Enter Asset Code...."
+                value={""}
                 className="ms-[18px] w-96"
-                onBlur={handleBlur("assetName")}
+                onBlur={handleBlur("AssetCode")}
                 disabled
               />
             </Form.Item>
@@ -153,9 +144,7 @@ const EditAsset = () => {
                   message:
                     "The length of Asset Name should be 2-100 characters!",
                 },
-                // { validator: validateName },
               ]}
-
               validateTrigger="onBlur"
             >
               <Input
@@ -176,8 +165,7 @@ const EditAsset = () => {
                 className="ms-[30px]"
                 style={{ width: `384px` }}
                 disabled
-              >
-              </Select>
+              ></Select>
             </Form.Item>
 
             <Form.Item
@@ -192,7 +180,6 @@ const EditAsset = () => {
                   message:
                     "The length of Specification should be 2-255 characters!",
                 },
-                // { validator: validateName },
               ]}
               validateTrigger="onBlur"
             >
@@ -239,9 +226,15 @@ const EditAsset = () => {
                 <Radio value={2} className="block">
                   Available
                 </Radio>
-                <Radio value={1} className="block">Not available</Radio>
-                <Radio value={4} className="block">Waiting for recycling</Radio>
-                <Radio value={5} className="block">Recycled</Radio>
+                <Radio value={1} className="block">
+                  Not available
+                </Radio>
+                <Radio value={4} className="block">
+                  Waiting for recycling
+                </Radio>
+                <Radio value={5} className="block">
+                  Recycled
+                </Radio>
               </Radio.Group>
             </Form.Item>
 

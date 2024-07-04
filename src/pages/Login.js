@@ -20,8 +20,7 @@ const Login = () => {
   };
 
   const validateName = (_, value) => {
-    const trimmedValue = value.trim(); // Trim whitespace from the input
-    //check if the username contains symbols
+    const trimmedValue = value.trim();
     if (!/^[a-zA-Z0-9]*$/.test(trimmedValue)) {
       return Promise.reject("Username must not contain symbols!");
     }
