@@ -350,7 +350,7 @@ export const SelectModal = ({
             maxLength={100}
             onChange={(e) => setSearchQuery(e.target.value)}
             onSearch={(value, event, input) => {
-              if (input.source !== 'clear') {
+              if (input.source !== "clear") {
                 setSearchQuery(searchQuery.trim());
                 handleSearch(searchQuery);
               }
@@ -393,7 +393,7 @@ export const SelectModal = ({
                       )
                     );
                   } else {
-                    setCurrentDate(date)
+                    setCurrentDate(date);
                   }
                 }
                 if (type === "Select Asset") {
@@ -405,7 +405,10 @@ export const SelectModal = ({
             }}
             onRow={(record) => ({
               onClick: () => {
-                const selectedKey = type === "Select User" ? record?.staffCode : record?.assetCode;
+                const selectedKey =
+                  type === "Select User"
+                    ? record?.staffCode
+                    : record?.assetCode;
                 setSelectedRowKeys([selectedKey]);
               },
             })}

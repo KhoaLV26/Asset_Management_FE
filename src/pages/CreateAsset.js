@@ -94,7 +94,7 @@ const CreateAsset = () => {
   }, []);
 
   const validateName = (_, value) => {
-    const trimmedValue = value.trim(); 
+    const trimmedValue = value.trim();
     const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
     if (htmlTagPattern.test(trimmedValue)) {
       return Promise.reject(new Error("Name must not contain HTML tags."));
@@ -203,8 +203,8 @@ const CreateAsset = () => {
     setIsCategoryModalVisible(true);
     setNewCategoryName("");
     setNewCategoryPrefix("");
-    setIsAddCategoryButtonDisabled(true); 
-    categoryForm.resetFields(); 
+    setIsAddCategoryButtonDisabled(true);
+    categoryForm.resetFields();
   };
 
   const handleAddCategory = () => {
@@ -236,7 +236,7 @@ const CreateAsset = () => {
       setIsCategoryModalVisible(false);
       setNewCategoryName("");
       setNewCategoryPrefix("");
-      categoryForm.resetFields(); 
+      categoryForm.resetFields();
     });
   };
 
@@ -292,7 +292,7 @@ const CreateAsset = () => {
               className="cate-form-item"
             >
               <Select
-              placeholder="Select category"
+                placeholder="Select category"
                 className="ms-[30px]"
                 style={{ width: `384px` }}
                 dropdownRender={(menu) => (

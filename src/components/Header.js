@@ -8,7 +8,6 @@ import {
   Form,
   Input,
   message,
-  Popconfirm,
 } from "antd";
 import {
   UserOutlined,
@@ -27,7 +26,10 @@ const Header = () => {
   const { isAuthen, auth, logout } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
-  const pathNames = location.pathname.split("/").filter((x) => x);
+  const pathNames =
+    location.pathname.split("/").filter((x) => x).length !== 0
+      ? location.pathname.split("/").filter((x) => x)
+      : ["Home"];
 
   const breadcrumbLinks = pathNames.map((name, index) => {
     const path = `/${pathNames.slice(0, index + 1).join("/")}`;
@@ -54,7 +56,6 @@ const Header = () => {
   const [isLogoutModalVisible, setLogoutModalVisible] = useState(false);
   const [isChangePasswordModalVisible, setChangePasswordModalVisible] =
     useState(false);
-  const [loading, setLoading] = useState(false);
   const [changePasswordSuccess, setChangePasswordSuccess] = useState(false);
 
   useEffect(() => {
@@ -64,9 +65,7 @@ const Header = () => {
   }, [isAuthen, auth]);
 
   const handleLogout = () => {
-    setLoading(true);
     logout();
-    setLoading(false);
     navigate("/login");
   };
 

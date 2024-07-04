@@ -75,8 +75,8 @@ const ManageRequestReturn = () => {
       .then((res) => {
         if (res.data.success) {
           message.success("Assignment completed");
-          setParams((prev) => ({...prev, pageNumber: 1 }));
-        } 
+          setParams((prev) => ({ ...prev, pageNumber: 1 }));
+        }
       })
       .catch((err) => {
         message.error(err.response.data.message);
@@ -285,7 +285,7 @@ const ManageRequestReturn = () => {
             onClick={(e) => {
               e.stopPropagation();
               setCurrentId(record?.id);
-              setShowConfirm(true)
+              setShowConfirm(true);
             }}
           >
             <CheckOutlined className="text-red-600 text-sm mb-1" />
@@ -393,7 +393,7 @@ const ManageRequestReturn = () => {
                 allowClear
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onSearch={(value, event, input) => {
-                  if (input.source !== 'clear') {
+                  if (input.source !== "clear") {
                     setSearchQuery(searchQuery.trim());
                     handleSearch(removeExtraWhitespace(searchQuery));
                   }

@@ -22,13 +22,11 @@ const CustomPagination = ({ params, setParams, total, setFetch }) => {
             color: isActive ? "white" : "#d6001c",
             border: "none",
           }}
-          onClick={() =>{
-            setParams((prev) => ({ ...prev, pageNumber: current }))
+          onClick={() => {
+            setParams((prev) => ({ ...prev, pageNumber: current }));
             try {
-              setFetch(true)
-            } catch {
-
-            }
+              setFetch(true);
+            } catch {}
           }}
         >
           {current}
@@ -47,12 +45,10 @@ const CustomPagination = ({ params, setParams, total, setFetch }) => {
       defaultPageSize={10}
       total={total}
       onChange={(page) => {
-        setParams((prev) => ({ ...prev, pageNumber: page }))
+        setParams((prev) => ({ ...prev, pageNumber: page }));
         try {
-          setFetch(true)
-        } catch {
-
-        }
+          setFetch(true);
+        } catch {}
       }}
       itemRender={itemRender}
     />

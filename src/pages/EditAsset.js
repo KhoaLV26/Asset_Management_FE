@@ -125,10 +125,10 @@ const EditAsset = () => {
               validateTrigger="onBlur"
             >
               <Input
-                placeholder="Enter Asset name...."
-                value={assetName}
+                placeholder="Enter Asset Code...."
+                value={""}
                 className="ms-[18px] w-96"
-                onBlur={handleBlur("assetName")}
+                onBlur={handleBlur("AssetCode")}
                 disabled
               />
             </Form.Item>

@@ -57,7 +57,7 @@ const EditAssignment = () => {
         if (response.data.success === true) {
           message.success("An assignment is updated!");
           navigate("/manage-assignment", {
-            state: { data: params},
+            state: { data: params },
           });
         } else {
           message.error(response.data.message);
@@ -66,7 +66,8 @@ const EditAssignment = () => {
       .catch((error) => {
         if (error.response.status === 409) {
           message.error(error.response.data.message);
-        } else message.error("Create assignment error occurred. Please try again.");
+        } else
+          message.error("Create assignment error occurred. Please try again.");
       });
     setIsLoading(false);
   };
@@ -200,8 +201,6 @@ const EditAssignment = () => {
                   },
                 }),
               ]}
-
-              
               validateTrigger={["onBlur", "onChange"]}
             >
               <DatePicker

@@ -58,7 +58,7 @@ const CreateUser = () => {
 
   const onValuesChange = (changedValues, allValues) => {
     if (changedValues.dateOfBirth || changedValues.dateJoined) {
-      form.validateFields(['dateJoined']);
+      form.validateFields(["dateJoined"]);
     }
   };
 
@@ -98,12 +98,12 @@ const CreateUser = () => {
     const trimmedValue = removeExtraWhitespace(e.target.value);
     if (name === "firstName") {
       setFirstName(trimmedValue);
-      form.setFieldsValue({ firstName: trimmedValue }); 
+      form.setFieldsValue({ firstName: trimmedValue });
     } else if (name === "lastName") {
       setLastName(trimmedValue);
       form.setFieldsValue({ lastName: trimmedValue });
     }
-    form.validateFields([name]); 
+    form.validateFields([name]);
   };
 
   const handleConfirm = () => {
