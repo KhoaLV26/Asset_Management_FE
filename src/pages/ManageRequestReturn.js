@@ -53,7 +53,8 @@ const ManageRequestReturn = () => {
   const [loading, setLoading] = useState(false);
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const [currentId, setCurrentId] = useState(null);
-  const [showConfirm, setShowConfirm] = useState(false);
+  const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
+  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [params, setParams] = useState({ pageNumber: 1 });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -70,7 +71,7 @@ const ManageRequestReturn = () => {
     }
   };
   const handleCompleteRequest = (currentId) => {
-    setShowConfirm(false);
+    setShowCompleteConfirm(false);
     axiosInstance
       .put(`/request-for-returning/CompleteRequest/${currentId}`)
       .then((res) => {
@@ -83,6 +84,22 @@ const ManageRequestReturn = () => {
         message.error(err.response.data.message);
       });
   };
+
+  const handleCancelRequest = (currentId) => {
+    setShowCancelConfirm(false);
+    axiosInstance
+      .delete(`/request-for-returning/CancelRequest/${currentId}`)
+      .then((res) => {
+        if (res.data.success) {
+          message.success("Cancel successfully");
+          setParams((prev) => ({...prev, pageNumber: 1}));
+        }
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+      });
+  };
+
   const columns = [
     {
       title: <span className="flex items-center justify-between">No</span>,
@@ -286,7 +303,7 @@ const ManageRequestReturn = () => {
             onClick={(e) => {
               e.stopPropagation();
               setCurrentId(record?.id);
-              setShowConfirm(true);
+              setShowCompleteConfirm(true)
             }}
           >
             <CheckOutlined className="text-red-600 text-sm mb-1" />
@@ -294,10 +311,13 @@ const ManageRequestReturn = () => {
 
           <Button
             className="bg-tranparent border-none"
+
             size="middle"
             disabled={record?.returnStatus === "Completed"}
             onClick={(e) => {
               e.stopPropagation();
+              setCurrentId(record?.id);
+              setShowCancelConfirm(true)
             }}
           >
             <CloseOutlined className="text-sm mb-1 " />
@@ -437,11 +457,24 @@ const ManageRequestReturn = () => {
           textCancel={"No"}
           onConfirm={() => handleCompleteRequest(currentId)}
           onCancel={() => {
-            setShowConfirm(false);
+            setShowCompleteConfirm(false);
             setCurrentId(null);
           }}
-          isShowModal={showConfirm}
-          setisShowModal={setShowConfirm}
+          isShowModal={showCompleteConfirm}
+          setisShowModal={setShowCompleteConfirm}
+        />
+        <ConfirmModal
+          title={"Are you sure?"}
+          text={"Do you want to cancel this returning request?"}
+          textconfirm={"Yes"}
+          textcancel={"No"}
+          onConfirm={() => handleCancelRequest(currentId)}
+          onCancel={() => {
+            setShowCancelConfirm(false);
+            setCurrentId(null);
+          }}
+          isShowModal={showCancelConfirm}
+          setisShowModal={setShowCancelConfirm}
         />
       </div>
     </LayoutPage>
