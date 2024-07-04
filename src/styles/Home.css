@@ -5,3 +5,11 @@
   background: transparent !important;
   cursor: not-allowed !important;
 }
+
+.viewtable
+  .ant-table-tbody
+  .ant-table-row
+  > .ant-table-cell-row-hover {
+  background: transparent !important;
+  cursor: default !important;
+}

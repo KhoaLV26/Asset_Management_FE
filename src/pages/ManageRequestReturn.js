@@ -25,6 +25,7 @@ import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
 import CustomPagination from "../components/CustomPagination";
 import ConfirmModal from "../components/ConfirmModal";
+import "../styles/Home.css";
 
 const { Search } = Input;
 const stateConvert = (id) => {
@@ -414,7 +415,7 @@ const ManageRequestReturn = () => {
                 ),
               }}
               pagination={false}
-              className="mt-10 h-[730px]"
+              className="viewtable mt-10 h-[730px]"
               columns={columns}
               dataSource={data}
               defaultPageSize={10}

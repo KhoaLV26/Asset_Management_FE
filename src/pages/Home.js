@@ -93,8 +93,17 @@ const Home = () => {
           message.error("Create returning request for this asset failed");
         }
       })
-      .catch((err) => {
-        message.error(err.message);
+      .catch((error) => {
+        if (error.response.status === 409) {
+          setUserResponse(false);
+          message.error(error.response.data.message);
+        } else {
+          setUserResponse(false);
+          message.error(error.response.data.message);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 

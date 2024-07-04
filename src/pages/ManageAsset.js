@@ -253,7 +253,6 @@ const ManageAsset = () => {
       title: "",
       key: "action",
       width: "12%",
-
       render: (_, record) => (
         <Space size="middle">
           <Button
@@ -370,6 +369,7 @@ const ManageAsset = () => {
 
   useEffect(() => {
     if (isModalOpen || currentId) {
+      setLoading(true);
       axiosInstance
         .get(`/Assets/${selectedAsset?.id}`)
         .then((res) => {
@@ -384,6 +384,9 @@ const ManageAsset = () => {
         })
         .catch((err) => {
           message.error(err.message);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   }, [isModalOpen, currentId]);
