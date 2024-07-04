@@ -120,6 +120,7 @@ const ManageAssignment = () => {
   };
 
   const createReturningRequest = () => {
+    setLoading(true);
     axiosInstance
       .post(`/request-for-returning/${idSelected}`)
       .then((res) => {
@@ -134,8 +135,15 @@ const ManageAssignment = () => {
           message.error("Create returning request for this asset failed");
         }
       })
-      .catch((err) => {
-        message.error(err.message);
+      .catch((error) => {
+        if (error.response.status === 409) {
+          message.error(error.response.data.message);
+        } else {
+          message.error(error.response.data.message);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
