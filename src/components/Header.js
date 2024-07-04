@@ -254,6 +254,7 @@ const ChangePasswordForm = ({
     const username = auth?.user?.username;
     values.username = username;
     values.password = values.newPassword;
+    values.refreshToken = auth.refreshToken;
     setLoading(true);
     try {
       if (!auth?.user?.isFirstLogin) {
