@@ -30,18 +30,13 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     setIsAuthen(false);
-    try {
-      await axiosInstance.get("/auths/logout");
-      removeTokens();
-      setAuth({
-        token: null,
-        refreshToken: null,
-        user: null,
-      });
-      localStorage.setItem("logout-event", Date.now()); // Trigger logout event for other tabs
-    } catch (err) {
-      console.log(err);
-    }
+    removeTokens();
+    setAuth({
+      token: null,
+      refreshToken: null,
+      user: null,
+    });
+    localStorage.setItem("logout-event", Date.now());
   };
 
   useEffect(() => {
