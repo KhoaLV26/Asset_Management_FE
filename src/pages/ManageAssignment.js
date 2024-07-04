@@ -120,6 +120,7 @@ const ManageAssignment = () => {
   };
 
   const createReturningRequest = () => {
+    setLoading(true);
     axiosInstance
       .post(`/request-for-returning/${idSelected}`)
       .then((res) => {
@@ -136,6 +137,9 @@ const ManageAssignment = () => {
       })
       .catch((err) => {
         message.error(err.response.data.message);
+      })
+      .finally(() => {
+        setLoading(false);
       });
   };
 
