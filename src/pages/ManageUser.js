@@ -153,7 +153,6 @@ const ManageUser = () => {
             })),
           ];
           setRoles(newOptions);
-          setTotal(res.data.totalCount);
         } else {
           message.error(res.data.message);
         }

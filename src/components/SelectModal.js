@@ -315,6 +315,8 @@ export const SelectModal = ({
     }
   }, [data]);
 
+  console.log(currentId);
+
   const handleSearch = (value) => {
     setFetched(true);
     setParams((prev) => ({ ...prev, pageNumber: 1 }));
@@ -377,6 +379,7 @@ export const SelectModal = ({
               type: "radio",
               selectedRowKeys,
               onChange: (selectedRowKeys, selectedRow) => {
+                console.log(selectedRow);
                 setSelectedRowKeys(selectedRowKeys);
                 if (type === "Select User") {
                   setCurrentName(selectedRow[0].fullName);
@@ -403,15 +406,6 @@ export const SelectModal = ({
                 }
               },
             }}
-            onRow={(record) => ({
-              onClick: () => {
-                const selectedKey =
-                  type === "Select User"
-                    ? record?.staffCode
-                    : record?.assetCode;
-                setSelectedRowKeys([selectedKey]);
-              },
-            })}
             scroll={{ y: 400 }}
             pagination={false}
           />
@@ -449,6 +443,7 @@ export const SelectModal = ({
               setCurrentName(null);
               setCurrentId(null);
               setisShowModal(false);
+              setData(null);
             }}
           >
             Cancel
