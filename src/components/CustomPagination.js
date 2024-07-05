@@ -103,10 +103,11 @@ const CustomPagination = ({ params, setParams, total, setFetch }) => {
       />
       <div className="flex items-center justify-center pb-[20px]">
         <Select
-          className="custom-select"
+          className="custom-size-changer text-d6001c"
           style={{
             border: "1px solid #d6001c",
             borderRadius: "8px",
+            color: "#d6001c"
           }}
           value={`${recordsPerPage} / page`}
           onChange={handleSelectChange}

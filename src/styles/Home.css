@@ -14,7 +14,8 @@
   cursor: default !important;
 }
 
-.custom-select .ant-select-selector {
+.custom-select .ant-select-selector, 
+.custom-size-changer .ant-select-selector{
   border-color: #d6001c;
 }
 
@@ -27,19 +28,28 @@
 .custom-select .ant-select-focused .ant-select-selector,
 .custom-select .ant-select-selector:focus,
 .custom-select .ant-select-selector:focus-within,
-.custom-select:hover .ant-select-selector {
+.custom-size-changer:hover .ant-select-selector,
+.custom-size-changer .ant-select-selector:hover,
+.custom-size-changer .ant-select-focused .ant-select-selector,
+.custom-size-changer .ant-select-selector:focus,
+.custom-size-changer .ant-select-selector:focus-within,
+.custom-size-changer:hover .ant-select-selector {
   border-color: #d6001c !important;
 }
 
 .custom-select .ant-select-selector:active,
-.custom-select .ant-select-selector:focus-visible {
+.custom-select .ant-select-selector:focus-visible,
+.custom-size-changer .ant-select-selector:active,
+.custom-size-changer .ant-select-selector:focus-visible {
   box-shadow: 0 0 0 2px rgba(214, 0, 28, 0.2) !important; 
 }
 
 .custom-search .anticon,
 .custom-search .anticon:hover,
 .custom-select .ant-select-suffix,
-.custom-select .ant-select-suffix:hover {
+.custom-select .ant-select-suffix:hover,
+.custom-size-changer .ant-select-suffix,
+.custom-size-changer .ant-select-suffix:hover {
   color: #d6001c; 
 }
 
@@ -74,4 +84,9 @@
 .ant-btn:hover,
 .ant-btn:focus {
   background-color: #d6001c !important;
+  color: white !important;
+}
+
+.custom-size-changer .ant-select-selector {
+  color: #d6001c; /* Ensure selected item text color */
 }
