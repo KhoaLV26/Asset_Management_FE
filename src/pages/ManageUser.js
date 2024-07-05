@@ -402,7 +402,7 @@ const ManageUser = () => {
               suffixIcon={
                 <FilterOutlined onClick={() => setOpen((prev) => !prev)} />
               }
-              className="w-[100px]"
+              className="custom-select w-[100px]"
               onChange={(value) => {
                 setRoleHolder(value);
                 setParams((prev) => ({ ...prev, role: value }));
@@ -414,7 +414,7 @@ const ManageUser = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-                className="w-[100%]"
+                className="custom-search w-[100%]"
                 value={searchQuery}
                 allowClear
                 placeholder="Enter text"
@@ -443,7 +443,7 @@ const ManageUser = () => {
           </div>
         </div>
         <Spin spinning={loading}>
-          <div className="justify-center items-center mt-0 h-[780px]">
+          <div className="justify-center items-center mt-0 h-[780px] w-full">
             <Table
               locale={{
                 emptyText: (
@@ -454,6 +454,7 @@ const ManageUser = () => {
                 ),
               }}
               pagination={false}
+              scroll={{ y: 650 }}
               className="mt-10 h-[730px]"
               columns={columns}
               dataSource={data}

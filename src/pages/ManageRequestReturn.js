@@ -49,13 +49,12 @@ const ManageRequestReturn = () => {
     setParams((prev) => ({ ...prev, pageNumber: 1, SearchTerm: value }));
   };
   const [searchQuery, setSearchQuery] = useState("");
-  const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const [currentId, setCurrentId] = useState(null);
   const [showCompleteConfirm, setShowCompleteConfirm] = useState(false);
   const [showCancelConfirm, setShowCancelConfirm] = useState(false);
-  const [params, setParams] = useState({ pageNumber: 1 });
+  const [params, setParams] = useState({ pageNumber: 1, pageSize: 10 });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
       if (direction === true) {
@@ -107,7 +106,7 @@ const ManageRequestReturn = () => {
       width: "5%",
       key: "index",
       render: (text, record, index) => (
-        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+        <span>{index + 1 + (params?.pageNumber - 1) * params.pageSize}</span>
       ),
     },
     {
@@ -369,7 +368,7 @@ const ManageRequestReturn = () => {
                   onClick={() => setOpenStateDropdown((prev) => !prev)}
                 />
               }
-              className="w-[200px]"
+              className="custom-select w-[200px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, status: value, pageNumber: 1 }))
               }
@@ -406,7 +405,7 @@ const ManageRequestReturn = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-                className="w-[100%]"
+                className="custom-search w-[100%]"
                 maxLength={100}
                 placeholder="Enter text"
                 value={searchQuery}
@@ -423,7 +422,7 @@ const ManageRequestReturn = () => {
           </div>
         </div>
         <Spin spinning={loading}>
-          <div className="justify-center items-center mt-0 h-[780px]">
+          <div className="justify-center items-center mt-0 h-[780px] w-full">
             <Table
               locale={{
                 emptyText: (
@@ -434,6 +433,7 @@ const ManageRequestReturn = () => {
                 ),
               }}
               pagination={false}
+              scroll={{ y: 650 }}
               className="viewtable mt-10 h-[730px]"
               columns={columns}
               dataSource={data}
