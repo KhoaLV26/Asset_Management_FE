@@ -311,7 +311,6 @@ const ManageRequestReturn = () => {
 
           <Button
             className="bg-tranparent border-none"
-
             size="middle"
             disabled={record?.returnStatus === "Completed"}
             onClick={(e) => {
@@ -466,8 +465,8 @@ const ManageRequestReturn = () => {
         <ConfirmModal
           title={"Are you sure?"}
           text={"Do you want to cancel this returning request?"}
-          textconfirm={"Yes"}
-          textcancel={"No"}
+          textConfirm={"Yes"}
+          textCancel={"No"}
           onConfirm={() => handleCancelRequest(currentId)}
           onCancel={() => {
             setShowCancelConfirm(false);
