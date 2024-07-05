@@ -419,7 +419,7 @@ const ManageAsset = () => {
                   onClick={() => setOpenStateDropdown((prev) => !prev)}
                 />
               }
-              className="w-[250px]"
+              className="custom-select w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
               }
@@ -462,7 +462,7 @@ const ManageAsset = () => {
                   onClick={() => setOpenCategoryDropdown((prev) => !prev)}
                 />
               }
-              className="w-[250px]"
+              className="custom-select w-[250px]"
               onChange={(value) =>
                 setParams((prev) => ({
                   ...prev,
@@ -484,7 +484,7 @@ const ManageAsset = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-                className="w-[100%]"
+                className="custom-search w-[100%]"
                 maxLength={100}
                 placeholder="Enter text"
                 value={searchQuery}
@@ -511,7 +511,7 @@ const ManageAsset = () => {
           </div>
         </div>
         <Spin spinning={loading}>
-          <div className="justify-center items-center mt-0 h-[780px]">
+          <div className="justify-center items-center mt-0 h-[780px] w-full">
             <Table
               locale={{
                 emptyText: (
@@ -521,8 +521,10 @@ const ManageAsset = () => {
                   />
                 ),
               }}
+              scroll={{ y: 650 }}
               pagination={false}
-              className="mt-10 h-[730px]"
+              className="mt-10 h-[730px] max-w-full "
+              //style={{maxWidth: "90%"}}
               columns={columns}
               dataSource={data}
               defaultPageSize={15}

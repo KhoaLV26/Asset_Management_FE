@@ -85,9 +85,8 @@ const ManageAssignment = () => {
   const [idSelected, setIdSelected] = useState(null);
   const [isDeleteSuccess, setIsDeleteSuccess] = useState(false);
   const [createRequestModal, setCreateRequestModal] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [params, setParams] = useState({ pageNumber: 1 });
+  const [params, setParams] = useState({ pageNumber: 1, pageSize: 10 });
 
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -163,7 +162,7 @@ const ManageAssignment = () => {
       width: "5%",
       key: "index",
       render: (text, record, index) => (
-        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+        <span>{index + 1 + (params?.pageNumber - 1) * params.pageSize}</span>
       ),
     },
     {
@@ -439,7 +438,7 @@ const ManageAssignment = () => {
                   onClick={() => setOpenStateDropdown((prev) => !prev)}
                 />
               }
-              className="w-[200px]"
+              className="custom-select w-[200px]"
               onChange={(value) =>
                 setParams((prev) => ({ ...prev, state: value, pageNumber: 1 }))
               }
@@ -465,7 +464,7 @@ const ManageAssignment = () => {
             />
             <DatePicker
               inputReadOnly
-              className="w-[100%]"
+              className="custom-select w-[100%]"
               format="YYYY-MM-DD"
               placeholder="Assigned Date"
               onChange={(value) =>
@@ -480,7 +479,7 @@ const ManageAssignment = () => {
           <div className="flex gap-10">
             <Space.Compact>
               <Search
-                className="w-[100%]"
+                className="custom-search w-[100%]"
                 maxLength={100}
                 placeholder="Enter text"
                 value={searchQuery}
@@ -507,7 +506,7 @@ const ManageAssignment = () => {
           </div>
         </div>
         <Spin spinning={loading}>
-          <div className="justify-center items-center mt-0 h-[780px]">
+          <div className="justify-center items-center mt-0 h-[780px] w-full">
             <Table
               locale={{
                 emptyText: (
@@ -518,6 +517,7 @@ const ManageAssignment = () => {
                 ),
               }}
               pagination={false}
+              scroll={{ y: 650 }}
               className="mt-10 h-[730px]"
               columns={columns}
               dataSource={data}

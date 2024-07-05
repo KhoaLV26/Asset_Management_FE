@@ -10,6 +10,7 @@ const Report = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({
+    pageSize: 10,
     pageNumber: 1,
     sortBy: "",
     sortOrder: "asc",
@@ -78,7 +79,7 @@ const Report = () => {
       width: "6%",
       key: "index",
       render: (text, record, index) => (
-        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+        <span>{index + 1 + (params?.pageNumber - 1) * params.pageSize}</span>
       ),
     },
     {
@@ -280,10 +281,11 @@ const Report = () => {
           </Button>
         </div>
         <Spin spinning={loading}>
-          <div className="justify-center items-center mt-0 h-[780px]">
+          <div className="justify-center items-center mt-0 w-full">
             <Table
               pagination={false}
-              className="viewtable mt-10 h-[730px]"
+              scroll={{ y: 550 }}
+              className="viewtable mt-10 h-[630px]"
               columns={columns}
               dataSource={data}
               defaultPageSize={15}

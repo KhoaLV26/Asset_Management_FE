@@ -51,6 +51,7 @@ const Home = () => {
   const [changedState, setChangedState] = useState(1);
   const [reload, setReload] = useState(false);
   const [params, setParams] = useState({
+    pageSize: 10,
     pageNumber: 1,
     sortBy: "AssignedDate",
     sortOrder: "desc",
@@ -153,7 +154,7 @@ const Home = () => {
       width: "6%",
       key: "index",
       render: (text, record, index) => (
-        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+        <span>{index + 1 + (params?.pageNumber - 1) * params.pageSize}</span>
       ),
     },
     {
@@ -383,7 +384,7 @@ const Home = () => {
         <div className="w-full mt-10">
           <h1 className="font-bold text-d6001c text-2xl">My Assignment</h1>
           <Spin spinning={loading}>
-            <div className="justify-center items-center mt-[70px] h-[780px]">
+            <div className="justify-center items-center mt-[70px] h-[780px] w-full">
               <Table
                 locale={{
                   emptyText: (
@@ -394,6 +395,7 @@ const Home = () => {
                   ),
                 }}
                 pagination={false}
+                scroll={{ y: 650 }}
                 className="usertable mt-10 h-[730px]"
                 columns={columns}
                 dataSource={data}

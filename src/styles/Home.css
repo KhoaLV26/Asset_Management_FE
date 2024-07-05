@@ -13,3 +13,65 @@
   background: transparent !important;
   cursor: default !important;
 }
+
+.custom-select .ant-select-selector {
+  border-color: #d6001c;
+}
+
+.custom-search .ant-input-clear-icon:hover,
+.custom-search .ant-input-search-button:hover,
+.custom-search .ant-input-affix-wrapper-focused .ant-input-clear-icon,
+.custom-search .ant-input-affix-wrapper-focused,
+.custom-search .ant-input-affix-wrapper:hover,
+.custom-select .ant-select-selector:hover,
+.custom-select .ant-select-focused .ant-select-selector,
+.custom-select .ant-select-selector:focus,
+.custom-select .ant-select-selector:focus-within,
+.custom-select:hover .ant-select-selector {
+  border-color: #d6001c !important;
+}
+
+.custom-select .ant-select-selector:active,
+.custom-select .ant-select-selector:focus-visible {
+  box-shadow: 0 0 0 2px rgba(214, 0, 28, 0.2) !important; 
+}
+
+.custom-search .anticon,
+.custom-search .anticon:hover,
+.custom-select .ant-select-suffix,
+.custom-select .ant-select-suffix:hover {
+  color: #d6001c; 
+}
+
+.ant-picker:hover, 
+.ant-picker-focused,
+.ant-input:hover,
+.ant-input-focused,
+.ant-radio-wrapper:hover .ant-radio,
+.ant-radio-wrapper:focus-within .ant-radio,
+.ant-select-selector:hover,
+.ant-select-selector:focus,
+.ant-input-textarea:hover,
+.ant-input-textarea:focus,
+.ant-input-textarea-focused,
+.ant-input-affix-wrapper:hover,
+.ant-input-affix-wrapper-focused,
+.ant-input-textarea-affix-wrapper-focused  {
+  border-color: #d6001c !important;
+  box-shadow: 0 0 0 2px rgba(214, 0, 28, 0.2) !important;
+}
+
+.custom-search:hover .ant-input {
+  border-color: transparent !important;
+  box-shadow: none !important; 
+}
+
+.custom-search:hover .ant-input-affix-wrapper,
+.custom-search .ant-input-affix-wrapper-focused {
+  border-color: #d6001c !important; 
+}
+
+.ant-btn:hover,
+.ant-btn:focus {
+  background-color: #d6001c !important;
+}
