@@ -11,6 +11,7 @@ const navBar = [
   { key: "4", label: "Manage Assignment", link: "/manage-assignment" },
   { key: "5", label: "Request for Returning", link: "/request-for-returning" },
   { key: "6", label: "Report", link: "/report" },
+  { key: "7", label: "Manage Location", link: "/manage-location" },
 ];
 
 const navBarUser = [{ key: "1", label: "Home", link: "/home" }];

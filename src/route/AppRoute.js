@@ -2,12 +2,15 @@ import NotFound from "../components/NotFound";
 import RequireAdmin from "../components/RequireAdmin";
 import UnAuthor from "../components/UnAuthor";
 import CreateAsset from "../pages/CreateAsset";
+import CreateLocation from "../pages/CreateLocation";
 import EditAsset from "../pages/EditAsset";
 import EditAssignment from "../pages/EditAssignment";
+import EditLocation from "../pages/EditLocation";
 import EditUser from "../pages/EditUser";
 import Home from "../pages/Home";
 import Login from "../pages/Login";
 import ManageAssignment from "../pages/ManageAssignment";
+import ManageLocation from "../pages/ManageLocation";
 import ManageRequestReturn from "../pages/ManageRequestReturn";
 import Report from "../pages/Report";
 
@@ -123,7 +126,31 @@ const AppRoutes = () => {
         </RequireAdmin>
       ),
     },
+    {
+      path: "/manage-location",
+      element: (
+        <RequireAdmin>
+          <ManageLocation />
+        </RequireAdmin>
+      ),
+    },
+    {
+      path: "/manage-location/create-location",
+      element: (
+        <RequireAdmin>
+          <CreateLocation />
+        </RequireAdmin>
+      ),
+    },
     { path: "*", element: <NotFound /> },
+    {
+      path: "/manage-location/edit-location/:id",
+      element: (
+        <RequireAdmin>
+          <EditLocation />
+        </RequireAdmin>
+      ),
+    },
   ]);
   return elements;
 };
