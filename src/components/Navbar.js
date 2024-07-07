@@ -6,12 +6,12 @@ import "../styles/LayoutPage.css";
 
 const navBar = [
   { key: "1", label: "Home", link: "/home" },
-  { key: "2", label: "Manage User", link: "/manage-user" },
-  { key: "3", label: "Manage Asset", link: "/manage-asset" },
-  { key: "4", label: "Manage Assignment", link: "/manage-assignment" },
-  { key: "5", label: "Request for Returning", link: "/request-for-returning" },
-  { key: "6", label: "Report", link: "/report" },
-  { key: "7", label: "Manage Location", link: "/manage-location" },
+  { key: "2", label: "Manage Location", link: "/manage-location" },
+  { key: "3", label: "Manage User", link: "/manage-user" },
+  { key: "4", label: "Manage Asset", link: "/manage-asset" },
+  { key: "5", label: "Manage Assignment", link: "/manage-assignment" },
+  { key: "6", label: "Request for Returning", link: "/request-for-returning" },
+  { key: "7", label: "Report", link: "/report" },
 ];
 
 const navBarUser = [{ key: "1", label: "Home", link: "/home" }];
