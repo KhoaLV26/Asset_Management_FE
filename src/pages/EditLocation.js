@@ -98,7 +98,7 @@ const EditLocation = () => {
   };
 
   const handleConfirm = () => {
-    navigate("/manage-user");
+    navigate("/manage-location");
   };
 
   return (
