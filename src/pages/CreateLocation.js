@@ -112,6 +112,7 @@ const CreateLocation = () => {
               <Input
                 placeholder="Enter location name...."
                 onBlur={handleBlur("name")}
+                className="ms-2 w-96"
               />
             </Form.Item>
 
@@ -133,6 +134,7 @@ const CreateLocation = () => {
               <Input
                 placeholder="Enter location code...."
                 onBlur={handleBlur("code")}
+                className="ms-3 w-96"
               />
             </Form.Item>
 
