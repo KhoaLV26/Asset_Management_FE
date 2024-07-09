@@ -58,6 +58,24 @@ export const ManageUser = () => {
 
   const adminId = auth?.user?.id;
 
+  const handleClicked = (data) => {
+    setIsModalVisible(true);
+    axiosInstance
+      .get(`users/${data.id}`)
+      .then(res => {
+        if (res.data.success) {
+          setModalData(res.data.data);
+        }
+        else {
+          message.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        message.error(err.response.data.message);
+      });
+    
+  };
+
   const handleDelete = (currentId) => {
     setShowConfirm(false);
     axiosInstance
@@ -460,8 +478,7 @@ export const ManageUser = () => {
               onRow={(record) => {
                 return {
                   onDoubleClick: () => {
-                    setModalData(record);
-                    setIsModalVisible(true);
+                    handleClicked(record)
                   },
                 };
               }}
@@ -496,7 +513,7 @@ export const ManageUser = () => {
             <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">Full Name:</span>
               <span className="w-full max-w-[290px]">
-                {modalData?.fullName}
+                {modalData?.firstName} {modalData?.lastName}
               </span>
             </div>
             <div className="flex mb-[10px]">
