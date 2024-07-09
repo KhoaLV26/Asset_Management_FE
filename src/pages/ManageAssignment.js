@@ -44,8 +44,11 @@ const stateConvert = (id) => {
     case 2:
       stateName = "Waiting for acceptance";
       break;
-    default:
+    case 3:
       stateName = "Declined";
+      break;
+    case 4:
+      stateName = "Returned";
       break;
   }
   return stateName;
@@ -81,7 +84,7 @@ export const ManageAssignment = () => {
       });
     
   };
-  
+
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [idSelected, setIdSelected] = useState(null);
