@@ -4,7 +4,6 @@ import {
   Input,
   Space,
   Table,
-  Modal,
   Select,
   message,
   Empty,
@@ -12,7 +11,7 @@ import {
   Spin,
 } from "antd";
 import LayoutPage from "../layout/LayoutPage";
-import { removeExtraWhitespace } from "../HandleString";
+import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   FilterOutlined,
   CheckOutlined,
@@ -20,14 +19,13 @@ import {
   CaretUpOutlined,
   CaretDownOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
-import CustomPagination from "../components/CustomPagination";
-import ConfirmModal from "../components/ConfirmModal";
 import "../styles/Home.css";
+import { ConfirmModal, CustomPagination } from "../components";
 
 const { Search } = Input;
+
 const stateConvert = (id) => {
   let stateName = "";
   switch (id) {
@@ -41,7 +39,7 @@ const stateConvert = (id) => {
   return stateName;
 };
 
-const ManageRequestReturn = () => {
+export const ManageRequestReturn = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
@@ -305,7 +303,7 @@ const ManageRequestReturn = () => {
               setShowCompleteConfirm(true)
             }}
           >
-            <CheckOutlined className="text-red-600 text-sm mb-1" />
+            <CheckOutlined className="text-red-600 text-sm mb-1 check-icon" />
           </Button>
 
           <Button

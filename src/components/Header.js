@@ -22,7 +22,7 @@ import "../styles/Header.css";
 import axiosInstance from "../axios/axiosInstance";
 import Cookies from "js-cookie";
 
-const Header = () => {
+export const Header = () => {
   const { isAuthen, auth, logout } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
@@ -90,7 +90,17 @@ const Header = () => {
 
   return (
     <>
-      <Layout.Header className="bg-d6001c px-10 flex items-center justify-between w-full">
+      <Layout.Header
+        style={{
+          position: "fixed",
+          top: 0,
+          zIndex: 1,
+          width: "100%",
+          display: "flex",
+          alignItems: "center",
+        }}
+        className="bg-d6001c px-10 flex items-center justify-between w-full"
+      >
         <div className="flex items-center text-white font-extrabold">
           <span className="text-lg">{breadcrumbLinks}</span>
         </div>

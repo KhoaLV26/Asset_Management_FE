@@ -7,7 +7,7 @@ import axiosInstance from "../axios/axiosInstance";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 
-const CreateLocation = () => {
+export const CreateLocation = () => {
   const [form] = Form.useForm();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
@@ -159,7 +159,7 @@ const CreateLocation = () => {
       </Spin>
       <Modal
         title="Admin Information"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleModalClose}
         onCancel={handleModalClose}
         footer={[

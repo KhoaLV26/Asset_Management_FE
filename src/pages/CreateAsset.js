@@ -21,7 +21,7 @@ import { AuthContext } from "../contexts/AuthContext";
 const { TextArea } = Input;
 const { Option } = Select;
 
-const CreateAsset = () => {
+export const CreateAsset = () => {
   const [categoryData, setCategoryData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [form] = Form.useForm();
@@ -92,23 +92,6 @@ const CreateAsset = () => {
         message.error("Get categories error occurred. Please try again.");
       });
   }, []);
-
-  const validateName = (_, value) => {
-    const trimmedValue = value.trim();
-    const htmlTagPattern = /<\/?[a-z][\s\S]*>/i;
-    if (htmlTagPattern.test(trimmedValue)) {
-      return Promise.reject(new Error("Name must not contain HTML tags."));
-    }
-
-    const sqlInjectionPattern =
-      /(\b(SELECT|INSERT|UPDATE|DELETE|DROP|UNION|AND|OR|--|\||\*|;|--|\/\*|\*\/|@@|@|\bTABLE\b|\bDATABASE\b)\b)/i;
-    if (sqlInjectionPattern.test(trimmedValue)) {
-      return Promise.reject(
-        new Error("Name must not contain SQL keywords or symbols.")
-      );
-    }
-    return Promise.resolve();
-  };
 
   const validateCategoryName = (_, value) => {
     if (!value) {

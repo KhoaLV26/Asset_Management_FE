@@ -15,9 +15,10 @@ import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import axiosInstance from "../axios/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
 import dayjs from "dayjs";
+
 const { Option } = Select;
 
-const EditUser = () => {
+export const EditUser = () => {
   const params = useParams();
   const [roleData, setRoleData] = useState([]);
   const [form] = Form.useForm();
@@ -73,16 +74,6 @@ const EditUser = () => {
         message.error("Error loading user");
       });
   }, []);
-
-  const validateName = (_, value) => {
-    const trimmedValue = value.trim();
-    if (/[^a-zA-Z\s]/.test(trimmedValue)) {
-      return Promise.reject(
-        new Error("Name must not contain symbols or numbers.")
-      );
-    }
-    return Promise.resolve();
-  };
 
   const onFinish = (values) => {
     setIsLoading(true);

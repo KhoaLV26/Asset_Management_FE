@@ -10,6 +10,11 @@
   height: 60px;
 }
 
+.ant-layout-sider {
+  max-width: 250px !important;
+  min-width: 250px !important;
+}
+
 .ant-modal-title {
   font-size: 20px !important;
 }

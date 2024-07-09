@@ -11,7 +11,7 @@ import {
   Spin,
 } from "antd";
 import LayoutPage from "../layout/LayoutPage";
-import { removeExtraWhitespace } from "../HandleString";
+import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   FilterOutlined,
   EditFilled,
@@ -22,10 +22,10 @@ import {
 import { useNavigate, useLocation, Link } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
-import CustomPagination from "../components/CustomPagination";
-import ConfirmModal from "../components/ConfirmModal";
+import { ConfirmModal, CustomPagination } from "../components";
 
 const { Search } = Input;
+
 const stateConvert = (id) => {
   let stateName = "";
   switch (id) {
@@ -89,7 +89,7 @@ const AssignmentTable = ({ selectedAsset }) => {
   );
 };
 
-const ManageAsset = () => {
+export const ManageAsset = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
@@ -136,7 +136,7 @@ const ManageAsset = () => {
       width: "5%",
       key: "index",
       render: (text, record, index) => (
-        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+        <span>{index + 1 + (params?.pageNumber - 1) * params.pageSize}</span>
       ),
     },
     {
@@ -275,13 +275,14 @@ const ManageAsset = () => {
               setIsDelete(true);
             }}
           >
-            <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
+            <CloseCircleOutlined className="text-red-600 text-lg mb-1 check-icon" />
           </Button>
         </Space>
       ),
     },
   ];
 
+  console.log(params);
   const handleCancel = () => {
     setIsModalOpen(false);
     setToEdit(false);

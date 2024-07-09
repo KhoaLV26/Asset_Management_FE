@@ -2,7 +2,7 @@ import React from "react";
 import LayoutPage from "../layout/LayoutPage";
 import { useNavigate } from "react-router-dom";
 
-const NotFound = () => {
+export const NotFound = () => {
   const navigate = useNavigate();
 
   const goBack = () => {

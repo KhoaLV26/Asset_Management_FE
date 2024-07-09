@@ -12,7 +12,7 @@ import {
   Spin,
 } from "antd";
 import LayoutPage from "../layout/LayoutPage";
-import { removeExtraWhitespace } from "../HandleString";
+import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   FilterOutlined,
   EditFilled,
@@ -24,10 +24,10 @@ import {
 import { useNavigate, useLocation } from "react-router-dom";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/ManageAsset.css";
-import CustomPagination from "../components/CustomPagination";
-import ConfirmModal from "../components/ConfirmModal";
+import { ConfirmModal, CustomPagination } from "../components";
 
 const { Search } = Input;
+
 const formatDateTime = (input) => {
   let date = new Date(input);
   let datePart = date.toISOString().split("T")[0];
@@ -51,7 +51,7 @@ const stateConvert = (id) => {
   return stateName;
 };
 
-const ManageAssignment = () => {
+export const ManageAssignment = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
@@ -352,7 +352,7 @@ const ManageAssignment = () => {
               openFormConfirmDelete(record?.id);
             }}
           >
-            <CloseCircleOutlined className="text-red-600 text-sm mb-1" />
+            <CloseCircleOutlined className="text-red-600 text-sm mb-1 check-icon" />
           </Button>
           <Button
             className="bg-tranparent border-none"

@@ -17,7 +17,7 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../contexts/AuthContext";
 const { Option } = Select;
 
-const CreateUser = () => {
+export const CreateUser = () => {
   const [roleData, setRoleData] = useState([]);
   const [form] = Form.useForm();
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
