@@ -344,8 +344,8 @@ export const Home = () => {
   ];
 
   useEffect(() => {
-    setLoading(true);
-    axiosInstance
+    role && setLoading(true);
+    role && axiosInstance
       .get("/Assignments/user", { params })
       .then((res) => {
         if (res.data.success) {

@@ -4,3 +4,4 @@ export { Header } from "./Header";
 export { Navbar } from "./Navbar";
 export { RequireAdmin } from "./RequireAdmin";
 export { SelectModal } from "./SelectModal";
+export { ScrollToTop } from "./ScrollToTop";
