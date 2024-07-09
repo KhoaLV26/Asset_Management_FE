@@ -106,9 +106,10 @@ export const ManageAsset = () => {
   const [openCategoryDropdown, setOpenCategoryDropdown] = useState(false);
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
   const [categories, setCategories] = useState([]);
+
   const handleClicked = (data) => {
     setIsModalOpen(true);
-    setSelectedAsset(data);
+    setSelectedAsset({id : data.id});
   };
   const [selectedAsset, setSelectedAsset] = useState(null);
   const [currentId, setCurrentId] = useState(null);

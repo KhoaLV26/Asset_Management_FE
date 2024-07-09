@@ -63,6 +63,7 @@ export const ManageAssignment = () => {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const [openStateDropdown, setOpenStateDropdown] = useState(false);
+
   const handleClicked = (data) => {
     setIsModalOpen(true);
     axiosInstance
@@ -80,6 +81,7 @@ export const ManageAssignment = () => {
       });
     
   };
+  
   const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [isDeleteModalVisible, setDeleteModalVisible] = useState(false);
   const [idSelected, setIdSelected] = useState(null);
