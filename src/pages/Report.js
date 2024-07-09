@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import LayoutPage from "../layout/LayoutPage";
 import { Button, Spin, Table, message } from "antd";
-import CustomPagination from "../components/CustomPagination";
+import { CustomPagination } from "../components";
 import { CaretDownOutlined, CaretUpOutlined } from "@ant-design/icons";
 import axiosInstance from "../axios/axiosInstance";
 import "../styles/Home.css";
 
-const Report = () => {
+export const Report = () => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [params, setParams] = useState({

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import SelectModal from "../components/SelectModal";
+import { SelectModal } from "../components";
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/CreateAssignment.css";
 import moment from "moment";
@@ -10,7 +10,7 @@ import { Spin, message, Button, Form, Input, DatePicker } from "antd";
 
 const { TextArea, Search } = Input;
 
-const EditAssignment = () => {
+export const EditAssignment = () => {
   const params = useParams();
   const [staffCode, setStaffCode] = useState("");
   const [assetCode, setAssetCode] = useState("");

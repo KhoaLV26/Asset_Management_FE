@@ -2,11 +2,8 @@ import React, { useEffect, useState } from "react";
 import LayoutPage from "../layout/LayoutPage";
 import {
   Button,
-  DatePicker,
   Form,
   Input,
-  Radio,
-  Select,
   Spin,
   message,
 } from "antd";
@@ -14,9 +11,8 @@ import "../styles/CreateUser.css";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import axiosInstance from "../axios/axiosInstance";
 import { useNavigate, useParams } from "react-router-dom";
-const { Option } = Select;
 
-const EditLocation = () => {
+export const EditLocation = () => {
   const params = useParams();
   const [form] = Form.useForm();
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
@@ -24,8 +20,6 @@ const EditLocation = () => {
   const [locationCode, setLocationCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-
-  const onValuesChange = (changedValues, allValues) => {};
 
   useEffect(() => {
     setIsLoading(true);

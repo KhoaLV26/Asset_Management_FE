@@ -5,17 +5,15 @@ import axiosInstance from "../axios/axiosInstance";
 import { Button, Form, Input, message } from "antd";
 import { removeAllWhitespace } from "../utils/helpers/HandleString";
 
-const Login = () => {
-  const { login, auth } = useContext(AuthContext);
+export const Login = () => {
+  const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
   const [form] = Form.useForm();
-  const [username, setUsername] = useState("");
 
   const handleBlur = (e) => {
     const trimmedValue = removeAllWhitespace(e.target.value);
-    setUsername(trimmedValue);
     form.setFieldsValue({ username: trimmedValue });
     form.validateFields(["username"]);
   };

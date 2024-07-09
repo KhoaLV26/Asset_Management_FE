@@ -3,7 +3,7 @@ import { Pagination, Select } from "antd";
 
 const { Option } = Select;
 
-const CustomPagination = ({ params, setParams, total, setFetch }) => {
+export const CustomPagination = ({ params, setParams, total, setFetch }) => {
   const [recordsPerPage, setRecordsPerPage] = useState(params.pageSize || 10);
 
   useEffect(() => {
@@ -64,7 +64,8 @@ const CustomPagination = ({ params, setParams, total, setFetch }) => {
             width: "100%",
             background: isActive ? "#d6001c" : "white",
             color: isActive ? "white" : "#d6001c",
-            border: "none",
+            border: "1px solid #d6001c",
+            borderRadius: "0",
           }}
           onClick={() => {
             setParams((prev) => ({ ...prev, pageNumber: current }));

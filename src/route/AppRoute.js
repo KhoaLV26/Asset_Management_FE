@@ -1,24 +1,26 @@
-import NotFound from "../components/NotFound";
-import RequireAdmin from "../components/RequireAdmin";
-import UnAuthor from "../components/UnAuthor";
-import CreateAsset from "../pages/CreateAsset";
-import CreateLocation from "../pages/CreateLocation";
-import EditAsset from "../pages/EditAsset";
-import EditAssignment from "../pages/EditAssignment";
-import EditLocation from "../pages/EditLocation";
-import EditUser from "../pages/EditUser";
-import Home from "../pages/Home";
-import Login from "../pages/Login";
-import ManageAssignment from "../pages/ManageAssignment";
-import ManageLocation from "../pages/ManageLocation";
-import ManageRequestReturn from "../pages/ManageRequestReturn";
-import Report from "../pages/Report";
+import {
+  NotFound,
+  UnAuthor,
+  CreateAsset,
+  CreateAssignment,
+  CreateLocation,
+  CreateUser,
+  EditAsset,
+  EditAssignment,
+  EditLocation,
+  EditUser,
+  Home,
+  Login,
+  Report,
+  ManageAsset,
+  ManageAssignment,
+  ManageLocation,
+  ManageRequestReturn,
+  ManageUser,
+} from "../pages";
+import { RequireAdmin } from "../components";
 
 const { useRoutes } = require("react-router-dom");
-const { default: ManageUser } = require("../pages/ManageUser");
-const { default: CreateUser } = require("../pages/CreateUser");
-const { default: ManageAsset } = require("../pages/ManageAsset");
-const { default: CreateAssignment } = require("../pages/CreateAssignment");
 
 const AppRoutes = () => {
   const elements = useRoutes([
@@ -96,7 +98,11 @@ const AppRoutes = () => {
     },
     {
       path: "/manage-assignment/create-assignment",
-      element: <CreateAssignment />,
+      element: (
+        <RequireAdmin>
+          <CreateAssignment />
+        </RequireAdmin>
+      ),
     },
     {
       path: "/report",
@@ -108,7 +114,11 @@ const AppRoutes = () => {
     },
     {
       path: "/manage-assignment/edit-assignment/:id",
-      element: <EditAssignment />,
+      element: (
+        <RequireAdmin>
+          <EditAssignment />
+        </RequireAdmin>
+      ),
     },
     {
       path: "/report",
@@ -142,7 +152,6 @@ const AppRoutes = () => {
         </RequireAdmin>
       ),
     },
-    { path: "*", element: <NotFound /> },
     {
       path: "/manage-location/edit-location/:id",
       element: (
@@ -151,6 +160,7 @@ const AppRoutes = () => {
         </RequireAdmin>
       ),
     },
+    { path: "*", element: <NotFound /> },
   ]);
   return elements;
 };

@@ -10,8 +10,7 @@ import {
   RedoOutlined,
 } from "@ant-design/icons";
 import { Button, Space, Table, Modal, message, Empty, Spin } from "antd";
-import CustomPagination from "../components/CustomPagination";
-import ConfirmModal from "../components/ConfirmModal";
+import { ConfirmModal, CustomPagination } from "../components";
 import "../styles/Home.css";
 
 const formatDateTime = (input) => {
@@ -38,7 +37,7 @@ const stateConvert = (id) => {
   return stateName;
 };
 
-const Home = () => {
+export const Home = () => {
   const { auth } = useContext(AuthContext);
   const role = auth?.user?.roleName;
   const [direction, setDirection] = useState(true);
@@ -307,7 +306,7 @@ const Home = () => {
               setUserResponse(true);
             }}
           >
-            <CheckOutlined className="text-red-600 text-sm mb-1" />
+            <CheckOutlined className="text-red-600 text-sm mb-1 check-icon"/>
           </Button>
           <Button
             className="bg-tranparent border-none"

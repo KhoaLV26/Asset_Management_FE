@@ -11,7 +11,6 @@ import {
   Empty,
   Spin,
 } from "antd";
-import CustomPagination from "../components/CustomPagination";
 import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import {
   FilterOutlined,
@@ -23,12 +22,12 @@ import {
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/ManageUser.css";
 import { useNavigate, useLocation } from "react-router-dom";
-import ConfirmModal from "../components/ConfirmModal";
+import { ConfirmModal, CustomPagination } from "../components";
 import { AuthContext } from "../contexts/AuthContext";
 
 const { Search } = Input;
 
-const ManageUser = () => {
+export const ManageUser = () => {
   const [data, setData] = useState([]);
   const [userAssignments, setUserAssignments] = useState({});
   const [isDelete, setIsDelete] = useState(false);
@@ -188,7 +187,7 @@ const ManageUser = () => {
       width: "5%",
       key: "index",
       render: (text, record, index) => (
-        <span>{index + 1 + (params?.pageNumber - 1) * 10}</span>
+        <span>{index + 1 + (params?.pageNumber - 1) * params.pageSize}</span>
       ),
     },
     {
@@ -348,7 +347,7 @@ const ManageUser = () => {
               setCurrentId(record.id);
             }}
           >
-            <CloseCircleOutlined className="text-red-600 text-lg mb-1" />
+            <CloseCircleOutlined className="text-red-600 text-lg mb-1 check-icon" />
           </Button>
         </Space>
       ),

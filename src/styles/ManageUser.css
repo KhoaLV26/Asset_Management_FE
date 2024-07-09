@@ -29,8 +29,8 @@
   margin-top: 1.5rem !important;
 }
 
-.ant-pagination-item-link active {
-  border: none;
+.ant-pagination-item-active {
+  border: none !important;
 }
 
 .ant-spin-container {

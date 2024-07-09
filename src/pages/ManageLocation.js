@@ -3,10 +3,8 @@ import {
   Button,
   Space,
   Table,
-  Select,
   message,
   Empty,
-  DatePicker,
   Spin,
   Input,
 } from "antd";
@@ -15,15 +13,15 @@ import {
   CaretUpOutlined,
   CaretDownOutlined,
 } from "@ant-design/icons";
-
 import axiosInstance from "../axios/axiosInstance";
-import { removeExtraWhitespace } from "../HandleString";
+import { removeExtraWhitespace } from "../utils/helpers/HandleString";
 import LayoutPage from "../layout/LayoutPage";
-import CustomPagination from "../components/CustomPagination";
+import { CustomPagination } from "../components";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const { Search } = Input;
-const ManageLocation = () => {
+
+export const ManageLocation = () => {
   const [direction, setDirection] = useState(true);
   const [total, setTotal] = useState(1);
   const [data, setData] = useState([]);
@@ -34,8 +32,6 @@ const ManageLocation = () => {
   };
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [currentId, setCurrentId] = useState(null);
-  const [showCancelConfirm, setShowCancelConfirm] = useState(false);
   const [params, setParams] = useState({ pageNumber: 1, pageSize: 10 });
   const sorterLog = (name) => {
     if (params.sortBy === name) {
@@ -125,8 +121,6 @@ const ManageLocation = () => {
             size="middle"
             onClick={(e) => {
               e.stopPropagation();
-              setCurrentId(record?.id);
-              setShowCancelConfirm(true);
               navigate(`edit-location/${record.id}`);
             }}
           >

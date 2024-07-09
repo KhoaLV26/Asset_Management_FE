@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import SelectModal from "../components/SelectModal";
+import { SelectModal } from "../components";
 import LayoutPage from "../layout/LayoutPage";
 import "../styles/CreateAssignment.css";
 import moment from "moment";
@@ -11,7 +11,7 @@ import { AuthContext } from "../contexts/AuthContext";
 
 const { TextArea, Search } = Input;
 
-const CreateAssignment = () => {
+export const CreateAssignment = () => {
   const [staffCode, setStaffCode] = useState("");
   const [assetCode, setAssetCode] = useState("");
   const [userId, setUserId] = useState("");

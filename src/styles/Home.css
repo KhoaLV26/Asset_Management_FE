@@ -87,6 +87,20 @@
   color: white !important;
 }
 
+.ant-btn:hover .check-icon,
+.ant-btn:focus .check-icon {
+  color: white !important;
+}
+
+.ant-btn[disabled]:hover,
+.ant-btn[disabled]:focus,
+.ant-btn:disabled:hover,
+.ant-btn:disabled:focus {
+  background-color: rgba(0, 0, 0, 0.04) !important;
+  color: initial !important;
+  cursor: not-allowed !important;
+}
+
 .custom-size-changer .ant-select-selector {
   color: #d6001c; /* Ensure selected item text color */
 }

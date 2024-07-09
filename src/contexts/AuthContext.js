@@ -1,5 +1,4 @@
 import { createContext, useEffect, useState } from "react";
-import axiosInstance from "../axios/axiosInstance";
 import Cookies from "js-cookie";
 
 export const AuthContext = createContext();
@@ -25,7 +24,7 @@ export const AuthProvider = ({ children }) => {
     setAuth(data);
     setIsAuthen(true);
     setTokens(data.token, data.refreshToken, data.user);
-    localStorage.setItem("logout-event", Date.now()); // Trigger logout event for other tabs
+    localStorage.setItem("logout-event", Date.now());
   };
 
   const logout = async () => {

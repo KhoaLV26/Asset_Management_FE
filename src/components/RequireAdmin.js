@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
-const RequireAdmin = (props) => {
+export const RequireAdmin = (props) => {
   const { children } = props;
   const user = Cookies.get("user");
 

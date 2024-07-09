@@ -18,7 +18,7 @@ import dayjs from "dayjs";
 
 const { TextArea } = Input;
 
-const EditAsset = () => {
+export const EditAsset = () => {
   const params = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [form] = Form.useForm();
