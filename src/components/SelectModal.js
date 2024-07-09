@@ -346,7 +346,7 @@ export const SelectModal = ({
             {type}
           </span>
           <Search
-            className="w-[40%] mr-9"
+            className="custom-search w-[40%] mr-9"
             value={searchQuery}
             allowClear
             maxLength={100}

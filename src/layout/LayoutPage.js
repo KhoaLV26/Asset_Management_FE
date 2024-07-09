@@ -1,7 +1,7 @@
 import React from "react";
 import "../styles/LayoutPage.css";
 import { Layout } from "antd";
-import { Header, Navbar } from "../components";
+import { Header, Navbar, ScrollToTop } from "../components";
 
 const { Content } = Layout;
 
@@ -9,9 +9,9 @@ const LayoutPage = (props) => {
   return (
     <Layout className="bg-white w-full flex">
       <Header/>
+      <ScrollToTop/>
       <Layout className="bg-white w-full">
         <Navbar/>
-
         <Layout style={{
           marginTop: '60px',
           marginLeft: '220px'
