@@ -42,7 +42,7 @@ export const Navbar = () => {
       }}
       className="Sider ml-4 container h-screen text-lg bg-white mt-[64px] flex"
     >
-      <div className="ant-layout-sider-children bg-white w-full min-w-[250px]">
+      <div className="ant-layout-sider-children bg-white w-full min-w-[270px]">
         <div className="flex items-center bg-white">
           <img
             src={
