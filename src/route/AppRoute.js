@@ -1,47 +1,52 @@
-import {
-  NotFound,
-  UnAuthor,
-  CreateAsset,
-  CreateAssignment,
-  CreateLocation,
-  CreateUser,
-  EditAsset,
-  EditAssignment,
-  EditLocation,
-  EditUser,
-  Home,
-  Login,
-  Report,
-  ManageAsset,
-  ManageAssignment,
-  ManageLocation,
-  ManageRequestReturn,
-  ManageUser,
-} from "../pages";
+import { NotFound, UnAuthor, Home } from "../pages";
 import { RequireAdmin } from "../components";
+import { useRoutes } from "react-router-dom";
+import { lazy, Suspense } from "react";
 
-const { useRoutes } = require("react-router-dom");
+const CreateAsset = lazy(() => import("../pages/CreateAsset"));
+const CreateAssignment = lazy(() => import("../pages/CreateAssignment"));
+const CreateLocation = lazy(() => import("../pages/CreateLocation"));
+const CreateUser = lazy(() => import("../pages/CreateUser"));
+const EditAsset = lazy(() => import("../pages/EditAsset"));
+const EditAssignment = lazy(() => import("../pages/EditAssignment"));
+const EditLocation = lazy(() => import("../pages/EditLocation"));
+const EditUser = lazy(() => import("../pages/EditUser"));
+const ManageAsset = lazy(() => import("../pages/ManageAsset"));
+const ManageAssignment = lazy(() => import("../pages/ManageAssignment"));
+const ManageLocation = lazy(() => import("../pages/ManageLocation"));
+const ManageRequestReturn = lazy(() => import("../pages/ManageRequestReturn"));
+const ManageUser = lazy(() => import("../pages/ManageUser"));
+const Report = lazy(() => import("../pages/Report"));
+const Login = lazy(() => import("../pages/Login"));
 
 const AppRoutes = () => {
   const elements = useRoutes([
     {
       path: "/login",
-      element: <Login />,
+      element: (
+        <Suspense>
+          <Login />
+        </Suspense>
+      ),
     },
     {
       path: "/manage-user/create-user",
       element: (
-        <RequireAdmin>
-          <CreateUser />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <CreateUser />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-user",
       element: (
-        <RequireAdmin>
-          <ManageUser />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <ManageUser />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
@@ -55,33 +60,41 @@ const AppRoutes = () => {
     {
       path: "/manage-asset",
       element: (
-        <RequireAdmin>
-          <ManageAsset />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <ManageAsset />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-asset/create-asset",
       element: (
-        <RequireAdmin>
-          <CreateAsset />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <CreateAsset />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-asset/edit-asset/:id",
       element: (
-        <RequireAdmin>
-          <EditAsset />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <EditAsset />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-user/edit-user/:id",
       element: (
-        <RequireAdmin>
-          <EditUser />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <EditUser />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
@@ -91,73 +104,81 @@ const AppRoutes = () => {
     {
       path: "/manage-assignment",
       element: (
-        <RequireAdmin>
-          <ManageAssignment />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <ManageAssignment />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-assignment/create-assignment",
       element: (
-        <RequireAdmin>
-          <CreateAssignment />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <CreateAssignment />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/report",
       element: (
-        <RequireAdmin>
-          <Report />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <Report />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-assignment/edit-assignment/:id",
       element: (
-        <RequireAdmin>
-          <EditAssignment />
-        </RequireAdmin>
-      ),
-    },
-    {
-      path: "/report",
-      element: (
-        <RequireAdmin>
-          <Report />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <EditAssignment />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/request-for-returning",
       element: (
-        <RequireAdmin>
-          <ManageRequestReturn />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <ManageRequestReturn />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-location",
       element: (
-        <RequireAdmin>
-          <ManageLocation />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <ManageLocation />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-location/create-location",
       element: (
-        <RequireAdmin>
-          <CreateLocation />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <CreateLocation />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     {
       path: "/manage-location/edit-location/:id",
       element: (
-        <RequireAdmin>
-          <EditLocation />
-        </RequireAdmin>
+        <Suspense>
+          <RequireAdmin>
+            <EditLocation />
+          </RequireAdmin>
+        </Suspense>
       ),
     },
     { path: "*", element: <NotFound /> },
