@@ -25,15 +25,15 @@ export const ConfirmModal = ({
     >
       <div className="px-[4.5%] py-[20px] pt-[15px] pb-[15px]">
         <h1 className="text-[17px] mb-6 ml-5">{text}</h1>
-        <div className="flex ms-[18px] gap-10">
+        <div className="flex gap-10 justify-center">
           <Button
-            className="bg-d6001c text-white w-[100px] text-[17px]"
+            className="bg-d6001c text-white w-[150px] text-[17px]"
             onClick={() => onConfirm()}
           >
             {textConfirm}
           </Button>
           <Button
-            className="bg-white text-d6001c w-[100px] text-[17px]"
+            className="bg-white text-d6001c w-[150px] text-[17px]"
             onClick={() => onCancel()}
           >
             {textCancel}

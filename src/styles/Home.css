@@ -64,8 +64,9 @@
 
 .ant-btn:hover .anticon,
 .ant-btn:focus .anticon,
+.anticon-search .anticon:hover,
 .custom-search .anticon:hover{
-  color: white;
+  color: white !important;
 }
 
 .ant-picker:hover, 
