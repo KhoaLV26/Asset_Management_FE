@@ -29,11 +29,11 @@ import { ConfirmModal, CustomPagination } from "../components";
 const { Search } = Input;
 
 const formatDateTime = (input) => {
-  let date = new Date(input);
-  let datePart = date.toISOString().split("T")[0];
-  let timePart = date.toISOString().split("T")[1].split(".")[0];
-  let formattedDateTime = datePart + " " + timePart;
-  return formattedDateTime;
+  let inputDate = new Date(input)
+  let tzoffset = inputDate.getTimezoneOffset() * 60000;
+  let date = (new Date(inputDate - tzoffset)).toISOString().slice(0, -1);
+  let datePart = date.split("T")[0];
+  return datePart;
 };
 const stateConvert = (id) => {
   let stateName = "";
