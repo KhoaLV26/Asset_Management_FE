@@ -28,6 +28,9 @@
 .custom-select .ant-select-focused .ant-select-selector,
 .custom-select .ant-select-selector:focus,
 .custom-select .ant-select-selector:focus-within,
+.custom-select .ant-select-open .ant-select-selector,
+.custom-select .ant-select-clear:hover,
+.custom-select .ant-select-selection-item:hover,
 .custom-size-changer:hover .ant-select-selector,
 .custom-size-changer .ant-select-selector:hover,
 .custom-size-changer .ant-select-focused .ant-select-selector,
@@ -44,13 +47,26 @@
   box-shadow: 0 0 0 2px rgba(214, 0, 28, 0.2) !important; 
 }
 
+.custom-select.ant-select.ant-select-outlined.ant-select-compact-item.ant-select-compact-first-item.ant-select-compact-last-item:hover .ant-select-selector,
+.custom-select.ant-select.ant-select-outlined.ant-select-compact-item.ant-select-compact-first-item.ant-select-compact-last-item:focus .ant-select-selector,
+.custom-select.ant-select.ant-select-outlined.ant-select-compact-item.ant-select-compact-first-item.ant-select-compact-last-item.ant-select-open .ant-select-selector {
+  border-color: #d6001c !important;
+  box-shadow: 0 0 0 2px rgba(214, 0, 28, 0.2) !important;
+}
+
 .custom-search .anticon,
-.custom-search .anticon:hover,
 .custom-select .ant-select-suffix,
 .custom-select .ant-select-suffix:hover,
 .custom-size-changer .ant-select-suffix,
 .custom-size-changer .ant-select-suffix:hover {
-  color: #d6001c; 
+  color: #d6001c !important; 
+}
+
+.ant-btn:hover .anticon,
+.ant-btn:focus .anticon,
+.anticon-search .anticon:hover,
+.custom-search .anticon:hover{
+  color: white !important;
 }
 
 .ant-picker:hover, 
@@ -102,5 +118,5 @@
 }
 
 .custom-size-changer .ant-select-selector {
-  color: #d6001c; /* Ensure selected item text color */
+  color: #d6001c; 
 }
