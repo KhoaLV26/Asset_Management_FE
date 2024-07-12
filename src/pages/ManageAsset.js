@@ -576,6 +576,12 @@ export const ManageAsset = () => {
               <span>{selectedAsset?.installDate}</span>
             </div>
             <div className="flex mb-[10px]">
+              <span className="font-bold w-[150px]">Specification:</span>
+              <span className="max-w-[290px]">
+                {selectedAsset?.specification}
+              </span>
+            </div>
+            <div className="flex mb-[10px]">
               <span className="font-bold w-[150px]">State:</span>
               <span className="max-w-[290px]">
                 {stateConvert(selectedAsset?.status)}
