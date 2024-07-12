@@ -163,13 +163,12 @@ export const CreateLocation = () => {
         onOk={handleModalClose}
         onCancel={handleModalClose}
         footer={[
-          <Button key="submit" type="primary" onClick={handleModalClose}>
+          <Button key="submit" type="primary" className="bg-d6001c" onClick={handleModalClose}>
             Close
           </Button>,
         ]}
       >
-        <p>User Name: {responseData?.userName}</p>
-        <p>Password: {responseData?.password}</p>
+        <p>Username: {responseData?.userName}</p>
       </Modal>
     </LayoutPage>
   );
